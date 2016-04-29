@@ -50,18 +50,15 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
     }
 
 
-    public void checkClick(View view){
-        LinearLayout e = (LinearLayout)view.getParent();
-        TextView codigo = (TextView)e.findViewById(R.id.Codigo);
-        String cod = (String)codigo.getText();
-        switch (view.isSelected()){
-            case true:
-                new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "1");
-            case false:
-                new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "0");
+    public void checkClick(View view) {
+        LinearLayout e = (LinearLayout) view.getParent();
+        TextView codigo = (TextView) e.findViewById(R.id.Codigo);
+        String cod = (String) codigo.getText();
+        if (view.isSelected()) {
+            new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "1");
+        } else {
+            new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "0");
         }
-        //(view.isSelected()){}
-        //else {}
     }
 
     @Override
