@@ -6,24 +6,32 @@ package com.example.efaa.iee;
 public class Clas{
     public String CODIGO = null;
     public String NOMBRE = null;
-    public String PORcURSAR[] = null;
+    public String REQUISITOS[] = null;
     public ClassFragment fragmento;
 
     Clas(){
+    }
+
+    Clas(String nombre, String codigo, String requisitos[]) {
+        CODIGO = codigo;
+        NOMBRE = nombre;
+        REQUISITOS = requisitos;
 
     }
 
-    Clas(String nombre, String codigo, String[] porCursar) {
-        CODIGO = codigo;
-        NOMBRE = nombre;
-        PORcURSAR = porCursar;
+    Clas(String code){
+        CODIGO = code;
     }
 
     Clas(String nombre, String codigo, String[] porCursar, ClassFragment frag) {
         CODIGO = codigo;
         NOMBRE = nombre;
-        PORcURSAR = porCursar;
+//        PORcURSAR = porCursar;
         fragmento = frag;
         return;
+    }
+
+    public String toString(){
+        return "Clas";
     }
 }

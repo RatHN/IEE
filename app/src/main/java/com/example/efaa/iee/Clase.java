@@ -45,6 +45,10 @@ public class Clase extends Clas{
 
         //¿Eliminar fragmento?
     }
+
+    public String toString(){
+        return "Clase";
+    }
 }
 
 public class Dependencia extends Clase{
