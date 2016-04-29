@@ -54,6 +54,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         LinearLayout e = (LinearLayout) view.getParent();
         TextView codigo = (TextView) e.findViewById(R.id.Codigo);
         String cod = (String) codigo.getText();
+
         if (view.isSelected()) {
             new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "1");
         } else {

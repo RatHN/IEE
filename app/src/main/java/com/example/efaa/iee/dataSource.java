@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by EFAA on 26/04/2016.
@@ -45,7 +46,24 @@ public class dataSource {
         db.insert(TABLE, null, values);
     }
 
+    public ArrayList<Clas> queryDependencias(SQLiteDatabase db, String columna, String ceroOuno, Class clase, Context context)
+    {
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR, Columnas.CURSADA, Columnas.DISPONIBLE};
+        String selection = columna + " = " + ceroOuno + " ";
+        switch (clase.getName()){
+            case "Clase":
 
+        }
+    }
+
+        /**
+         *
+         * @param db Base de Datos a usar
+         * @param columna Columna a evaluar
+         * @param ceroOuno Dato a evaluar
+         * @param context Contexto de la aplicacion o actividad
+         * @return Una lista con las Clases que resultan del resultan del query
+         */
     public ArrayList<Clase> queryPasadasODisponibles(SQLiteDatabase db, String columna, String ceroOuno, Context context) {
         String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR, Columnas.CURSADA, Columnas.DISPONIBLE};
         String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
@@ -87,6 +105,7 @@ public class dataSource {
             String[] porcursar = parsePorCursarString(porCursar);
 
             lista.add(new Clase(clase, codigo, porcursar));
+
         }
         return lista;
     }
