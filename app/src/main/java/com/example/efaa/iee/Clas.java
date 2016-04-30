@@ -1,6 +1,7 @@
 package com.example.efaa.iee;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -52,6 +53,10 @@ public class Clas{
     }
 
     public String toString(){
-        return "Clas";
+        return CODIGO;
+    }
+
+    public Cursor marccarDisponible(SQLiteDatabase db, Context context) {
+        return db.rawQuery("SELECT * FROM " + dataSource.TABLE + " WHERE cursada = \"1\" AND porcursar LIKE \"%" + CODIGO + "%\"", null);
     }
 }

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
 import android.provider.BaseColumns;
 import android.widget.Toast;
 
@@ -19,28 +20,15 @@ public class dataSource {
     public static final String STRING_TYPE = "text";
     public static final String INT_TYPE = "integer";
 
-    //Ingresar nuevas filas //NO NECESARIO
-    public void saveQuoteRow(SQLiteDatabase db, String nombre, String codigo) {
-        //Nuestro contenedor de valores
-        ContentValues values = new ContentValues();
-
-        //Seteando body y author
-        values.put(Columnas.NOMBRE, nombre);
-        values.put(Columnas.CODIGO, codigo);
-
-        //Insertando en la base de datos
-        db.insert(TABLE, null, values);
-    }
-
 
     /**
-     *  Hace una lista de las clases que son requisitos para una clase que depende de una o más
+     * Hace una lista de las clases que son requisitos para una clase que depende de una o más
      *
-     * @param db Base de Datos a usar.
+     * @param db              Base de Datos a usar.
      * @param dependenciaCode Codigo de la dependencia a usar para realizar la busqueda.
-    * @param context Contexto de la aplicacion o de la actividad
-    * @return Una lista de Clas con las clases requsito para dependenciaCode
-    */
+     * @param context         Contexto de la aplicacion o de la actividad
+     * @return Una lista de Clas con las clases requsito para dependenciaCode
+     */
     public Clas queryDependencias(SQLiteDatabase db, String dependenciaCode, Context context) {
         String codeName = dependenciaCode;
         String columns[] = new String[]{Columnas.CODIGO};
@@ -53,9 +41,9 @@ public class dataSource {
     /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
      *
-     * @param db Base de Datos a usar.
+     * @param db                    Base de Datos a usar.
      * @param NombreDeLaDependencia Codigo de la dependencia a usar para realizar la busqueda.
-     * @param context Contexto de la aplicacion o de la actividad
+     * @param context               Contexto de la aplicacion o de la actividad
      * @return Una lista de Clas con las clases requsito para NombreDeLaDependencia
      */
     public ArrayList<Clas> queryRequisitos(SQLiteDatabase db, String NombreDeLaDependencia, Context context) {
@@ -100,6 +88,64 @@ public class dataSource {
                 ), db,
                 context);
     }
+
+
+    /**
+     * Crear Clase evaluando una columna (nombre o codigo) con una DATO
+     *
+     * @param db      Base de Datos a usar
+     * @param codigo  Dato a evaluar
+     * @param context Contexto de la aplicacion o actividad
+     * @return Clase que resulta del resulta del query
+     */
+    public Clase queryCrearClase(SQLiteDatabase db, String codigo, Context context) {
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR, Columnas.CURSADA, Columnas.DISPONIBLE};
+        String selection = Columnas.CODIGO + " = \"" + codigo + "\" ";//WHERE author = ?
+//        db.rawQuery("SELECT * FROM " + TABLE + " WHERE " + Columnas.CODIGO + " = " + codigo, null);
+
+
+        return CrearClase(
+                db.query(
+                        TABLE,
+                        columns,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        null
+                ), db,
+                context);
+    }
+
+    private Clase CrearClase(Cursor c, SQLiteDatabase db, Context context) {
+
+        ArrayList<Clas> porcursar = new ArrayList<>();
+        String porCursar = null;
+        String clase = null;
+        String codigo = null;
+        String cursada = null;
+        String disponible = null;
+
+        while (c.moveToNext()) {
+            try {
+                clase = c.getString(c.getColumnIndexOrThrow(Columnas.NOMBRE));
+                codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
+                porCursar = c.getString(c.getColumnIndexOrThrow(Columnas.PORcURSAR));
+                cursada = c.getString(c.getColumnIndexOrThrow(Columnas.CURSADA));
+                disponible = c.getString(c.getColumnIndexOrThrow(Columnas.DISPONIBLE));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                Toast.makeText(context, " COMUNICARSE CON DESARROLADOR \n " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            porcursar = crearListaDependenciasAndParse(porCursar, db, context);
+//            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
+            break;
+
+        }
+        return new Clase(clase, codigo, porcursar);
+    }
+
 
     private ArrayList<Clase> CrearListaClases(Cursor c, SQLiteDatabase db, Context context) {
         ArrayList<Clase> listaClases = new ArrayList<>();
@@ -179,7 +225,7 @@ public class dataSource {
         );
     }
 
-    public void insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato) {
+    public void insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
         String columna2 = null;
         if (columna == Columnas.CURSADA) {
             columna2 = Columnas.DISPONIBLE;
@@ -188,11 +234,12 @@ public class dataSource {
 
         //Seteando body y author
         values.put(columna, dato);
-        switch (dato) {
-            case "1":
-                values.put(columna2, "0");
-            case "0":
-                values.put(columna2, "1");
+        if (dato == "1") {
+            values.put(columna2, "0");
+            values.put(columna, "1");
+        } else {
+            values.put(columna, "0");
+            values.put(columna2, "1");
         }
 
         //Clausula WHERE
@@ -200,8 +247,67 @@ public class dataSource {
         String[] selectionArgs = {codigo};
 
         //Actualizando
-        db.update(TABLE, values, selection, selectionArgs);
+        int r = db.update(TABLE, values, selection, selectionArgs);
+
+        for (Clas clas : clase.ARRAYdEPENDENCIAS) {
+
+            if (clas.ARRAY_REQUISITOS.size() == 1) {
+                insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+            } else if (clas.ARRAY_REQUISITOS.size() > 1){
+                Cursor cursor = clas.marccarDisponible(db, context);
+                if (cursor.getCount() == clas.ARRAY_REQUISITOS.size()){
+                    String codigos[] = new String[clas.ARRAY_REQUISITOS.size()];
+                    for (int i = 0; i < clas.ARRAY_REQUISITOS.size() ; i++) {
+                        codigos[i] = clas.ARRAY_REQUISITOS.get(i).toString();
+                    }
+                    insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+                }
+            }
+
+        }
+
     }
+
+
+    private void insertarUnoOCeroEnClas(SQLiteDatabase db, String codigo, String columna, String dato, Context context) {
+        String columna2 = null;
+        if (columna == Columnas.CURSADA) {
+            columna2 = Columnas.DISPONIBLE;
+        }
+        else{
+            columna2 = Columnas.CURSADA;
+        }
+
+//        ContentValues values = new ContentValues();
+
+        //Seteando body y author
+        //values.put(columna, dato);
+        String uno = "";
+        String dos = "";
+        Cursor r;
+        if (dato == "1") {
+            r = db.rawQuery("UPDATE clases SET " + columna + " = \"1\", " + columna2 + " = \"0\" WHERE codigo = \"" + codigo + "\"", null);
+
+//            values.put(columna2, "0");
+//            values.put(columna, "1");
+        } else {
+
+            r = db.rawQuery("UPDATE clases SET " + columna2 + " = \"1\", " + columna + " = \"0\" WHERE codigo = \"" + codigo + "\"", null);
+//            values.put(columna, "0");
+//            values.put(columna2, "1");
+        }
+        int i = r.getCount();
+        //Clausula WHERE
+//        String selection = Columnas.CODIGO + " = ?";
+        //String[] selectionArgs = codigo;
+
+        //Actualizando
+//        db.update(TABLE, values, selection, selectionArgs);
+
+
+
+    }
+
 
 
     /**
@@ -258,6 +364,14 @@ public class dataSource {
         public final static String DISPONIBLE = "disponible";
     }
 
+    public static class Estados {
+        public static final String DISPONIBLES = "Cursar";
+        public static final String CURSADA = "Cursada";
+
+    }
+
+
+//    public boolean
 
 
 }

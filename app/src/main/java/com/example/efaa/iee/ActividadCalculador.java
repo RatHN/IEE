@@ -1,8 +1,9 @@
 package com.example.efaa.iee;
 
 import android.app.Fragment;
-
+import com.example.efaa.iee.dataSource;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -34,7 +35,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
     SQLiteDatabase dob = null;
     public String ESTADO = null;
-
+    public String ColumnaAUSAR = null;
 
 
     /**
@@ -54,12 +55,15 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         LinearLayout e = (LinearLayout) view.getParent();
         TextView codigo = (TextView) e.findViewById(R.id.Codigo);
         String cod = (String) codigo.getText();
+        String dato = null;
 
-        if (view.isSelected()) {
-            new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "1");
+        if (!view.isSelected()) {
+            dato="1";
         } else {
-            new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, "0");
+            dato="0";
         }
+        new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato, new dataSource().queryCrearClase(dob, cod, this), this);
+
     }
 
     @Override
@@ -76,15 +80,18 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
         setContentView(R.layout.activity_actividad_calculador);
         ESTADO = getIntent().getExtras().getString("CurPas");
-        if (ESTADO == Estados.CURSADA) {
-            ;
+        if (ESTADO.compareTo("Cursar") == 0) {
+            ColumnaAUSAR = Columnas.DISPONIBLE;
+        }else{
+            ColumnaAUSAR = Columnas.CURSADA;
         }
 
 
         //Intento de abrir una base de datos//
         dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-        final String ListaClases[] = data.queryClasesString(dob, Columnas.DISPONIBLE, "1", this);
-        final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(dob, Columnas.DISPONIBLE, "1", this);
+        final String ListaClases[] = data.queryClasesString(dob, ColumnaAUSAR, "1", this);
+        final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(dob, ColumnaAUSAR, "1", this);
+
 
 
         int[] lista = new int[35];
@@ -193,6 +200,11 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);
             bundle1.putString(ClassFragment.NOMBRE_DE_CLASE, listaClases.get(firstDay).NOMBRE);
+            if (ESTADO.compareTo("Cursar") == 0){
+                bundle1.putBoolean(ClassFragment.ACTIVADO, false);
+            } else {
+                bundle1.putBoolean(ClassFragment.ACTIVADO, true);
+            }
 
             newFragment.setArguments(bundle1);
             transaction.replace(frame, newFragment);
@@ -239,5 +251,17 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+    public void MostrarCursadas(View view){
+        Intent intento = new Intent(this, ActividadCalculador.class);
+        if (ESTADO.compareTo("Cursar") == 0){
+            intento.putExtra("CurPas", "Cursada");
+        } else{
+            intento.putExtra("CurPas", "Cursar");
+        }
+
+        finish();
+        startActivity(intento);
     }
 }

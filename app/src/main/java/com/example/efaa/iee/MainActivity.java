@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
     public void openCalc(View view) {
 //        Toast.makeText(this, "El visor logaritmico automatizado manualmente super avanzado de clases: No se ha implementado aún", Toast.LENGTH_SHORT).show();
         Intent intento = new Intent(this, ActividadCalculador.class);
-        intento.putExtra("CurPas", Estados.DISPONIBLES);
-
+        intento.putExtra("CurPas", "Cursar");
+        onStop();
         startActivity(intento);
 
     }

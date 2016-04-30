@@ -26,8 +26,9 @@
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="335dp"
                 android:layout_height="wrap_content"
-                android:text="New Button"
-                android:id="@+id/button2" />
+                android:text="SDFDFSGDFGSDSDF :v"
+                android:id="@+id/button2"
+                android:onClick="MostrarCursadas"/>
 
             <FrameLayout
                 android:layout_width="match_parent"

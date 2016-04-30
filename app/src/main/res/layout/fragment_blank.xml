@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.efaa.iee.ClassFragment"
-    android:contentDescription="Porcentaje">
+    android:contentDescription="Porcentaje"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
+
 
     <LinearLayout
         android:orientation="vertical"

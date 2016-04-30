@@ -88,6 +88,9 @@ public class ClassFragment extends Fragment {
         super.onStart();
         CheckBox nombre = (CheckBox) getView().findViewById(R.id.Nombre_de_Clase);
         nombre.setText(nombreClase);
+
+        nombre.setSelected(activado);
+
         TextView codigo = (TextView) getView().findViewById(R.id.Codigo);
         codigo.setText(codigoClase);
     }
