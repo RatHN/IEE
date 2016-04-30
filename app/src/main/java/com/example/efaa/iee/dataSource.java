@@ -225,8 +225,40 @@ public class dataSource {
         );
     }
 
-    public void insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
+    public int insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
         String columna2 = null;
+
+        if (dato.compareTo("0") == 0) {
+            for (Clas clas : clase.ARRAYdEPENDENCIAS) {
+
+                Cursor cursor = db.rawQuery("SELECT codigo FROM clases WHERE codigo = \"" + clas.CODIGO + "\" AND cursada = \"1\"", null);
+                if (cursor.getCount() > 0) {
+                    Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
+                            "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
+                            " por favor desmarque primero asignaturas dependientes y luego sus requisitos", Toast.LENGTH_LONG).show();
+                    return -1;
+                }
+//                cursor = clas.marccarDisponible(db, context);
+//                if (cursor.getCount() > 1) {
+//                        Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
+//                                "Esta asignatura habilita otra asignatura que tiene " +
+//                                "aun más requisitos activos, por favor verifique que no existan " +
+//                                "conflictos", Toast.LENGTH_LONG).show();
+//                        return -1;
+//                    }
+                }
+//                Clase clasesita = new dataSource().queryCrearClase(db, clas.CODIGO, context);
+//                cursor = db.rawQuery(" SELECT codigo FROM clases WHERE porcursar LIKE \"%" + clas.CODIGO + "%\" AND cursada = \"1\"", null);
+//                if (cursor.getCount() > 0) {
+//                    Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
+//                            "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
+//                            " por favor desmarque primero asignaturas dependientes y luego sus requisitos", Toast.LENGTH_LONG).show();
+//                    return -1;
+//                }
+            }
+
+
+
         if (columna == Columnas.CURSADA) {
             columna2 = Columnas.DISPONIBLE;
         }
@@ -234,12 +266,15 @@ public class dataSource {
 
         //Seteando body y author
         values.put(columna, dato);
+        String NoDato;
         if (dato == "1") {
             values.put(columna2, "0");
             values.put(columna, "1");
+            NoDato = "0";
         } else {
             values.put(columna, "0");
             values.put(columna2, "1");
+            NoDato = "1";
         }
 
         //Clausula WHERE
@@ -251,21 +286,25 @@ public class dataSource {
 
         for (Clas clas : clase.ARRAYdEPENDENCIAS) {
 
-            if (clas.ARRAY_REQUISITOS.size() == 1) {
-                insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
-            } else if (clas.ARRAY_REQUISITOS.size() > 1){
-                Cursor cursor = clas.marccarDisponible(db, context);
-                if (cursor.getCount() == clas.ARRAY_REQUISITOS.size()){
-                    String codigos[] = new String[clas.ARRAY_REQUISITOS.size()];
-                    for (int i = 0; i < clas.ARRAY_REQUISITOS.size() ; i++) {
-                        codigos[i] = clas.ARRAY_REQUISITOS.get(i).toString();
-                    }
+            if (dato.compareTo("1") == 0) {
+                if (clas.ARRAY_REQUISITOS.size() == 1) {
                     insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+                } else if (clas.ARRAY_REQUISITOS.size() > 1) {
+                    Cursor cursor = clas.marccarDisponible(db, context);
+                    if (cursor.getCount() == clas.ARRAY_REQUISITOS.size()) {
+                        String codigos[] = new String[clas.ARRAY_REQUISITOS.size()];
+                        for (int i = 0; i < clas.ARRAY_REQUISITOS.size(); i++) {
+                            codigos[i] = clas.ARRAY_REQUISITOS.get(i).toString();
+                        }
+                        insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+                    }
                 }
+            } else {
+                insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "0", context);
             }
 
         }
-
+        return 0;
     }
 
 
@@ -273,8 +312,7 @@ public class dataSource {
         String columna2 = null;
         if (columna == Columnas.CURSADA) {
             columna2 = Columnas.DISPONIBLE;
-        }
-        else{
+        } else {
             columna2 = Columnas.CURSADA;
         }
 
@@ -292,7 +330,7 @@ public class dataSource {
 //            values.put(columna, "1");
         } else {
 
-            r = db.rawQuery("UPDATE clases SET " + columna2 + " = \"1\", " + columna + " = \"0\" WHERE codigo = \"" + codigo + "\"", null);
+            r = db.rawQuery("UPDATE clases SET " + columna2 + " = \"0\", " + columna + " = \"0\" WHERE codigo = \"" + codigo + "\"", null);
 //            values.put(columna, "0");
 //            values.put(columna2, "1");
         }
@@ -305,9 +343,7 @@ public class dataSource {
 //        db.update(TABLE, values, selection, selectionArgs);
 
 
-
     }
-
 
 
     /**

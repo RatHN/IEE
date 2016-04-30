@@ -4,14 +4,16 @@
     android:layout_height="match_parent"
     tools:context="com.example.efaa.iee.ClassFragment"
     android:contentDescription="Porcentaje"
-    >
+    android:focusable="true">
 
 
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+       >
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -23,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/Codigo"
-            android:text="@string/historia" />
+            android:text="@string/historia"
+            android:focusable="true" />
 
 
         <LinearLayout
@@ -40,14 +43,17 @@
                 android:numeric="signed|integer|decimal"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
-                android:hint="Porcentaje" />
+                android:hint="Porcentaje"
+                android:enabled="true"
+                android:focusable="true" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Guardar"
-                android:id="@+id/button" />
+                android:id="@+id/button"
+                android:focusable="true" />
         </LinearLayout>
 
 

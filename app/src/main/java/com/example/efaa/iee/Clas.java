@@ -59,4 +59,9 @@ public class Clas{
     public Cursor marccarDisponible(SQLiteDatabase db, Context context) {
         return db.rawQuery("SELECT * FROM " + dataSource.TABLE + " WHERE cursada = \"1\" AND porcursar LIKE \"%" + CODIGO + "%\"", null);
     }
+
+    public Cursor verificar(SQLiteDatabase db, Context context) {
+        return db.rawQuery("SELECT * FROM " + dataSource.TABLE + " WHERE cursada = \"1\" AND porcursar LIKE \"%" + CODIGO + "%\"", null);
+    }
 }
+

@@ -8,12 +8,15 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
+
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -52,17 +55,21 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
 
     public void checkClick(View view) {
+        CheckBox checkBox = (CheckBox) view;
         LinearLayout e = (LinearLayout) view.getParent();
         TextView codigo = (TextView) e.findViewById(R.id.Codigo);
         String cod = (String) codigo.getText();
         String dato = null;
 
-        if (!view.isSelected()) {
+        if (checkBox.isChecked()){
             dato="1";
         } else {
-            dato="0";
+            dato = "0";
         }
-        new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato, new dataSource().queryCrearClase(dob, cod, this), this);
+        if (new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato,
+                new dataSource().queryCrearClase(dob, cod, this), this) < 0){
+            checkBox.setChecked(true);
+        }
 
     }
 
@@ -80,10 +87,14 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
         setContentView(R.layout.activity_actividad_calculador);
         ESTADO = getIntent().getExtras().getString("CurPas");
+        Button botn = (Button) findViewById(R.id.button2);
+        String textoBoton = "IR A";
         if (ESTADO.compareTo("Cursar") == 0) {
             ColumnaAUSAR = Columnas.DISPONIBLE;
+            botn.setText("IR A CURSADAS");
         }else{
             ColumnaAUSAR = Columnas.CURSADA;
+            botn.setText("IR A DISPONIBLES");
         }
 
 
@@ -107,6 +118,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
             }
         }).start();
+
+        botn.setFocusableInTouchMode(true);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -262,6 +275,14 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         }
 
         finish();
+        startActivity(intento);
+    }
+
+    public void Actualizar(View view){
+        Intent intento = new Intent(this, ActividadCalculador.class);
+        intento.putExtra("CurPas", "Cursar");
+        finish();
+        onStop();
         startActivity(intento);
     }
 }
