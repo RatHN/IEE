@@ -8,8 +8,6 @@ import android.provider.BaseColumns;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by EFAA on 26/04/2016.
@@ -34,6 +32,24 @@ public class dataSource {
         db.insert(TABLE, null, values);
     }
 
+
+    /**
+     *  Hace una lista de las clases que son requisitos para una clase que depende de una o más
+     *
+     * @param db Base de Datos a usar.
+     * @param dependenciaCode Codigo de la dependencia a usar para realizar la busqueda.
+    * @param context Contexto de la aplicacion o de la actividad
+    * @return Una lista de Clas con las clases requsito para dependenciaCode
+    */
+    public Clas queryDependencias(SQLiteDatabase db, String dependenciaCode, Context context) {
+        String codeName = dependenciaCode;
+        String columns[] = new String[]{Columnas.CODIGO};
+        String selection = Columnas.PORcURSAR + " LIKE '%" + codeName + "%' ";
+
+        return new Clas(dependenciaCode, db, context);
+    }
+
+
     /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
      *
@@ -47,7 +63,7 @@ public class dataSource {
         String columns[] = new String[]{Columnas.CODIGO};
         String selection = Columnas.PORcURSAR + " LIKE '%" + codeName + "%' ";
 
-        return parseDependencias(
+        return parseRequisitos(
                 db.query(
                         TABLE,
                         columns,
@@ -72,7 +88,7 @@ public class dataSource {
         String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
 
 
-        return parsePorCursar(
+        return CrearListaClases(
                 db.query(
                         TABLE,
                         columns,
@@ -81,12 +97,12 @@ public class dataSource {
                         null,
                         null,
                         null
-                ),
+                ), db,
                 context);
     }
 
-    private ArrayList<Clase> parsePorCursar(Cursor c, Context context) {
-        ArrayList<Clase> lista = new ArrayList<>();
+    private ArrayList<Clase> CrearListaClases(Cursor c, SQLiteDatabase db, Context context) {
+        ArrayList<Clase> listaClases = new ArrayList<>();
         String porCursar = null;
         String clase = null;
         String codigo = null;
@@ -105,30 +121,24 @@ public class dataSource {
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
-            String[] porcursar = parsePorCursarString(porCursar);
-            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
-            for (String clas :
-                    porcursar) {
-                
-            }
+            ArrayList<Clas> porcursar = crearListaDependenciasAndParse(porCursar, db, context);
+//            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
 
-            lista.add(new Clase(clase, codigo, porcursar));
+
+            listaClases.add(new Clase(clase, codigo, porcursar));
 
         }
-        return lista;
+        return listaClases;
     }
 
-    private ArrayList<Clas> parseDependencias(Cursor c, Context context) {
+    private ArrayList<Clas> parseRequisitos(Cursor c, Context context) {
         ArrayList<Clas> lista = new ArrayList<>();
 
-        String clase = null;
         String codigo = null;
 
         while (c.moveToNext()) {
             try {
-//                clase = c.getString(c.getColumnIndexOrThrow(Columnas.NOMBRE));
                 codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
-
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -140,9 +150,18 @@ public class dataSource {
         return lista;
     }
 
-    private String[] parsePorCursarString(String porcursar) {
-        return porcursar.split(", ");
+    private ArrayList<Clas> crearListaDependenciasAndParse(String porcursar, SQLiteDatabase db, Context context) {
+        String array[] = porcursar.split(", ");
+
+        ArrayList<Clas> lista = new ArrayList<>();
+
+        for (String i :
+                array) {
+            lista.add(queryDependencias(db, i, context));
+        }
+        return lista;
     }
+
 
     public Cursor queryPorCursar(SQLiteDatabase db, String codigo) {
         String columns[] = new String[]{Columnas.PORcURSAR};
@@ -165,7 +184,6 @@ public class dataSource {
         if (columna == Columnas.CURSADA) {
             columna2 = Columnas.DISPONIBLE;
         }
-        //Nuestro contenedor de valores
         ContentValues values = new ContentValues();
 
         //Seteando body y author
@@ -177,9 +195,6 @@ public class dataSource {
                 values.put(columna2, "1");
         }
 
-
-//        values.put(QuotesDataSource.ColumnQuotes.AUTHOR_QUOTES, "Nuevo Autor");
-
         //Clausula WHERE
         String selection = Columnas.CODIGO + " = ?";
         String[] selectionArgs = {codigo};
@@ -187,6 +202,51 @@ public class dataSource {
         //Actualizando
         db.update(TABLE, values, selection, selectionArgs);
     }
+
+
+    /**
+     * @param db       Base de Datos a usar
+     * @param columna  Columna a evaluar
+     * @param ceroOuno Dato a evaluar
+     * @param context  Contexto de la aplicacion o actividad
+     * @return Una lista con las Clases que resultan del resultan del query
+     */
+    public String[] queryClasesString(SQLiteDatabase db, String columna, String ceroOuno, Context context) {
+        String columns[] = new String[]{Columnas.CODIGO};
+        String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
+
+
+        return CrearListaClasesString(
+                db.query(
+                        TABLE,
+                        columns,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        null
+                ),
+                context);
+    }
+
+    private String[] CrearListaClasesString(Cursor c, Context context) {
+        String listaClases[] = new String[60];
+        String codigo = null;
+        int i = 0;
+        while (c.moveToNext()) {
+            try {
+                codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            listaClases[i] = codigo;
+            i++;
+        }
+        return listaClases;
+    }
+
 
     //Campos de la tabla Quotes
     public static class Columnas {
@@ -198,40 +258,6 @@ public class dataSource {
         public final static String DISPONIBLE = "disponible";
     }
 
-    //Script de Creación de la tabla Quotes
-//    public static final String CREATE_QUOTES_SCRIPT =
-//            "create table "+QUOTES_TABLE_NAME+"(" +
-//                    ColumnQuotes.ID_QUOTES+" "+INT_TYPE+" primary key autoincrement," +
-//                    ColumnQuotes.BODY_QUOTES+" "+STRING_TYPE+" not null," +
-//                    ColumnQuotes.AUTHOR_QUOTES+" "+STRING_TYPE+" not null)";
 
-
-    //Scripts de inserción por defecto
-//    public static final String INSERT_QUOTES_SCRIPT =
-//            "insert into "+ TABLE +" values(" +
-//                    "null," +
-//                    "\"El ignorante afirma, el sabio duda y reflexiona\"," +
-//                    "\"Aristóteles\")," +
-//                    "(null," +
-//                    "\"Hay derrotas que tienen mas dignidad que la victoria\"," +
-//                    "\"Jorge Luis Borges\")," +
-//                    "(null," +
-//                    "\"Si buscas resultados distintos, no hagas siempre lo mismo\"," +
-//                    "\"Albert Einstein\")," +
-//                    "(null," +
-//                    "\"Donde mora la libertad, allí está mi patria\"," +
-//                    "\"Benjamin Franklin\")," +
-//                    "(null," +
-//                    "\"Ojo por ojo y todo el mundo acabará ciego\"," +
-//                    "\"Mahatma Gandhi\")";
-
-//    private QuotesReaderDbHelper openHelper;
-//    private SQLiteDatabase database;
-//
-//    public QuotesDataSource(Context context) {
-//        //Creando una instancia hacia la base de datos
-//        openHelper = new QuotesReaderDbHelper(context);
-//        database = openHelper.getWritableDatabase();
-//    }
 
 }

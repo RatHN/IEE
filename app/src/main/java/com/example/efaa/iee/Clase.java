@@ -1,7 +1,9 @@
 package com.example.efaa.iee;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,23 +14,32 @@ public class Clase extends Clas{
     public String NOMBRE = null;
     public String PORcURSAR[] = null;
     public ClassFragment fragmento;
-    public List<Clas> DEPEN;
+    public ArrayList<Clas> ARRAYdEPENDENCIAS;
+    private dataSource dtsrc = new dataSource();
+    private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
 
     Clase(){
         return;
     }
 
-    public Clase(String nombre, String codigo, String[] porCursar) {
+    public Clase(String nombre, String codigo, String[] porCursar, Context contextt) {
         CODIGO = codigo;
         NOMBRE = nombre;
         PORcURSAR = porCursar;
         String da;
-        dataSource dtsrc = new dataSource();
-        SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-        for (String i :
-             porCursar) {
-            da = dtsrc.queryPasadasODisponibles(dob,)
-        }
+
+//        for (String i :
+//             porCursar) {
+//            da = dtsrc.queryDependencias(dob, i, contextt)
+//        }
+    }
+
+    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList) {
+        CODIGO = codigo;
+        NOMBRE = nombre;
+        ARRAYdEPENDENCIAS = clasArrayList;
+
+        return;
     }
 
     public Clase(String nombre, String codigo, String[] porCursar, ClassFragment frag) {
@@ -49,8 +60,4 @@ public class Clase extends Clas{
     public String toString(){
         return "Clase";
     }
-}
-
-public class Dependencia extends Clase{
-
 }

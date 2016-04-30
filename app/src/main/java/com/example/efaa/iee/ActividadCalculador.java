@@ -83,7 +83,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
         //Intento de abrir una base de datos//
         dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-        final List<Clase> listaClases = data.queryPasadasODisponibles(dob, Columnas.DISPONIBLE, "1", this);
+        final String ListaClases[] = data.queryClasesString(dob, Columnas.DISPONIBLE, "1", this);
+        final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(dob, Columnas.DISPONIBLE, "1", this);
 
 
         int[] lista = new int[35];
@@ -180,15 +181,14 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         return p;
     }
 
-    public FragmentTransaction fragmentInflater(int[] lista, List<Clase> listaClases) {
+    public FragmentTransaction fragmentInflater(int[] lista, ArrayList<Clase> listaClases) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        int cuenta = 1;
         int firstDay = 0;
 
         for (int o = 0; firstDay < listaClases.size(); firstDay++) {
             int frame = lista[firstDay];
-            ClassFragment newFragment = new ClassFragment();
+            ClassFragment newFragment = new ClassFragment(listaClases.get(firstDay));
             Bundle bundle1 = new Bundle();
 
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);
@@ -197,7 +197,6 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             newFragment.setArguments(bundle1);
             transaction.replace(frame, newFragment);
             transaction.addToBackStack(null);
-            cuenta++;
         }
         return transaction;
     }
