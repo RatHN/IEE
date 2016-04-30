@@ -1,7 +1,9 @@
 package com.example.efaa.iee;
 
 import android.app.Fragment;
+
 import com.example.efaa.iee.dataSource;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -36,11 +38,9 @@ import java.util.List;
 public class ActividadCalculador extends AppCompatActivity implements ClassFragment.OnFragmentInteractionListener {
 
 
-    SQLiteDatabase dob = null;
     public String ESTADO = null;
     public String ColumnaAUSAR = null;
-
-
+    SQLiteDatabase dob = null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -61,13 +61,13 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         String cod = (String) codigo.getText();
         String dato = null;
 
-        if (checkBox.isChecked()){
-            dato="1";
+        if (checkBox.isChecked()) {
+            dato = "1";
         } else {
             dato = "0";
         }
         if (new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato,
-                new dataSource().queryCrearClase(dob, cod, this), this) < 0){
+                new dataSource().queryCrearClase(dob, cod, this), this) < 0) {
             checkBox.setChecked(true);
         }
 
@@ -92,7 +92,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         if (ESTADO.compareTo("Cursar") == 0) {
             ColumnaAUSAR = Columnas.DISPONIBLE;
             botn.setText("IR A CURSADAS");
-        }else{
+        } else {
             ColumnaAUSAR = Columnas.CURSADA;
             botn.setText("IR A DISPONIBLES");
         }
@@ -104,8 +104,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(dob, ColumnaAUSAR, "1", this);
 
 
-
-        int[] lista = new int[35];
+        int[] lista;
 
         lista = framesListBuilder();
         final int[] lst = lista;
@@ -196,6 +195,28 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         p[64] = R.id.frameLayout64;
         p[65] = R.id.frameLayout65;
         p[66] = R.id.frameLayout66;
+        p[41] = R.id.frameLayout67;
+        p[42] = R.id.frameLayout68;
+        p[43] = R.id.frameLayout69;
+        p[44] = R.id.frameLayout70;
+        p[45] = R.id.frameLayout71;
+        p[46] = R.id.frameLayout72;
+        p[47] = R.id.frameLayout73;
+        p[48] = R.id.frameLayout74;
+        p[49] = R.id.frameLayout75;
+        p[50] = R.id.frameLayout76;
+        p[51] = R.id.frameLayout77;
+        p[52] = R.id.frameLayout78;
+        p[53] = R.id.frameLayout79;
+        p[54] = R.id.frameLayout80;
+        p[55] = R.id.frameLayout81;
+        p[56] = R.id.frameLayout82;
+        p[57] = R.id.frameLayout83;
+        p[58] = R.id.frameLayout84;
+        p[59] = R.id.frameLayout85;
+        p[60] = R.id.frameLayout86;
+        p[61] = R.id.frameLayout87;
+        p[62] = R.id.frameLayout88;
 
 
         return p;
@@ -213,7 +234,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);
             bundle1.putString(ClassFragment.NOMBRE_DE_CLASE, listaClases.get(firstDay).NOMBRE);
-            if (ESTADO.compareTo("Cursar") == 0){
+            if (ESTADO.compareTo("Cursar") == 0) {
                 bundle1.putBoolean(ClassFragment.ACTIVADO, false);
             } else {
                 bundle1.putBoolean(ClassFragment.ACTIVADO, true);
@@ -266,11 +287,11 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         client.disconnect();
     }
 
-    public void MostrarCursadas(View view){
+    public void MostrarCursadas(View view) {
         Intent intento = new Intent(this, ActividadCalculador.class);
-        if (ESTADO.compareTo("Cursar") == 0){
+        if (ESTADO.compareTo("Cursar") == 0) {
             intento.putExtra("CurPas", "Cursada");
-        } else{
+        } else {
             intento.putExtra("CurPas", "Cursar");
         }
 
@@ -278,7 +299,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         startActivity(intento);
     }
 
-    public void Actualizar(View view){
+    public void Actualizar(View view) {
         Intent intento = new Intent(this, ActividadCalculador.class);
         intento.putExtra("CurPas", "Cursar");
         finish();
