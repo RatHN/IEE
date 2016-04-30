@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.efaa.iee.ClassFragment"
     android:contentDescription="Porcentaje"
-    android:focusable="true">
+    android:focusable="false">
 
 
 

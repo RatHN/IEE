@@ -123,8 +123,10 @@ public class ClassFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-       // getActivity().finish();
+        getActivity().finish();
     }
+
+
 
 
 
