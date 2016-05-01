@@ -126,7 +126,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
     }
 
     public int[] framesListBuilder() {
-        int[] p = new int[67];
+        int[] p = new int[100];
 
         p[0] = R.id.fragment;
         p[1] = R.id.frameLayout;
@@ -195,28 +195,28 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         p[64] = R.id.frameLayout64;
         p[65] = R.id.frameLayout65;
         p[66] = R.id.frameLayout66;
-        p[41] = R.id.frameLayout67;
-        p[42] = R.id.frameLayout68;
-        p[43] = R.id.frameLayout69;
-        p[44] = R.id.frameLayout70;
-        p[45] = R.id.frameLayout71;
-        p[46] = R.id.frameLayout72;
-        p[47] = R.id.frameLayout73;
-        p[48] = R.id.frameLayout74;
-        p[49] = R.id.frameLayout75;
-        p[50] = R.id.frameLayout76;
-        p[51] = R.id.frameLayout77;
-        p[52] = R.id.frameLayout78;
-        p[53] = R.id.frameLayout79;
-        p[54] = R.id.frameLayout80;
-        p[55] = R.id.frameLayout81;
-        p[56] = R.id.frameLayout82;
-        p[57] = R.id.frameLayout83;
-        p[58] = R.id.frameLayout84;
-        p[59] = R.id.frameLayout85;
-        p[60] = R.id.frameLayout86;
-        p[61] = R.id.frameLayout87;
-        p[62] = R.id.frameLayout88;
+        p[67] = R.id.frameLayout67;
+        p[68] = R.id.frameLayout68;
+        p[69] = R.id.frameLayout69;
+        p[70] = R.id.frameLayout70;
+        p[71] = R.id.frameLayout71;
+        p[72] = R.id.frameLayout72;
+        p[73] = R.id.frameLayout73;
+        p[74] = R.id.frameLayout74;
+        p[75] = R.id.frameLayout75;
+        p[76] = R.id.frameLayout76;
+        p[77] = R.id.frameLayout77;
+        p[78] = R.id.frameLayout78;
+        p[79] = R.id.frameLayout79;
+        p[80] = R.id.frameLayout80;
+        p[81] = R.id.frameLayout81;
+        p[82] = R.id.frameLayout82;
+        p[83] = R.id.frameLayout83;
+        p[84] = R.id.frameLayout84;
+        p[85] = R.id.frameLayout85;
+        p[86] = R.id.frameLayout86;
+        p[87] = R.id.frameLayout87;
+        p[88] = R.id.frameLayout88;
 
 
         return p;
