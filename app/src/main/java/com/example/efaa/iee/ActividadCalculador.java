@@ -1,12 +1,6 @@
 package com.example.efaa.iee;
 
-import android.app.Fragment;
-
-import com.example.efaa.iee.dataSource;
-
-import android.app.ListActivity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
@@ -16,24 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.support.v7.widget.ActionBarContainer;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.example.efaa.iee.dataSource.Columnas;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ActividadCalculador extends AppCompatActivity implements ClassFragment.OnFragmentInteractionListener {
 
@@ -68,12 +55,39 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         }
         String result = new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato,
                 new dataSource().queryCrearClase(dob, cod, this), this);
-        if (result != "-1") {
+        if (result == "-1") {
             checkBox.setChecked(true);
         }
-        else if (result != "0" || result != "1"){
+
+//        ClassFragment fra = getShe
+        else if ((result != "0" || result != "1") && !this.ESTADO.equals("Cursar")) {
+
             ClassFragment frag = (ClassFragment) getSupportFragmentManager().findFragmentByTag(cod);
-            frag.onDetach();
+
+            frag.animar();
+//            trans = getSupportFragmentManager().beginTransaction();
+//            trans.remove(p);
+//            trans.replace(frag.getView().getId(), p);
+            //trans.commit();
+//            trans.remove(p);
+
+//            trans.commit();
+//            new Thread(new Runnable() {
+//                public void run() {
+//                    ClassFragment p = new ClassFragment();
+//                    FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in, R.anim.slide_in);
+//
+//                    //trans.remove(frag);
+//                    trans.replace(frag.getView().getId(), p);
+//                    //trans.commit();
+//                    //trans.remove(p);
+//
+//                    trans.commit();
+//                }
+//            }).start();
+
+
         }
 
     }
@@ -118,6 +132,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             public void run() {
 
                 FragmentTransaction trans = fragmentInflater(lst, listaClases);
+
                 trans.commit();
 
             }
@@ -229,7 +244,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
     public FragmentTransaction fragmentInflater(int[] lista, ArrayList<Clase> listaClases) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.slide_out);
         int firstDay = 0;
 
         for (int o = 0; firstDay < listaClases.size(); firstDay++) {
@@ -277,6 +292,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
     public void onStop() {
         super.onStop();
 
+        dob.releaseReference();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
@@ -311,5 +327,11 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         finish();
         onStop();
         startActivity(intento);
+    }
+
+    public void removerFragmento(ClassFragment classFragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(classFragment);
+        transaction.commit();
     }
 }

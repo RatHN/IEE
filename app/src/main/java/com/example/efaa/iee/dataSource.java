@@ -227,7 +227,9 @@ public class dataSource {
 
     public String insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
         String columna2 = null;
+        String result = "";
 
+        // Busqueda de errores antes de seleccionar una clase como no cursada nuevamente....
         if (dato.compareTo("0") == 0) {
             for (Clas clas : clase.ARRAYdEPENDENCIAS) {
 
@@ -258,7 +260,7 @@ public class dataSource {
             }
 
 
-
+        // Preparando datos a actualizar
         if (columna == Columnas.CURSADA) {
             columna2 = Columnas.DISPONIBLE;
         }
@@ -286,8 +288,8 @@ public class dataSource {
 
         for (Clas clas : clase.ARRAYdEPENDENCIAS) {
 
-            if (dato.compareTo("1") == 0) {
-                if (clas.ARRAY_REQUISITOS.size() == 1) {
+            if (dato.compareTo("1") == 0) {                 // Si se esta marcando como pasada, revisar status de cada clase
+                if (clas.ARRAY_REQUISITOS.size() == 1) {    // Para marcar como disponible
                     insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
                 } else if (clas.ARRAY_REQUISITOS.size() > 1) {
                     Cursor cursor = clas.marccarDisponible(db, context);
@@ -297,14 +299,16 @@ public class dataSource {
                             codigos[i] = clas.ARRAY_REQUISITOS.get(i).toString();
                         }
                         insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+                        result = "0";
                     }
                 }
-            } else {
+            } else { // Si es una desmarcion, marcar sus dependientes como NO disponibles
                 insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "0", context);
+                result = clase.CODIGO;
             }
 
         }
-        return "0";
+        return result;
     }
 
 

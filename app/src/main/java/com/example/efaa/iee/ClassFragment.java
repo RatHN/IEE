@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -47,7 +49,6 @@ public class ClassFragment extends Fragment {
         cLase = clase;
     }
 
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -65,6 +66,39 @@ public class ClassFragment extends Fragment {
         args.putBoolean(ACTIVADO, activada);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void animar() {
+        TranslateAnimation trans = new TranslateAnimation(
+                0,
+                300 * (int) getActivity().getResources().getDisplayMetrics().density,
+                0,
+                0);
+        trans.setDuration(500);
+
+
+        trans.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                remover();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        getView().startAnimation(trans);
+    }
+
+    private void remover() {
+        ((ActividadCalculador) getActivity()).removerFragmento(this);
     }
 
     @Override

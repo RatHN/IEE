@@ -1,12 +1,21 @@
 package com.example.efaa.iee;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Application;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,23 +32,79 @@ public class MainActivity extends AppCompatActivity {
 
     final String dbPath = "/sdcard/UNAH_IEE/data.sqlite";
 
+    DialogInterface.OnClickListener clikeado = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 123: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    File fileDataBase = new File(dbPath);
+                    if (!fileDataBase.exists()) {
+                        int ID = R.raw.data;
+                        File o = new File("/sdcard/UNAH_IEE/");
+                        o.mkdirs();
+                        CopyRaw(ID, "data.sqlite");
+                    }
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+                    // 1. Instantiate an AlertDialog.Builder with its constructor
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    // 2. Chain together various setter methods to set the dialog characteristics
+
+                    builder.setMessage("La aplicacion no puede continuar sin permisos de leer Y " +
+                            "escribir en memoria").setPositiveButton("Intentar Nuevamente",
+                            clikeado)
+                            .setTitle("ERROR")
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+
+                    // 3. Get the AlertDialog from create()
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    Toast.makeText(this, "La aplicacion no puede continuar sin permisos de leer Y " +
+                            "escribir en memoria", Toast.LENGTH_LONG).show();
+
+
+                }
+                return;
+
+            }
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        File fileDataBase = new File(dbPath);
-        if (!fileDataBase.exists()) {
-            int ID = R.raw.data;
-            File o = new File("/sdcard/UNAH_IEE/");
-            o.mkdirs();
-            CopyRaw(ID, "data.sqlite");
+        //Check permisos para escribir y si son permitidos: ESCRIBIR Y LEER la BASE DE DATOS
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    123);
         }
 
-//        mActionBarToolbar = (Toolbar) findViewById(R.id.);
-//        setSupportActionBar(mActionBarToolbar);
-//        getSupportActionBar().setTitle("My title");
+
     }
 
     private void CopearBaseDatos() {
