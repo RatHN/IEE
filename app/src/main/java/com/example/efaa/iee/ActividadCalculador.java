@@ -66,9 +66,14 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         } else {
             dato = "0";
         }
-        if (new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato,
-                new dataSource().queryCrearClase(dob, cod, this), this) < 0) {
+        String result = new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato,
+                new dataSource().queryCrearClase(dob, cod, this), this);
+        if (result != "-1") {
             checkBox.setChecked(true);
+        }
+        else if (result != "0" || result != "1"){
+            ClassFragment frag = (ClassFragment) getSupportFragmentManager().findFragmentByTag(cod);
+            frag.onDetach();
         }
 
     }
@@ -241,8 +246,9 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             }
 
             newFragment.setArguments(bundle1);
-            transaction.replace(frame, newFragment);
-            transaction.addToBackStack(null);
+            transaction.replace(frame, newFragment, listaClases.get(firstDay).CODIGO);
+
+            //transaction.addToBackStack(null);
         }
         return transaction;
     }

@@ -225,7 +225,7 @@ public class dataSource {
         );
     }
 
-    public int insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
+    public String insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
         String columna2 = null;
 
         if (dato.compareTo("0") == 0) {
@@ -236,7 +236,7 @@ public class dataSource {
                     Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
                             "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
                             " por favor desmarque primero asignaturas dependientes y luego sus requisitos", Toast.LENGTH_LONG).show();
-                    return -1;
+                    return "-1";
                 }
 //                cursor = clas.marccarDisponible(db, context);
 //                if (cursor.getCount() > 1) {
@@ -304,7 +304,7 @@ public class dataSource {
             }
 
         }
-        return 0;
+        return "0";
     }
 
 
