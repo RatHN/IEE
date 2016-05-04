@@ -376,7 +376,7 @@ public class dataSource {
     }
 
     private String[] CrearListaClasesString(Cursor c, Context context) {
-        String listaClases[] = new String[60];
+        String listaClases[] = new String[100];
         String codigo = null;
         int i = 0;
         while (c.moveToNext()) {

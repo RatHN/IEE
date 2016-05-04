@@ -102,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                     123);
+        } else {
+            File fileDataBase = new File(dbPath);
+            if (!fileDataBase.exists()) {
+                int ID = R.raw.data;
+                File o = new File("/sdcard/UNAH_IEE/");
+                o.mkdirs();
+                CopyRaw(ID, "data.sqlite");
+            }
         }
 
 
