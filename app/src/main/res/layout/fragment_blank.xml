@@ -28,7 +28,7 @@
                 android:id="@+id/Codigo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true"
+
                 android:text="@string/historia" />
 
             <TextView
@@ -37,8 +37,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:layout_marginStart="20dp"
-                android:focusable="true"
                 android:text="@string/UV" />
+            <!--android:focusable="true"-->
+
 
             <TextView
                 android:id="@+id/UV"
@@ -46,8 +47,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:layout_marginStart="1dp"
-                android:focusable="true"
                 android:text="5" />
+            <!--android:focusable="true"-->
+
         </LinearLayout>
 
 
@@ -63,20 +65,21 @@
                 android:allowUndo="true"
                 android:ems="10"
                 android:enabled="true"
-                android:focusable="true"
+
                 android:hint="Porcentaje"
                 android:inputType="numberDecimal"
                 android:numeric="signed|integer|decimal"
-                android:selectAllOnFocus="true"
+
                 android:singleLine="true" />
 
             <Button
-                android:id="@+id/Per100Boton"
+                android:id="@+id/per100Boton"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true"
                 android:text="Guardar" />
+            <!--android:focusable="true"-->
+
         </LinearLayout>
 
 

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
+    android:clipToPadding="false"
     android:touchscreenBlocksFocus="true">
 
 
@@ -15,18 +16,16 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="#ffffff"
+        android:clipToPadding="false"
         android:gravity="center_vertical|center_horizontal"
-
         android:orientation="horizontal"
         android:touchscreenBlocksFocus="true">
 
         <Button
             android:id="@+id/button2"
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="#f4f4f4"
             android:elevation="50dp"
             android:onClick="MostrarCursadas"
             android:text="SDFDFSGDFGSDSDF :v" />
@@ -36,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="Actualizar"
+
             android:text="Actualizar" />
     </LinearLayout>
 

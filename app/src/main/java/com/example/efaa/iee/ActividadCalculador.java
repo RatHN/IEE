@@ -37,6 +37,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
 
     public void checkClick(View view) {
+//        dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IE/data.sqlite", null);
         CheckBox checkBox = (CheckBox) view;
         LinearLayout e = (LinearLayout) view.getParent();
         TextView codigo = (TextView) e.findViewById(R.id.Codigo);
@@ -133,7 +134,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             }
         }).start();
 
-        botn.setFocusableInTouchMode(true);
+//        botn.requestFocus(View.FOCUS_LEFT);
 
     }
 
@@ -248,6 +249,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);
             bundle1.putString(ClassFragment.NOMBRE_DE_CLASE, listaClases.get(firstDay).NOMBRE);
             bundle1.putInt(ClassFragment.UV, listaClases.get(firstDay).UV);
+            bundle1.putInt(ClassFragment.INDICE, listaClases.get(firstDay).INDICE);
             if (ESTADO.compareTo("Cursar") == 0) {
                 bundle1.putBoolean(ClassFragment.ACTIVADO, false);
             } else {
@@ -284,16 +286,18 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             intento.putExtra("CurPas", "Cursar");
         }
 
-        finish();
+
         startActivity(intento);
+        finish();
+        onStop();
     }
 
     public void Actualizar(View view) {
         Intent intento = new Intent(this, ActividadCalculador.class);
         intento.putExtra("CurPas", "Cursar");
+        startActivity(intento);
         finish();
         onStop();
-        startActivity(intento);
     }
 
     public void removerFragmento(ClassFragment classFragment) {

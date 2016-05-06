@@ -1,14 +1,18 @@
 package com.example.efaa.iee;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -125,6 +129,7 @@ public class ClassFragment extends Fragment {
     public void onStart(){
         super.onStart();
         CheckBox nombre = (CheckBox) getView().findViewById(R.id.Nombre_de_Clase);
+        Log.w(cLase.CODIGO, String.valueOf(indice));
         nombre.setText(nombreClase);
 
         nombre.setChecked(activado);
@@ -132,17 +137,30 @@ public class ClassFragment extends Fragment {
 
 //        botn.setText(textoBoton);
 
-        TextView codigo = (TextView) getView().findViewById(R.id.Codigo);
+        final TextView codigo = (TextView) getView().findViewById(R.id.Codigo);
         codigo.setText(codigoClase);
 
         ((TextView) getView().findViewById(R.id.UV)).setText(String.valueOf(uv));
 
-        EditText editText = ((EditText) getView().findViewById(R.id.editText));
-        editText.setText(String.valueOf(indice));
+        final EditText editText = ((EditText) getView().findViewById(R.id.editText));
+        editText.setText(String.valueOf(cLase.INDICE));
 
-        editText.setOnClickListener(new View.OnClickListener() {
+        ((Button) getView().findViewById(R.id.per100Boton)).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                algo();
+//                v.clearFocus();
+                Log.e("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + editText.getText() + "     "
+                        + cLase.CODIGO);
+                ContentValues values = new ContentValues();
+                values.put(dataSource.Columnas.INDICE,
+                        String.valueOf(editText.getText()));
+                String selection = dataSource.Columnas.CODIGO + " = ?";
+                String[] selectionArgs = {String.valueOf(codigo.getText())};
+
+
+                Log.e("OREJAS OTRA VEZ", String.valueOf(SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null)
+                        .update(dataSource.TABLE, values, selection, selectionArgs)));
+//                v.requestFocus(View.FOCUS_RIGHT);
+
             }
         });
 
