@@ -9,11 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 //import android.support.v4.app.Fragment;
 
@@ -31,19 +29,22 @@ public class ClassFragment extends Fragment {
     public static final String NOMBRE_DE_CLASE = "param1";
     public static final String CODIGO_CLASE = "param2";
     public static final String ACTIVADO = "activado";
+    public static final String UV = "uv";
+    public static final String INDICE = "indice";
     public Clase cLase = null;
-
+    public View.OnClickListener cListener;
     // TODO: Rename and change types of parameters
     private String nombreClase;
     private boolean activado;
     private String codigoClase;
-
+    private int uv;
+    private int indice;
     private OnFragmentInteractionListener mListener;
+
 
     public ClassFragment() {
         // Required empty public constructor
     }
-
 
     public ClassFragment(Clase clase){
         cLase = clase;
@@ -58,12 +59,13 @@ public class ClassFragment extends Fragment {
      * @return A new instance of fragment ClassFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ClassFragment newInstance(String clase, String codigo, boolean activada) {
+    public static ClassFragment newInstance(String clase, String codigo, boolean activada, String uv) {
         ClassFragment fragment = new ClassFragment();
         Bundle args = new Bundle();
         args.putString(NOMBRE_DE_CLASE, clase);
         args.putString(CODIGO_CLASE, codigo);
         args.putBoolean(ACTIVADO, activada);
+        args.putString(UV, uv);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,7 +77,6 @@ public class ClassFragment extends Fragment {
                 0,
                 0);
         trans.setDuration(500);
-
 
         trans.setAnimationListener(new Animation.AnimationListener() {
 
@@ -108,6 +109,8 @@ public class ClassFragment extends Fragment {
             nombreClase = getArguments().getString(NOMBRE_DE_CLASE);
             codigoClase = getArguments().getString(CODIGO_CLASE);
             activado = getArguments().getBoolean(ACTIVADO);
+            uv = getArguments().getInt(UV);
+            indice = getArguments().getInt(INDICE);
 
         }
     }
@@ -126,21 +129,40 @@ public class ClassFragment extends Fragment {
 
         nombre.setChecked(activado);
 
+
 //        botn.setText(textoBoton);
 
         TextView codigo = (TextView) getView().findViewById(R.id.Codigo);
         codigo.setText(codigoClase);
+
+        ((TextView) getView().findViewById(R.id.UV)).setText(
+                (((TextView) getView().findViewById(R.id.UV))).getText() +
+                        String.valueOf(uv));
+
+        EditText editText = ((EditText) getView().findViewById(R.id.editText));
+        editText.setText(String.valueOf(indice));
+
+        editText.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                algo();
+            }
+        });
+
+
     }
 
+    public void algo() {
+        int indice = Integer.parseInt(String.valueOf(((EditText) getView().findViewById(R.id.editText)).getText()));
 
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
 
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -151,6 +173,7 @@ public class ClassFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override
@@ -160,6 +183,9 @@ public class ClassFragment extends Fragment {
         //getActivity().finish();
     }
 
+    public void Guardar(View view) {
+        return;
+    }
 
 
 
@@ -178,4 +204,6 @@ public class ClassFragment extends Fragment {
         // TODO: Update argument type and name
        public void onFragmentInteraction(Uri uri);
     }
+
+
 }

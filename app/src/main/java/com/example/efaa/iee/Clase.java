@@ -4,10 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by EFAA on 09/04/2016.
+ * Esta clase es un poco confusa dado que su nombre es "Clase"
+ * y tiene dos arrays, un PORcURSAR que contiene la lista de materias que estarian disponibles de
+ * aprobarse ésta materia. Y ARRAYdEPENDENCIAS que contiene un Array de Clas con las materias que
+ * estarian disponibles tambien. La diferencia es que PORcURSAR contiene solamente los códigos de
+ * las materias, y ARRAYdEPENDENCIAS contiene las instancias de la clase Clas con las materias en sí.
  */
 public class Clase extends Clas{
     public String CODIGO = null;
@@ -15,6 +19,9 @@ public class Clase extends Clas{
     public String PORcURSAR[] = null;
     public ClassFragment fragmento;
     public ArrayList<Clas> ARRAYdEPENDENCIAS;
+    public int UV;
+    public int INDICE;
+
     private dataSource dtsrc = new dataSource();
     private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
 
@@ -34,10 +41,12 @@ public class Clase extends Clas{
 //        }
     }
 
-    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList) {
+    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList, int uv, int indice) {
         CODIGO = codigo;
         NOMBRE = nombre;
         ARRAYdEPENDENCIAS = clasArrayList;
+        UV = uv;
+        INDICE = indice;
 
         return;
     }

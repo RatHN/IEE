@@ -3,24 +3,23 @@ package com.example.efaa.iee;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.example.efaa.iee.dataSource.Columnas;
 
 import java.util.ArrayList;
+
+//import com.google.android.gms.appindexing.Action;
+//import com.google.android.gms.appindexing.AppIndex;
+//import com.google.android.gms.common.api.GoogleApiClient;
 
 public class ActividadCalculador extends AppCompatActivity implements ClassFragment.OnFragmentInteractionListener {
 
@@ -28,11 +27,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
     public String ESTADO = null;
     public String ColumnaAUSAR = null;
     SQLiteDatabase dob = null;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
 
 
     public void onFragmentInteraction(Uri uri) {
@@ -140,9 +135,6 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
         botn.setFocusableInTouchMode(true);
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public int[] framesListBuilder() {
@@ -244,7 +236,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
     public FragmentTransaction fragmentInflater(int[] lista, ArrayList<Clase> listaClases) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.slide_out);
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in, R.anim.slide_out);
         int firstDay = 0;
 
         for (int o = 0; firstDay < listaClases.size(); firstDay++) {
@@ -254,6 +247,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);
             bundle1.putString(ClassFragment.NOMBRE_DE_CLASE, listaClases.get(firstDay).NOMBRE);
+            bundle1.putInt(ClassFragment.UV, listaClases.get(firstDay).UV);
             if (ESTADO.compareTo("Cursar") == 0) {
                 bundle1.putBoolean(ClassFragment.ACTIVADO, false);
             } else {
@@ -272,20 +266,6 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
     public void onStart() {
         super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, //
-                "ActividadCalculador Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.efaa.iee/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
@@ -293,20 +273,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         super.onStop();
 
         dob.releaseReference();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "ActividadCalculador Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.efaa.iee/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
+
     }
 
     public void MostrarCursadas(View view) {

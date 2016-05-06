@@ -4,8 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQuery;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -68,11 +68,14 @@ public class dataSource {
      * @param db       Base de Datos a usar
      * @param columna  Columna a evaluar
      * @param ceroOuno Dato a evaluar
-     * @param context  Contexto de la aplicacion o actividad
+     * @param context  Contexto de la aplicacion o actividad que llama esta funcion
      * @return Una lista con las Clases que resultan del resultan del query
      */
-    public ArrayList<Clase> queryPasadasODisponibles(SQLiteDatabase db, String columna, String ceroOuno, Context context) {
-        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR, Columnas.CURSADA, Columnas.DISPONIBLE};
+    public ArrayList<Clase> queryPasadasODisponibles(SQLiteDatabase db, String columna,
+                                                     String ceroOuno, Context context) {
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
+                Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
+
         String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
 
 
@@ -123,6 +126,8 @@ public class dataSource {
         String porCursar = null;
         String clase = null;
         String codigo = null;
+        int uv = 0;
+        int indice = 0;
         String cursada = null;
         String disponible = null;
 
@@ -131,6 +136,14 @@ public class dataSource {
                 clase = c.getString(c.getColumnIndexOrThrow(Columnas.NOMBRE));
                 codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
                 porCursar = c.getString(c.getColumnIndexOrThrow(Columnas.PORcURSAR));
+                uv = c.getInt(c.getColumnIndex(Columnas.UV));
+                try {
+                    indice = c.getInt(c.getColumnIndex(Columnas.INDICE));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("IEI-UNAH_VS (UNA CLASE)", "Hubo un problema con el indice de la clase: " + codigo);
+                    indice = 80;
+                }
                 cursada = c.getString(c.getColumnIndexOrThrow(Columnas.CURSADA));
                 disponible = c.getString(c.getColumnIndexOrThrow(Columnas.DISPONIBLE));
             } catch (IllegalArgumentException e) {
@@ -143,7 +156,7 @@ public class dataSource {
             break;
 
         }
-        return new Clase(clase, codigo, porcursar);
+        return new Clase(clase, codigo, porcursar, uv, indice);
     }
 
 
@@ -152,6 +165,8 @@ public class dataSource {
         String porCursar = null;
         String clase = null;
         String codigo = null;
+        int uv = 0;
+        int indice = 0;
         String cursada = null;
         String disponible = null;
 
@@ -160,6 +175,14 @@ public class dataSource {
                 clase = c.getString(c.getColumnIndexOrThrow(Columnas.NOMBRE));
                 codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
                 porCursar = c.getString(c.getColumnIndexOrThrow(Columnas.PORcURSAR));
+                uv = c.getInt(c.getColumnIndexOrThrow(Columnas.UV));
+                try {
+                    indice = c.getInt(c.getColumnIndex(Columnas.INDICE));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("IEI-UNAH_VS", "Hubo un problema con el indice de la clase: " + codigo);
+                    indice = 80;
+                }
                 cursada = c.getString(c.getColumnIndexOrThrow(Columnas.CURSADA));
                 disponible = c.getString(c.getColumnIndexOrThrow(Columnas.DISPONIBLE));
             } catch (IllegalArgumentException e) {
@@ -171,7 +194,7 @@ public class dataSource {
 //            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
 
 
-            listaClases.add(new Clase(clase, codigo, porcursar));
+            listaClases.add(new Clase(clase, codigo, porcursar, uv, indice));
 
         }
         return listaClases;
@@ -225,6 +248,18 @@ public class dataSource {
         );
     }
 
+    /**
+     * Inserta un uno o un cero para marcar como pasada o disponible. Hace las revisiones pertinentes
+     * para evitar errores.
+     *
+     * @param db      Base de datos sobre la que se actuara
+     * @param codigo  Codigo de la clase
+     * @param columna Que columna será modificada
+     * @param dato    El cero o uno que se ingresará
+     * @param clase   La Clase que se usará
+     * @param context El contexto necesario para hacer mensajes de error.
+     * @return Codigo de la clase que será eliminada de la lista, o algun codigo de error.
+     */
     public String insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
         String columna2 = null;
         String result = "";
@@ -402,6 +437,8 @@ public class dataSource {
         static public final String CURSADA = "cursada";
         public final static String PORcURSAR = "porcursar";
         public final static String DISPONIBLE = "disponible";
+        public final static String UV = "uv";
+        public final static String INDICE = "indice";
     }
 
     public static class Estados {

@@ -1,16 +1,14 @@
 package com.example.efaa.iee;
 
 import android.Manifest;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Application;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -20,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -109,10 +106,24 @@ public class MainActivity extends AppCompatActivity {
                 File o = new File("/sdcard/UNAH_IEE/");
                 o.mkdirs();
                 CopyRaw(ID, "data.sqlite");
+            } else {
+                try {
+                    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+                    Cursor c = db.rawQuery("SELECT indice FROM clases", null);
+                    if (c.getCount() < 2) {
+                        db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+                    }
+                    c.close();
+                    db.close();
+                } catch (SQLiteException e) {
+                    e.printStackTrace();
+                    (SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null))
+                            .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-
-
     }
 
     private void CopearBaseDatos() {
