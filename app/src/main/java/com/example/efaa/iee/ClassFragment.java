@@ -135,9 +135,7 @@ public class ClassFragment extends Fragment {
         TextView codigo = (TextView) getView().findViewById(R.id.Codigo);
         codigo.setText(codigoClase);
 
-        ((TextView) getView().findViewById(R.id.UV)).setText(
-                (((TextView) getView().findViewById(R.id.UV))).getText() +
-                        String.valueOf(uv));
+        ((TextView) getView().findViewById(R.id.UV)).setText(String.valueOf(uv));
 
         EditText editText = ((EditText) getView().findViewById(R.id.editText));
         editText.setText(String.valueOf(indice));

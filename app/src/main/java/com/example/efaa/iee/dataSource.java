@@ -102,7 +102,8 @@ public class dataSource {
      * @return Clase que resulta del resulta del query
      */
     public Clase queryCrearClase(SQLiteDatabase db, String codigo, Context context) {
-        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR, Columnas.CURSADA, Columnas.DISPONIBLE};
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
+                Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV};
         String selection = Columnas.CODIGO + " = \"" + codigo + "\" ";//WHERE author = ?
 //        db.rawQuery("SELECT * FROM " + TABLE + " WHERE " + Columnas.CODIGO + " = " + codigo, null);
 
@@ -156,6 +157,8 @@ public class dataSource {
             break;
 
         }
+        db.close();
+        c.close();
         return new Clase(clase, codigo, porcursar, uv, indice);
     }
 
@@ -197,6 +200,8 @@ public class dataSource {
             listaClases.add(new Clase(clase, codigo, porcursar, uv, indice));
 
         }
+        db.close();
+        c.close();
         return listaClases;
     }
 
@@ -212,10 +217,12 @@ public class dataSource {
                 e.printStackTrace();
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             }
+            c.close();
 
             lista.add(new Clas(codigo));
 
         }
+        c.close();
         return lista;
     }
 
