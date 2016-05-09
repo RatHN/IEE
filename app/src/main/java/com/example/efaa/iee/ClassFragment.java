@@ -15,6 +15,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 //import android.support.v4.app.Fragment;
@@ -117,6 +118,7 @@ public class ClassFragment extends Fragment {
             indice = getArguments().getInt(INDICE);
 
         }
+
     }
 
     @Override
@@ -124,6 +126,7 @@ public class ClassFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_blank, container, false);
+
     }
 
     public void onStart(){
@@ -164,6 +167,7 @@ public class ClassFragment extends Fragment {
             }
         });
 
+        LinearLayout grid = (LinearLayout) getView().findViewById(R.id.grid);
 
     }
 

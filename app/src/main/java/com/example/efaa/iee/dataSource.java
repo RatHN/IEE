@@ -29,7 +29,7 @@ public class dataSource {
      * @param context         Contexto de la aplicacion o de la actividad
      * @return Una lista de Clas con las clases requsito para dependenciaCode
      */
-    public Clas queryDependencias(SQLiteDatabase db, String dependenciaCode, Context context) {
+    public static Clas queryDependencias(SQLiteDatabase db, String dependenciaCode, Context context) {
         String codeName = dependenciaCode;
         String columns[] = new String[]{Columnas.CODIGO};
         String selection = Columnas.PORcURSAR + " LIKE '%" + codeName + "%' ";
@@ -37,6 +37,17 @@ public class dataSource {
         return new Clas(dependenciaCode, db, context);
     }
 
+    public static ArrayList<Clas> crearListaDependenciasAndParse(String porcursar, SQLiteDatabase db, Context context) {
+        String array[] = porcursar.split(", ");
+
+        ArrayList<Clas> lista = new ArrayList<>();
+
+        for (String i :
+                array) {
+            lista.add(queryDependencias(db, i, context));
+        }
+        return lista;
+    }
 
     /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
@@ -91,7 +102,6 @@ public class dataSource {
                 ), db,
                 context);
     }
-
 
     /**
      * Crear Clase evaluando una columna (nombre o codigo) con una DATO
@@ -162,7 +172,6 @@ public class dataSource {
         return new Clase(clase, codigo, porcursar, uv, indice);
     }
 
-
     private ArrayList<Clase> CrearListaClases(Cursor c, SQLiteDatabase db, Context context) {
         ArrayList<Clase> listaClases = new ArrayList<>();
         String porCursar = null;
@@ -223,19 +232,6 @@ public class dataSource {
         c.close();
         return lista;
     }
-
-    private ArrayList<Clas> crearListaDependenciasAndParse(String porcursar, SQLiteDatabase db, Context context) {
-        String array[] = porcursar.split(", ");
-
-        ArrayList<Clas> lista = new ArrayList<>();
-
-        for (String i :
-                array) {
-            lista.add(queryDependencias(db, i, context));
-        }
-        return lista;
-    }
-
 
     public Cursor queryPorCursar(SQLiteDatabase db, String codigo) {
         String columns[] = new String[]{Columnas.PORcURSAR};

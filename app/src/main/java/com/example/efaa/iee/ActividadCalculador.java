@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -101,7 +102,14 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         dataSource.Columnas colum = new dataSource.Columnas();
 
         setContentView(R.layout.activity_actividad_calculador);
-        ESTADO = getIntent().getExtras().getString("CurPas");
+
+        this.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        ESTADO = "Cursar";
+        if (getIntent().getExtras() != null) {
+            ESTADO = getIntent().getExtras().getString("CurPas");
+        }
         Button botn = (Button) findViewById(R.id.button2);
         String textoBoton = "IR A";
         if (ESTADO.compareTo("Cursar") == 0) {
@@ -305,4 +313,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         transaction.remove(classFragment);
         transaction.commit();
     }
+
+//    public void removerFragmento(ClaseView claseView) {
+//        claseView = null;
+//    }
 }
