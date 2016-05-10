@@ -21,6 +21,7 @@ public class Clase extends Clas{
     public ArrayList<Clas> ARRAYdEPENDENCIAS;
     public int UV;
     public int INDICE;
+    public boolean CURSADA;
 
     private dataSource dtsrc = new dataSource();
     private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
@@ -41,13 +42,13 @@ public class Clase extends Clas{
 //        }
     }
 
-    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList, int uv, int indice) {
+    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList, int uv, int indice, boolean cursada) {
         CODIGO = codigo;
         NOMBRE = nombre;
         ARRAYdEPENDENCIAS = clasArrayList;
         UV = uv;
         INDICE = indice;
-
+        CURSADA = cursada;
         return;
     }
 

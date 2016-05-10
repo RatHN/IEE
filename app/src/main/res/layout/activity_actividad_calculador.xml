@@ -49,11 +49,6 @@
 
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/fragmentlist"
-        android:name="android.app.ListFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
     <ScrollView
         android:id="@+id/scrollView"

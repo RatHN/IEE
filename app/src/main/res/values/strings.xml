@@ -15,6 +15,6 @@
     <string name="cursada">cursada</string>
     <string name="disponible">disponible</string>
     <string name="porCursar">porcursar</string>
-    <string name="title_activity_tab">TabActivity</string>
+    <string name="title_activity_tab">Visor Calculador</string>
     <string name="section_format">Hello World from section: %1$d</string>
 </resources>

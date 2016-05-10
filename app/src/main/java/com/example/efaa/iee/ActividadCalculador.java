@@ -62,29 +62,6 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             ClassFragment frag = (ClassFragment) getSupportFragmentManager().findFragmentByTag(cod);
 
             frag.animar();
-//            trans = getSupportFragmentManager().beginTransaction();
-//            trans.remove(p);
-//            trans.replace(frag.getView().getId(), p);
-            //trans.commit();
-//            trans.remove(p);
-
-//            trans.commit();
-//            new Thread(new Runnable() {
-//                public void run() {
-//                    ClassFragment p = new ClassFragment();
-//                    FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
-//                            .setCustomAnimations(R.anim.slide_in, R.anim.slide_in);
-//
-//                    //trans.remove(frag);
-//                    trans.replace(frag.getView().getId(), p);
-//                    //trans.commit();
-//                    //trans.remove(p);
-//
-//                    trans.commit();
-//                }
-//            }).start();
-
-
         }
 
     }

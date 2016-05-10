@@ -50,6 +50,81 @@ public class dataSource {
     }
 
     /**
+     * @param db       Base de Datos a usar
+     * @param columna  Columna a evaluar
+     * @param ceroOuno Dato a evaluar
+     * @param context  Contexto de la aplicacion o actividad que llama esta funcion
+     * @return Una lista con las Clases que resultan del resultan del query
+     */
+    public static ArrayList<Clase> queryPasadasODisponibles(SQLiteDatabase db, String columna,
+                                                            String ceroOuno, Context context) {
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
+                Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
+
+        String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
+        boolean cursada = false;
+        switch (columna.compareTo(Columnas.CURSADA)) {
+            case 0:
+                cursada = true;
+        }
+
+        return CrearListaClases(
+                db.query(
+                        TABLE,
+                        columns,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        null
+                ), db,
+                context, cursada);
+    }
+
+    private static ArrayList<Clase> CrearListaClases(Cursor c, SQLiteDatabase db, Context context, boolean aprovada) {
+        ArrayList<Clase> listaClases = new ArrayList<>();
+        String porCursar = null;
+        String clase = null;
+        String codigo = null;
+        int uv = 0;
+        int indice = 0;
+        String cursada = null;
+        String disponible = null;
+
+
+        while (c.moveToNext()) {
+            try {
+                clase = c.getString(c.getColumnIndexOrThrow(Columnas.NOMBRE));
+                codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
+                porCursar = c.getString(c.getColumnIndexOrThrow(Columnas.PORcURSAR));
+                uv = c.getInt(c.getColumnIndexOrThrow(Columnas.UV));
+                try {
+                    indice = c.getInt(c.getColumnIndex(Columnas.INDICE));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("IEI-UNAH_VS", "Hubo un problema con el indice de la clase: " + codigo);
+                    indice = 80;
+                }
+                cursada = c.getString(c.getColumnIndexOrThrow(Columnas.CURSADA));
+                disponible = c.getString(c.getColumnIndexOrThrow(Columnas.DISPONIBLE));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            ArrayList<Clas> porcursar = crearListaDependenciasAndParse(porCursar, db, context);
+//            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
+
+
+            listaClases.add(new Clase(clase, codigo, porcursar, uv, indice, aprovada));
+
+        }
+//        db.close();
+        c.close();
+        return listaClases;
+    }
+
+    /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
      *
      * @param db                    Base de Datos a usar.
@@ -72,34 +147,6 @@ public class dataSource {
                         null,
                         null
                 ),
-                context);
-    }
-
-    /**
-     * @param db       Base de Datos a usar
-     * @param columna  Columna a evaluar
-     * @param ceroOuno Dato a evaluar
-     * @param context  Contexto de la aplicacion o actividad que llama esta funcion
-     * @return Una lista con las Clases que resultan del resultan del query
-     */
-    public ArrayList<Clase> queryPasadasODisponibles(SQLiteDatabase db, String columna,
-                                                     String ceroOuno, Context context) {
-        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
-                Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
-
-        String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
-
-
-        return CrearListaClases(
-                db.query(
-                        TABLE,
-                        columns,
-                        selection,
-                        null,
-                        null,
-                        null,
-                        null
-                ), db,
                 context);
     }
 
@@ -169,49 +216,7 @@ public class dataSource {
         }
 //        db.close();
         c.close();
-        return new Clase(clase, codigo, porcursar, uv, indice);
-    }
-
-    private ArrayList<Clase> CrearListaClases(Cursor c, SQLiteDatabase db, Context context) {
-        ArrayList<Clase> listaClases = new ArrayList<>();
-        String porCursar = null;
-        String clase = null;
-        String codigo = null;
-        int uv = 0;
-        int indice = 0;
-        String cursada = null;
-        String disponible = null;
-
-        while (c.moveToNext()) {
-            try {
-                clase = c.getString(c.getColumnIndexOrThrow(Columnas.NOMBRE));
-                codigo = c.getString(c.getColumnIndexOrThrow(Columnas.CODIGO));
-                porCursar = c.getString(c.getColumnIndexOrThrow(Columnas.PORcURSAR));
-                uv = c.getInt(c.getColumnIndexOrThrow(Columnas.UV));
-                try {
-                    indice = c.getInt(c.getColumnIndex(Columnas.INDICE));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("IEI-UNAH_VS", "Hubo un problema con el indice de la clase: " + codigo);
-                    indice = 80;
-                }
-                cursada = c.getString(c.getColumnIndexOrThrow(Columnas.CURSADA));
-                disponible = c.getString(c.getColumnIndexOrThrow(Columnas.DISPONIBLE));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-
-            ArrayList<Clas> porcursar = crearListaDependenciasAndParse(porCursar, db, context);
-//            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
-
-
-            listaClases.add(new Clase(clase, codigo, porcursar, uv, indice));
-
-        }
-//        db.close();
-        c.close();
-        return listaClases;
+        return new Clase(clase, codigo, porcursar, uv, indice, false);
     }
 
     private ArrayList<Clas> parseRequisitos(Cursor c, Context context) {
