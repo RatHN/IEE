@@ -112,7 +112,7 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
         progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
         progressBar.setIndeterminate(true);
-        recyclerView.addView(progressBar);
+//        recyclerView(progressBar);
 
 
         //Inflar la pestaña con el fragmento que contiene el ListView o el RecyclerView
@@ -122,6 +122,7 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
         //Conseguir el listView o RecyclerView
 //        lista = (ListView) rootView.findViewById(R.id.listViewFragment);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reciclador);
+
         recyclerView.setHasFixedSize(true);
 //        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
@@ -175,6 +176,7 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
         //Seteamos esos escuchas
 //        lista.setOnItemClickListener(listener);
         recyclerView.setOnClickListener(escucha);
+        recyclerView.addView(progressBar);
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         Bundle bundle1 = new Bundle();
