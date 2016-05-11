@@ -23,8 +23,8 @@ public class Clase extends Clas{
     public int INDICE;
     public boolean CURSADA;
 
-    private dataSource dtsrc = new dataSource();
-    private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+//    private dataSource dtsrc = new dataSource();
+//    private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
 
     Clase(){
         return;
@@ -68,6 +68,6 @@ public class Clase extends Clas{
     }
 
     public String toString(){
-        return "Clase";
+        return NOMBRE;
     }
 }

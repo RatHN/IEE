@@ -4,24 +4,19 @@ package com.example.efaa.iee;
  * Created by Neri Ortez on 09/05/2016.
  */
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Loader;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -29,7 +24,8 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList> {
+public class PlaceHolderFragment extends Fragment
+        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>> {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -40,6 +36,7 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
     ListView lista;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager lManager;
+    Bundle ARGS;
     ClaseRecyclerAdaptador cAdaptador;
     SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
     public View.OnClickListener checkBoxClick = new View.OnClickListener() {
@@ -74,18 +71,19 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
 
         }
     };
+
     String COLUMNA;
 
 
-    public PlaceholderFragment() {
+    public PlaceHolderFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static PlaceholderFragment newInstance(int sectionNumber) {
-        PlaceholderFragment fragment = new PlaceholderFragment();
+    public static PlaceHolderFragment newInstance(int sectionNumber) {
+        PlaceHolderFragment fragment = new PlaceHolderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -103,17 +101,16 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
         recyclerView.setAdapter(cAdaptador);
     }
 
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        getLoaderManager().initLoader(0, ARGS, this).forceLoad();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Create a progress bar to display while the list loads
-        ProgressBar progressBar = new ProgressBar(getContext());
-        progressBar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-        progressBar.setIndeterminate(true);
-//        recyclerView(progressBar);
-
 
         //Inflar la pestaña con el fragmento que contiene el ListView o el RecyclerView
 //        View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
@@ -123,16 +120,15 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
 //        lista = (ListView) rootView.findViewById(R.id.listViewFragment);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reciclador);
 
+
         recyclerView.setHasFixedSize(true);
 //        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
         //Establecer el tipo de vista: Cursadas, Disponibles o especial
-        String DISPONIBLE = dataSource.Columnas.DISPONIBLE;
-        String columna = DISPONIBLE;
-        String CURSADA = dataSource.Columnas.CURSADA;
+        String columna = dataSource.Columnas.DISPONIBLE;
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
             case 1:
-                columna = CURSADA;
+                columna = dataSource.Columnas.CURSADA;
         }
         COLUMNA = columna;
 
@@ -144,6 +140,12 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
 //        String selection = columna + " = " + "1" + " ";//WHERE author = ?
 
 
+        //Creamos un adaptador vacio
+        ArrayList<Clase> ar = new ArrayList<>();
+        ar.add(new Clase("NADA", "NADA", null, getContext()));
+        cAdaptador = new ClaseRecyclerAdaptador(ar);
+
+
         //Establecemos adaptadores
 //        lista.setAdapter(adapter);
         lManager = new LinearLayoutManager(getActivity());
@@ -153,48 +155,56 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
 
 
         //Creamos los listener para clicks
-        AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+        RecyclerView.OnItemTouchListener escucha = new RecyclerView.OnItemTouchListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                if (e.getActionMasked() == MotionEvent.ACTION_BUTTON_PRESS) {
+                    Snackbar.make(rv, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    return;
+                                }
+                            }).show();
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 
             }
-        };
-        View.OnClickListener escucha = new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                return;
-                            }
-                        }).show();
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
             }
         };
 
 
         //Seteamos esos escuchas
 //        lista.setOnItemClickListener(listener);
-        recyclerView.setOnClickListener(escucha);
-        recyclerView.addView(progressBar);
+        recyclerView.addOnItemTouchListener(escucha);
+//        recyclerView.addView(progressBar);
+
+
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-        Bundle bundle1 = new Bundle();
-        bundle1.putString("COLUMNA", columna);
-        getLoaderManager().initLoader(0, bundle1,
-                (android.support.v4.app.LoaderManager.LoaderCallbacks<Object>) getContext());
+        ARGS = new Bundle();
+        ARGS.putString("COLUMNA", columna);
+
         return rootView;
     }
 
 
 
     // Called when a new Loader needs to be created
-    public Loader<ArrayList> onCreateLoader(int id, Bundle args) {
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
+
+    @Override
+    public android.support.v4.content.Loader<ArrayList<Clase>> onCreateLoader(int id, Bundle args) {
         final String columna = args.getString("COLUMNA");
 
-        return new AsyncTaskLoader<ArrayList>(getContext()) {
+        return new android.support.v4.content.AsyncTaskLoader<ArrayList<Clase>>(getActivity()) {
             @Override
             public ArrayList<Clase> loadInBackground() {
                 ArrayList array = new ArrayList();
@@ -202,25 +212,24 @@ public class PlaceholderFragment extends Fragment implements LoaderManager.Loade
                 return array;
             }
         };
-    }
 
-    @Override
-    public void onLoadFinished(Loader<ArrayList> loader, ArrayList data) {
-        cAdaptador = new ClaseRecyclerAdaptador(data);
-        recyclerView.swapAdapter(cAdaptador, true);
     }
 
     /**
-     * Called when a previously created loader is being reset, and thus
-     * making its data unavailable.  The application should at this point
-     * remove any references it has to the Loader's data.
-     *
-     * @param loader The Loader that is being reset.
-     */
+ * Soporte con arraylist
+ */
     @Override
-    public void onLoaderReset(Loader<ArrayList> loader) {
+    public void onLoadFinished(android.support.v4.content.Loader<ArrayList<Clase>> loader,
+                               ArrayList<Clase> data) {
+//        if (cAdaptador.getItemCount() != adaptador1.getItemCount()){
+            recyclerView.setAdapter(new ClaseRecyclerAdaptador(data));
+//        }
 
     }
 
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<Clase>> loader) {
+        recyclerView.setAdapter(null);
+    }
 }
 
