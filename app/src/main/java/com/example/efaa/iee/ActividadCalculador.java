@@ -38,7 +38,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
 
     public void checkClick(View view) {
-//        dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IE/data.sqlite", null);
+        dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IE/data.sqlite", null);
         CheckBox checkBox = (CheckBox) view;
         LinearLayout e = (LinearLayout) view.getParent();
         TextView codigo = (TextView) e.findViewById(R.id.Codigo);

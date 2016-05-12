@@ -25,12 +25,14 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class PlaceHolderFragment extends Fragment
-        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>> {
+        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>>,
+        ClaseRecyclerAdaptador.EscuchadorDeInteraccion{
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    public ClaseRecyclerAdaptador.EscuchadorDeInteraccion meEscucha;
 
     AdaptadorArrayClase adaptador;
     ListView lista;
@@ -38,6 +40,7 @@ public class PlaceHolderFragment extends Fragment
     RecyclerView.LayoutManager lManager;
     Bundle ARGS;
     ClaseRecyclerAdaptador cAdaptador;
+
     SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
     public View.OnClickListener checkBoxClick = new View.OnClickListener() {
         @Override
@@ -75,6 +78,7 @@ public class PlaceHolderFragment extends Fragment
     String COLUMNA;
 
 
+
     public PlaceHolderFragment() {
     }
 
@@ -90,7 +94,7 @@ public class PlaceHolderFragment extends Fragment
         return fragment;
     }
 
-    public void run() {
+    public void run(View parent) {
         //Conseguimos el array
         ArrayList array = new ArrayList();
         array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
@@ -158,7 +162,7 @@ public class PlaceHolderFragment extends Fragment
         RecyclerView.OnItemTouchListener escucha = new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                if (e.getActionMasked() == MotionEvent.ACTION_BUTTON_PRESS) {
+                if (e.getAction() == MotionEvent.ACTION_DOWN) {
                     Snackbar.make(rv, "Replace with your own action", Snackbar.LENGTH_LONG)
                             .setAction("Action", new View.OnClickListener() {
                                 @Override
@@ -230,6 +234,22 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<ArrayList<Clase>> loader) {
         recyclerView.setAdapter(null);
+    }
+
+
+    @Override
+    public void Interaccion(ClaseRecyclerAdaptador.ClaseViewHolder holder) {
+
+    }
+
+    @Override
+    public void Interaccion(int position) {
+
+    }
+
+    @Override
+    public void Interaccion(View view) {
+        recyclerView.removeView(view);
     }
 }
 

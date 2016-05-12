@@ -1,6 +1,7 @@
 package com.example.efaa.iee;
 
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class TabActivity extends AppCompatActivity {
+public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdaptador.EscuchadorDeInteraccion {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -69,6 +70,11 @@ public class TabActivity extends AppCompatActivity {
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fab.setBackground(getDrawable(R.drawable.refresh));
+            fab.setImageDrawable(null);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,4 +109,18 @@ public class TabActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void Interaccion(ClaseRecyclerAdaptador.ClaseViewHolder holder) {
+        return;
+    }
+
+    @Override
+    public void Interaccion(int position) {
+
+    }
+
+    @Override
+    public void Interaccion(View view) {
+
+    }
 }
