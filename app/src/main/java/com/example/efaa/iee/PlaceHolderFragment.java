@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,14 +26,13 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class PlaceHolderFragment extends Fragment
-        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>>,
-        ClaseRecyclerAdaptador.EscuchadorDeInteraccion{
+        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>> {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    public ClaseRecyclerAdaptador.EscuchadorDeInteraccion meEscucha;
+//    public ClaseRecyclerAdaptador.EscuchadorDeInteraccion meEscucha;
 
     AdaptadorArrayClase adaptador;
     ListView lista;
@@ -152,7 +152,8 @@ public class PlaceHolderFragment extends Fragment
 
         //Establecemos adaptadores
 //        lista.setAdapter(adapter);
-        lManager = new LinearLayoutManager(getActivity());
+//        lManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        lManager = new LinearLayoutManager(getContext());
 
         recyclerView.setLayoutManager(lManager);
         recyclerView.setAdapter(cAdaptador);
@@ -162,21 +163,21 @@ public class PlaceHolderFragment extends Fragment
         RecyclerView.OnItemTouchListener escucha = new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                    Snackbar.make(rv, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    return;
-                                }
-                            }).show();
-                }
+//                if (e.getAction() == MotionEvent.ACTION_DOWN) {
+//                    Snackbar.make(rv, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                            .setAction("Action", new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    return;
+//                                }
+//                            }).show();
+//                }
                 return false;
             }
 
             @Override
             public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
+                return;
             }
 
             @Override
@@ -186,9 +187,11 @@ public class PlaceHolderFragment extends Fragment
         };
 
 
+
         //Seteamos esos escuchas
 //        lista.setOnItemClickListener(listener);
         recyclerView.addOnItemTouchListener(escucha);
+//        recyclerView.onClick
 //        recyclerView.addView(progressBar);
 
 
@@ -233,23 +236,7 @@ public class PlaceHolderFragment extends Fragment
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<ArrayList<Clase>> loader) {
-        recyclerView.setAdapter(null);
-    }
-
-
-    @Override
-    public void Interaccion(ClaseRecyclerAdaptador.ClaseViewHolder holder) {
-
-    }
-
-    @Override
-    public void Interaccion(int position) {
-
-    }
-
-    @Override
-    public void Interaccion(View view) {
-        recyclerView.removeView(view);
+//        recyclerView.setAdapter(null);
     }
 }
 

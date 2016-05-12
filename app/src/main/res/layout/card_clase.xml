@@ -1,89 +1,95 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="10dp"
-    card_view:cardUseCompatPadding="true">
+    android:layout_height="wrap_content">
 
-
-    <LinearLayout
-        android:id="@+id/grid"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/car_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
-        android:orientation="vertical"
-        android:paddingStart="10dp">
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="10dp"
+        card_view:cardUseCompatPadding="true">
 
-        <CheckBox
-            android:id="@+id/Nombre_de_Clase"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HOla Fragmento" />
 
         <LinearLayout
+            android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="#fff"
+            android:orientation="vertical"
+            android:paddingStart="10dp">
 
-            <TextView
-                android:id="@+id/Codigo"
+            <CheckBox
+                android:id="@+id/Nombre_de_Clase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="HOla Fragmento" />
 
-                android:text="@string/historia" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView"
+                <TextView
+                    android:id="@+id/Codigo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/historia" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/UV" />
+                <!--android:focusable="true"-->
+
+
+                <TextView
+                    android:id="@+id/UV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginStart="1dp"
+                    android:text="5" />
+                <!--android:focusable="true"-->
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_marginStart="20dp"
-                android:text="@string/UV" />
-            <!--android:focusable="true"-->
+                android:orientation="horizontal">
 
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:allowUndo="true"
+                    android:ems="10"
+                    android:enabled="true"
 
-            <TextView
-                android:id="@+id/UV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_marginStart="1dp"
-                android:text="5" />
-            <!--android:focusable="true"-->
+                    android:hint="Porcentaje"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/per100Boton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guardar" />
+                <!--android:focusable="true"-->
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:allowUndo="true"
-                android:ems="10"
-                android:enabled="true"
-
-                android:hint="Porcentaje"
-                android:inputType="numberDecimal"
-                android:singleLine="true" />
-
-            <Button
-                android:id="@+id/per100Boton"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Guardar" />
-            <!--android:focusable="true"-->
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

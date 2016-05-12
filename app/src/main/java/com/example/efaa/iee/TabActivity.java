@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdaptador.EscuchadorDeInteraccion {
+public class TabActivity extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -30,7 +30,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    public ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,19 +108,4 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    public void Interaccion(ClaseRecyclerAdaptador.ClaseViewHolder holder) {
-        return;
-    }
-
-    @Override
-    public void Interaccion(int position) {
-
-    }
-
-    @Override
-    public void Interaccion(View view) {
-
-    }
 }

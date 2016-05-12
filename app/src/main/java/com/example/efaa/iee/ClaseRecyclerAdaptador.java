@@ -2,12 +2,15 @@ package com.example.efaa.iee;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,7 +18,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.location.places.Place;
+//import com.google.android.gms.location.places.Place;
 
 import java.util.List;
 
@@ -26,13 +29,22 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     private Context context;
     private List<Clase> lista;
-    EscuchadorDeInteraccion escucha;
 
-    public interface EscuchadorDeInteraccion{
-        void Interaccion(ClaseViewHolder holder);
-        void Interaccion(int position);
-        void Interaccion(View view);
+
+    public void Interaccion(ClaseViewHolder holder) {
+
     }
+
+
+    public void Interaccion(int position) {
+
+    }
+
+
+    public void Interaccion(View view) {
+        return;
+    }
+
 
     public ClaseRecyclerAdaptador(List<Clase> Lista) {
             lista = Lista;
@@ -75,14 +87,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             holder.nombre.setText(clase.NOMBRE);
             holder.nombre.setChecked(clase.CURSADA);
 
-            //Cambiamos la escucha y seteamos el escucha de click
-            escucha = ((PlaceHolderFragment)(holder.itemView.getParent()));
-            holder.nombre.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    escucha.Interaccion((View)(v.getParent()));
-                }
-            });
+
 //
 //            mEscuchador.Interaccion(holder);
 //            mEscuchador.Interaccion(position);
@@ -103,25 +108,45 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     }
 
 
-    public class ClaseViewHolder extends RecyclerView.ViewHolder {
+    public class ClaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Campos de la clase
-        private EditText indice;
-        private CheckBox nombre;
-        private TextView codigo;
-        private TextView uv;
-        EscuchadorDeInteraccion meEscucha;
+        public EditText indice;
+        public CheckBox nombre;
+        public TextView codigo;
+        public TextView uv;
+        public CardView mCardView;
+        public OnClickListener listener;
 
-        public ClaseViewHolder(View v) {
-            super(v);
+
+        public ClaseViewHolder(View view) {
+            super(view);
 
             if (lista.get(0).CODIGO.compareTo("NADA") == 0) {
                 return;
             } else {
-                indice = (EditText) v.findViewById(R.id.editText);
-                nombre = (CheckBox) v.findViewById(R.id.Nombre_de_Clase);
-                codigo = (TextView) v.findViewById(R.id.Codigo);
-                uv = (TextView) v.findViewById(R.id.UV);
+//                mCardView = (CardView) view;
+                indice = (EditText) view.findViewById(R.id.editText);
+                nombre = (CheckBox) view.findViewById(R.id.Nombre_de_Clase);
+                codigo = (TextView) view.findViewById(R.id.Codigo);
+                uv = (TextView) view.findViewById(R.id.UV);
+
+                //Cambiamos la escucha y seteamos el escucha de click
+//                escucha = (TabActivity) mCardView.getContext();
+
+                listener = this;
+                nombre.setOnClickListener(listener);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            remove_at(getAdapterPosition());
+        }
+
+        private void remove_at(int position) {
+            lista.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, lista.size());
         }
     }
 
