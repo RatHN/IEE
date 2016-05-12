@@ -72,7 +72,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            fab.setBackground(getDrawable(R.drawable.refresh));
+            fab.setBackground(getDrawable(R.drawable.refre));
             fab.setImageDrawable(null);
         }
         fab.setOnClickListener(new View.OnClickListener() {
