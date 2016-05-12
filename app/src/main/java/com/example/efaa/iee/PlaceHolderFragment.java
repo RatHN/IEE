@@ -144,7 +144,7 @@ public class PlaceHolderFragment extends Fragment
 //        String selection = columna + " = " + "1" + " ";//WHERE author = ?
 
 
-        //Creamos un adaptador vacio
+        //Creamos un adaptador vacio para poder habilitar el bucle y el Loader funcione en otro Thread
         ArrayList<Clase> ar = new ArrayList<>();
         ar.add(new Clase("NADA", "NADA", null, getContext()));
         cAdaptador = new ClaseRecyclerAdaptador(ar);

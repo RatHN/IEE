@@ -29,7 +29,6 @@ import android.widget.TextView;
  * create an instance of this fragment.
  */
 public class ClassFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String NOMBRE_DE_CLASE = "param1";
     public static final String CODIGO_CLASE = "param2";
@@ -38,7 +37,6 @@ public class ClassFragment extends Fragment {
     public static final String INDICE = "indice";
     public Clase cLase = null;
     public View.OnClickListener cListener;
-    // TODO: Rename and change types of parameters
     private String nombreClase;
     private boolean activado;
     private String codigoClase;
@@ -63,7 +61,6 @@ public class ClassFragment extends Fragment {
      * @param codigo Parameter 2.
      * @return A new instance of fragment ClassFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ClassFragment newInstance(String clase, String codigo, boolean activada, String uv) {
         ClassFragment fragment = new ClassFragment();
         Bundle args = new Bundle();
@@ -176,7 +173,6 @@ public class ClassFragment extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -221,7 +217,6 @@ public class ClassFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
        public void onFragmentInteraction(Uri uri);
     }
 

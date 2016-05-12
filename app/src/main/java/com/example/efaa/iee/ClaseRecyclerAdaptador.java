@@ -30,19 +30,8 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     private Context context;
     private List<Clase> lista;
 
-
-    public void Interaccion(ClaseViewHolder holder) {
-
-    }
-
-
-    public void Interaccion(int position) {
-
-    }
-
-
-    public void Interaccion(View view) {
-        return;
+    public interface InterfaceEscuchador {
+        void Escuchador(boolean actualizarCursada);
     }
 
 
@@ -86,11 +75,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             holder.uv.setText(String.valueOf(clase.UV));
             holder.nombre.setText(clase.NOMBRE);
             holder.nombre.setChecked(clase.CURSADA);
-
-
-//
-//            mEscuchador.Interaccion(holder);
-//            mEscuchador.Interaccion(position);
         }
 
     }
@@ -116,25 +100,24 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public TextView uv;
         public CardView mCardView;
         public OnClickListener listener;
+        public InterfaceEscuchador escuchador;
 
 
         public ClaseViewHolder(View view) {
             super(view);
-
+            escuchador = (TabActivity) view.getContext();
             if (lista.get(0).CODIGO.compareTo("NADA") == 0) {
                 return;
             } else {
-//                mCardView = (CardView) view;
                 indice = (EditText) view.findViewById(R.id.editText);
                 nombre = (CheckBox) view.findViewById(R.id.Nombre_de_Clase);
                 codigo = (TextView) view.findViewById(R.id.Codigo);
                 uv = (TextView) view.findViewById(R.id.UV);
 
                 //Cambiamos la escucha y seteamos el escucha de click
-//                escucha = (TabActivity) mCardView.getContext();
-
                 listener = this;
                 nombre.setOnClickListener(listener);
+                escuchador = (TabActivity) view.getContext();
             }
         }
 
@@ -144,9 +127,11 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         }
 
         private void remove_at(int position) {
+
             lista.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, lista.size());
+            escuchador.Escuchador(lista.get(position).CURSADA);
         }
     }
 

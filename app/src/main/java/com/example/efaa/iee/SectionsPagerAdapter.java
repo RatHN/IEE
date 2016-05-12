@@ -3,6 +3,8 @@ package com.example.efaa.iee;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -12,6 +14,18 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     public SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        // TODO: Establecer el update a modo  que se actualize el fragmento contrario...
+        // O mejor que se actualizen los dos, pero de manera suave.
+//        PlaceHolderFragment f = (PlaceHolderFragment ) object;
+//        if (f != null) {
+//            f.update();
+//        }
+//        return super.getItemPosition(object);
+        return POSITION_NONE;
     }
 
     @Override
