@@ -53,6 +53,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     public void insertarItem(Clase clase) {
         LISTA.add(clase);
+
         int position = LISTA.lastIndexOf(clase);
 //        notifyItemRangeChanged(LISTA.lastIndexOf(clase), 1);
         notifyItemInserted(position);
