@@ -40,8 +40,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     public void cambiarLista(List<Clase> Lista) {
         this.LISTA.clear();
         this.LISTA = Lista;
-        Snackbar.make((View) getActivity, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+
     }
 
     public void removerItemEn(int position) {
@@ -167,6 +166,8 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             notifyItemRemoved(position);
 //            notifyItemRangeChanged(position, LISTA.size());
             escuchador.Escuchador(cursada);
+            Snackbar.make((View) v, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
         }
     }
 
