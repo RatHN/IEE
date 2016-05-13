@@ -1,20 +1,14 @@
 package com.example.efaa.iee;
 
-import android.app.Fragment;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,17 +45,36 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(0);
+//        mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
             }
 
+            // Cuando se seleccione una pestana....
             @Override
             public void onPageSelected(int position) {
-//                SectionsPagerAdapter adapter = (SectionsPagerAdapter) mViewPager.getAdapter();
-//                mViewPager.addView(adapter.getItem(position).getView(), position);
+                // Establecer todos los flag como negativos
+                for (PlaceHolderFragment fragment :
+                        mSectionsPagerAdapter.fragments) {
+                    fragment.flag = false;
+                }
+                // Evitar IndexOutOfBoundsException
+                if (mSectionsPagerAdapter.fragments.size() != 0) {
+                    // Verificar en pestana nos encontramos
+                    PlaceHolderFragment fragment = mSectionsPagerAdapter.fragments.get(position);
+                    String titulo = (String) mSectionsPagerAdapter.getPageTitle(position);
+                    switch (titulo) {
+                        // Si es en la pestana de cursadas...
+                        case SectionsPagerAdapter.CURSADAS:
+                            // Evitar que se actualize
+                            fragment.flag = true;
+                            return;
+                    }
+                    // Si es cualquier otra pestana, hacer que se actualizen frente a cambios en las clases
+                    fragment.flag = false;
+                }
             }
 
             @Override
@@ -78,7 +91,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fab.setBackground(getDrawable(R.drawable.refre));
-            fab.setImageDrawable(null);
+            fab.setImageDrawable(getDrawable(R.drawable.refre));
         }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

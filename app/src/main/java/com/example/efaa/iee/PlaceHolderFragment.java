@@ -34,12 +34,14 @@ public class PlaceHolderFragment extends Fragment
     private static final String ARG_SECTION_NUMBER = "section_number";
 //    public ClaseRecyclerAdaptador.EscuchadorDeInteraccion meEscucha;
 
-    AdaptadorArrayClase adaptador;
-    ListView lista;
+    //    AdaptadorArrayClase adaptador;
+//    ListView lista;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager lManager;
     Bundle ARGS;
     ClaseRecyclerAdaptador cAdaptador;
+    public Boolean flag = false;
+    private static final String FLAG = "flag";
 
     SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
     public View.OnClickListener checkBoxClick = new View.OnClickListener() {
@@ -76,6 +78,7 @@ public class PlaceHolderFragment extends Fragment
     };
 
     String COLUMNA;
+//    ClaseRecyclerAdaptador recyclerAdaptador;
 
 
 
@@ -90,7 +93,9 @@ public class PlaceHolderFragment extends Fragment
         PlaceHolderFragment fragment = new PlaceHolderFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putBoolean(FLAG, false);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -102,30 +107,23 @@ public class PlaceHolderFragment extends Fragment
         //Creamos el adaptador para ese array
 //       adaptador = new AdaptadorArrayClase(getContext(), array);
         cAdaptador = new ClaseRecyclerAdaptador(array);
+        ;
         recyclerView.setAdapter(cAdaptador);
-    }
-
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        getLoaderManager().initLoader(0, ARGS, this).forceLoad();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //Inflar la pestaña con el fragmento que contiene el ListView o el RecyclerView
+//        Inflar la pestaña con el fragmento que contiene el ListView o el RecyclerView
 //        View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
         View rootView = inflater.inflate(R.layout.reciclador_tab, container, false);
 
         //Conseguir el listView o RecyclerView
 //        lista = (ListView) rootView.findViewById(R.id.listViewFragment);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reciclador);
-
-
         recyclerView.setHasFixedSize(true);
+
 //        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
         //Establecer el tipo de vista: Cursadas, Disponibles o especial
@@ -135,20 +133,18 @@ public class PlaceHolderFragment extends Fragment
                 columna = dataSource.Columnas.CURSADA;
         }
         COLUMNA = columna;
+        flag = getArguments().getBoolean(FLAG);
 
 //        String columns[] = new String[]{"_id", dataSource.Columnas.NOMBRE, dataSource.Columnas.CODIGO,
 //                dataSource.Columnas.PORcURSAR, CURSADA, DISPONIBLE,
 //                dataSource.Columnas.UV, dataSource.Columnas.INDICE};
 
-
 //        String selection = columna + " = " + "1" + " ";//WHERE author = ?
-
 
         //Creamos un adaptador vacio para poder habilitar el bucle y el Loader funcione en otro Thread
         ArrayList<Clase> ar = new ArrayList<>();
         ar.add(new Clase("NADA", "NADA", null, getContext()));
         cAdaptador = new ClaseRecyclerAdaptador(ar);
-
 
         //Establecemos adaptadores
 //        lista.setAdapter(adapter);
@@ -157,7 +153,6 @@ public class PlaceHolderFragment extends Fragment
 
         recyclerView.setLayoutManager(lManager);
         recyclerView.setAdapter(cAdaptador);
-
 
         //Creamos los listener para clicks
         RecyclerView.OnItemTouchListener escucha = new RecyclerView.OnItemTouchListener() {
@@ -186,23 +181,25 @@ public class PlaceHolderFragment extends Fragment
             }
         };
 
-
-
         //Seteamos esos escuchas
 //        lista.setOnItemClickListener(listener);
         recyclerView.addOnItemTouchListener(escucha);
-//        recyclerView.onClick
-//        recyclerView.addView(progressBar);
-
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         ARGS = new Bundle();
         ARGS.putString("COLUMNA", columna);
 
+        //Establecemos el flag en negativo para mostrar la no-seleccion
+        flag = false;
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getLoaderManager().initLoader(0, ARGS, this).forceLoad();
+    }
 
 
     // Called when a new Loader needs to be created
@@ -237,6 +234,24 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<ArrayList<Clase>> loader) {
 //        recyclerView.setAdapter(null);
+    }
+
+    public void update() {
+//        getLoaderManager().initLoader(0, ARGS, this).forceLoad();
+
+        ArrayList array = new ArrayList();
+        array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
+        cAdaptador.cambiarLista(array);
+//        cAdaptador.notifyDataSetChanged();
+        if (true) {
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
     }
 }
 

@@ -2,7 +2,6 @@ package com.example.efaa.iee;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -10,17 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-//import com.google.android.gms.location.places.Place;
-
 import java.util.List;
+
+//import com.google.android.gms.location.places.Place;
 
 /**
  * Created by Neri Ortez on 09/05/2016.
@@ -28,22 +25,55 @@ import java.util.List;
 public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAdaptador.ClaseViewHolder> {
 
     private Context context;
-    private List<Clase> lista;
-
-    public interface InterfaceEscuchador {
-        void Escuchador(boolean actualizarCursada);
-    }
-
+    private List<Clase> LISTA;
 
     public ClaseRecyclerAdaptador(List<Clase> Lista) {
-            lista = Lista;
+        LISTA = Lista;
     }
 
+    public List<Clase> getLISTA() {
+        return LISTA;
+    }
+
+    public void cambiarLista(List<Clase> Lista) {
+        String[] array;
+        Lista.arra
+        for (Clase:
+                ) {
+
+        }
+        if (LISTA.retainAll(Lista)) {
+            for (Clase clase :
+                    Lista) {
+                if (!LISTA.contains(clase)) {
+                    LISTA.add(clase);
+                    int position = LISTA.lastIndexOf(clase);
+                    notifyItemInserted(position);
+                    notifyItemRangeChanged(position, LISTA.size());
+                }
+            }
+        }
+
+    }
+
+    public void removerItemEn(int position) {
+        LISTA.remove(position);
+        notifyItemRemoved(position);
+//        notifyDataSetChanged();
+//        notifyItemRangeChanged(position, LISTA.size());
+    }
+
+    public void insertarItem(Clase clase) {
+        LISTA.add(clase);
+        int position = LISTA.lastIndexOf(clase);
+//        notifyItemRangeChanged(LISTA.lastIndexOf(clase), 1);
+        notifyItemInserted(position);
+    }
 
     @Override
     public ClaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-        if (lista.get(0).CODIGO.compareTo("NADA") == 0) {
+        if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
             ProgressBar progressBar = new ProgressBar(parent.getContext());
             progressBar.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -60,15 +90,14 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         return new ClaseViewHolder(v);
     }
 
-
     @Override
     public void onBindViewHolder(ClaseViewHolder holder, int position) {
 
-        if (lista.get(0).CODIGO.compareTo("NADA") == 0) {
+        if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
             return;
         } else {
             //La clase que se va a usar, sacado de la posicion
-            Clase clase = lista.get(position);
+            Clase clase = LISTA.get(position);
             //Seteando datos, tomando el holder.
             holder.codigo.setText(clase.CODIGO);
             holder.indice.setText(String.valueOf(clase.INDICE));
@@ -79,8 +108,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     }
 
-
-
     /**
      * Returns the total number of items in the data set hold by the adapter.
      *
@@ -88,9 +115,13 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
      */
     @Override
     public int getItemCount() {
-        return lista.size();
+        return LISTA.size();
     }
 
+
+    public interface InterfaceEscuchador {
+        void Escuchador(boolean actualizarCursada);
+    }
 
     public class ClaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Campos de la clase
@@ -106,7 +137,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public ClaseViewHolder(View view) {
             super(view);
             escuchador = (TabActivity) view.getContext();
-            if (lista.get(0).CODIGO.compareTo("NADA") == 0) {
+            if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
                 return;
             } else {
                 indice = (EditText) view.findViewById(R.id.editText);
@@ -123,15 +154,29 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
         @Override
         public void onClick(View v) {
-            remove_at(getAdapterPosition());
+            remove_at(v.getContext(), v, getAdapterPosition());
         }
 
-        private void remove_at(int position) {
-
-            lista.remove(position);
+        private void remove_at(Context context1, View v, int position) {
+            Clase clase = LISTA.get(position);
+            dataSource source = new dataSource();
+            SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+            String resultado;
+            if (clase.CURSADA) {
+                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "0", clase, context1);
+            } else {
+                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
+            }
+            dob.releaseReference();
+            if (resultado == "-1") {
+                ((CheckBox) v).setChecked(true);
+                return;
+            }
+            boolean cursada = LISTA.get(position).CURSADA;
+            LISTA.remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, lista.size());
-            escuchador.Escuchador(lista.get(position).CURSADA);
+//            notifyItemRangeChanged(position, LISTA.size());
+            escuchador.Escuchador(cursada);
         }
     }
 

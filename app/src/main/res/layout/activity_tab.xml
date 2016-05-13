@@ -47,6 +47,6 @@
 
         android:src="@drawable/refre"
         android:adjustViewBounds="false"
-        android:scaleType="fitStart" />
+        android:scaleType="fitCenter" />
 
 </android.support.design.widget.CoordinatorLayout>
