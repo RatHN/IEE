@@ -2,6 +2,7 @@ package com.example.efaa.iee;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //import com.google.android.gms.location.places.Place;
@@ -36,24 +38,10 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     }
 
     public void cambiarLista(List<Clase> Lista) {
-        String[] array;
-        Lista.arra
-        for (Clase:
-                ) {
-
-        }
-        if (LISTA.retainAll(Lista)) {
-            for (Clase clase :
-                    Lista) {
-                if (!LISTA.contains(clase)) {
-                    LISTA.add(clase);
-                    int position = LISTA.lastIndexOf(clase);
-                    notifyItemInserted(position);
-                    notifyItemRangeChanged(position, LISTA.size());
-                }
-            }
-        }
-
+        this.LISTA.clear();
+        this.LISTA = Lista;
+        Snackbar.make((View) getActivity, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 
     public void removerItemEn(int position) {
@@ -167,6 +155,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             } else {
                 resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
             }
+
             dob.releaseReference();
             if (resultado == "-1") {
                 ((CheckBox) v).setChecked(true);

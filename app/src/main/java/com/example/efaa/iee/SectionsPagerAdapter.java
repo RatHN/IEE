@@ -1,10 +1,12 @@
 package com.example.efaa.iee;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -27,7 +29,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         if (f != null && !f.flag) {
             f.update();
-            return POSITION_NONE;
+
+//            return POSITION_NONE;
         }
         return super.getItemPosition(object);
 //        return POSITION_NONE;
