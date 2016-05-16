@@ -112,6 +112,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
                     Log.i("TAG", a);
                 }
 
+                clasesParaDialog.clear();
                 // 1. Instantiate an AlertDialog.Builder with its constructor
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder
@@ -159,9 +160,6 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
                             }
                         });
 
-                //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //                        .setAction("Action", null).show();
-                // 3. Get the AlertDialog from create()
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 dob.releaseReference();
