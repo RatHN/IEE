@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -238,9 +239,12 @@ public class dataSource {
         return lista;
     }
 
-    public Cursor queryPorCursar(SQLiteDatabase db, String codigo) {
-        String columns[] = new String[]{Columnas.PORcURSAR};
-        String selection = Columnas.CODIGO + " = " + codigo + " ";//WHERE author = ?
+    public Cursor queryPorCursar(SQLiteDatabase db, @Nullable String OneOrZero) {
+        if (OneOrZero == null) {
+            OneOrZero = "1";
+        }
+        String columns[] = new String[]{Columnas.ID_CLASE, Columnas.NOMBRE, Columnas.CODIGO, Columnas.UV, Columnas.INDICE, Columnas.DISPONIBLE};
+        String selection = Columnas.CURSADA + " = " + OneOrZero + " ";//WHERE author = ?
 
 
         return db.query(
@@ -276,9 +280,9 @@ public class dataSource {
 
                 Cursor cursor = db.rawQuery("SELECT codigo FROM clases WHERE codigo = \"" + clas.CODIGO + "\" AND cursada = \"1\"", null);
                 if (cursor.getCount() > 0) {
-                    Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
-                            "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
-                            " por favor desmarque primero asignaturas dependientes y luego sus requisitos", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
+//                            "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
+//                            " por favor desmarque primero asignaturas dependientes y luego sus requisitos", Toast.LENGTH_LONG).show();
                     return "-1";
                 }
 //                cursor = clas.marccarDisponible(db, context);

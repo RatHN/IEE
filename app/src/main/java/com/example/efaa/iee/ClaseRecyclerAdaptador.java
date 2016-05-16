@@ -5,18 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //import com.google.android.gms.location.places.Place;
@@ -61,20 +57,20 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     @Override
     public ClaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
-        if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
-            ProgressBar progressBar = new ProgressBar(parent.getContext());
-            progressBar.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    Gravity.CENTER));
-
-            progressBar.setIndeterminate(true);
-            v = progressBar;
-        } else {
+//        if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
+//            ProgressBar progressBar = new ProgressBar(parent.getContext());
+//            progressBar.setLayoutParams(new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.MATCH_PARENT,
+//                    LinearLayout.LayoutParams.MATCH_PARENT,
+//                    Gravity.CENTER));
+//
+//            progressBar.setIndeterminate(true);
+//            v = progressBar;
+//        } else {
             v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.card_clase, parent, false);
 
-        }
+//        }
         return new ClaseViewHolder(v);
     }
 
@@ -159,11 +155,16 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             dob.releaseReference();
             if (resultado == "-1") {
                 ((CheckBox) v).setChecked(true);
+                Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
+                                " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
+                        Snackbar.LENGTH_SHORT).show();
                 return;
             }
             boolean cursada = LISTA.get(position).CURSADA;
             LISTA.remove(position);
             notifyItemRemoved(position);
+
+
 //            notifyItemRangeChanged(position, LISTA.size());
             escuchador.Escuchador(cursada);
             Snackbar.make((View) v, "Replace with your own action", Snackbar.LENGTH_LONG)

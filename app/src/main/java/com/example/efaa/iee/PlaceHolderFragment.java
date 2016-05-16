@@ -6,18 +6,16 @@ package com.example.efaa.iee;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -92,25 +90,23 @@ public class PlaceHolderFragment extends Fragment
     public static PlaceHolderFragment newInstance(int sectionNumber) {
         PlaceHolderFragment fragment = new PlaceHolderFragment();
         Bundle args = new Bundle();
+        Boolean bol = null;
+        switch (sectionNumber) {
+            case 1:
+                bol = true;
+                break;
+            case 2:
+                bol = false;
+                break;
+        }
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        args.putBoolean(FLAG, false);
+        args.putBoolean(FLAG, bol);
         fragment.setArguments(args);
 
         return fragment;
     }
 
-    public void run(View parent) {
-        //Conseguimos el array
-        ArrayList array = new ArrayList();
-        array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
-
-        //Creamos el adaptador para ese array
-//       adaptador = new AdaptadorArrayClase(getContext(), array);
-        cAdaptador = new ClaseRecyclerAdaptador(array);
-        ;
-        recyclerView.setAdapter(cAdaptador);
-    }
-
+    private View ROOTVIEW;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -191,27 +187,34 @@ public class PlaceHolderFragment extends Fragment
         ARGS.putString("COLUMNA", columna);
 
         //Establecemos el flag en negativo para mostrar la no-seleccion
-        flag = false;
+//        flag = false;
         return rootView;
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getLoaderManager().initLoader(0, ARGS, this).forceLoad();
+        getLoaderManager().initLoader(0, ARGS, this);
+//        getSupportLoaderManager();
     }
 
 
     // Called when a new Loader needs to be created
 
     @Override
-    public android.support.v4.content.Loader<ArrayList<Clase>> onCreateLoader(int id, Bundle args) {
+    public Loader<ArrayList<Clase>> onCreateLoader(int id, Bundle args) {
         final String columna = args.getString("COLUMNA");
 
+//        return new ClaseLoader(getContext(), COLUMNA);
         return new android.support.v4.content.AsyncTaskLoader<ArrayList<Clase>>(getActivity()) {
             @Override
+            public void onStartLoading() {
+                forceLoad();
+            }
+            @Override
             public ArrayList<Clase> loadInBackground() {
-                ArrayList array = new ArrayList();
+                ArrayList array;
                 array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
                 return array;
             }
@@ -219,39 +222,42 @@ public class PlaceHolderFragment extends Fragment
 
     }
 
-    /**
- * Soporte con arraylist
- */
+
     @Override
-    public void onLoadFinished(android.support.v4.content.Loader<ArrayList<Clase>> loader,
+    public void onLoadFinished(Loader<ArrayList<Clase>> loader,
                                ArrayList<Clase> data) {
 //        if (cAdaptador.getItemCount() != adaptador1.getItemCount()){
-            recyclerView.setAdapter(new ClaseRecyclerAdaptador(data));
+        int fin = recyclerView.getAdapter().getItemCount();
+//        cAdaptador = new ClaseRecyclerAdaptador(data);
+
+        recyclerView.setAdapter(new ClaseRecyclerAdaptador(data));
+
+//        recyclerView.getAdapter().notifyItemRangeChanged(0, fin);
 //        }
 
     }
 
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<Clase>> loader) {
-//        recyclerView.setAdapter(null);
+    public void onLoaderReset(Loader<ArrayList<Clase>> loader) {
+        recyclerView.setAdapter(null);
     }
 
     public void update() {
 //        getLoaderManager().initLoader(0, ARGS, this).forceLoad();
 
-        ArrayList array = new ArrayList();
-        array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
-        cAdaptador.cambiarLista(array);
-//        cAdaptador.notifyDataSetChanged();
-        if (true) {
-            return;
+//        ArrayList array = new ArrayList();
+//        array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
+        while (recyclerView.isAnimating()) {
+            ;
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        getLoaderManager().initLoader(0, ARGS, this);
+//        cAdaptador.cambiarLista(array);
+//        cAdaptador.notifyDataSetChanged();
+    }
 
-            }
-        }).start();
+    @Override
+    public String toString() {
+        return COLUMNA;
     }
 }
 

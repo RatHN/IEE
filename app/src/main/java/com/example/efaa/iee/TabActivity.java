@@ -1,17 +1,24 @@
 package com.example.efaa.iee;
 
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdaptador.InterfaceEscuchador {
 
@@ -93,15 +100,83 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
             fab.setBackground(getDrawable(R.drawable.refre));
             fab.setImageDrawable(getDrawable(R.drawable.refre));
         }
+        assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+                final Cursor cursor = DataSource.queryPorCursar(dob, null);
+                while (cursor.moveToNext()) {
+                    String a = cursor.getString(cursor.getColumnIndex(dataSource.Columnas.NOMBRE));
+                    Log.i("TAG", a);
+                }
+
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder
+                        .setMultiChoiceItems(cursor, dataSource.Columnas.DISPONIBLE,
+                                dataSource.Columnas.NOMBRE,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                        Clase clase;
+                                        if (cursor.moveToPosition(which)) {
+                                            clase = new Clase(cursor.getString(cursor.getColumnIndex(dataSource.Columnas.NOMBRE)),
+                                                    cursor.getString(cursor.getColumnIndex(dataSource.Columnas.CODIGO)),
+                                                    null,
+                                                    cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.UV)),
+                                                    cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
+                                                    true);
+
+                                            clasesParaDialog.add(clase);
+                                        }
+                                    }
+                                })
+//                        .setMessage(getResources().getString(R.string.mensaje_calculador))
+                        .setPositiveButton("Adelante",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+//                                        Intent intento = new Intent(getApplicationContext(), ActividadCalculador.class);
+//                                        intento.putExtra("CurPas", "Cursar");
+//                                        onStop();
+//                                        startActivity(intento);
+
+//                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getApplicationContext());
+//                                        builder1.setMessage(clasesParaDialog.toString());
+//                                        AlertDialog dialog1 = builder1.create();
+//                                        dialog1.show();
+                                        Toast.makeText(getApplicationContext(), clasesParaDialog.toString(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                        .setTitle(getResources().getString(R.string.mensaje_calculador))
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+
+                //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //                        .setAction("Action", null).show();
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dob.releaseReference();
+
             }
         });
 
     }
+
+    dataSource DataSource = new dataSource();
+    SQLiteDatabase dob;
+    ArrayList<Clase> clasesParaDialog = new ArrayList<>();
+
+
+
 
 
     @Override

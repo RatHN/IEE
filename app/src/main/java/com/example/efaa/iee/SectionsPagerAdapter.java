@@ -1,12 +1,8 @@
 package com.example.efaa.iee;
 
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -26,11 +22,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         // TODO: Establecer el update a modo  que se actualize el fragmento contrario...
         // O mejor que se actualizen los dos, pero de manera suave.
         PlaceHolderFragment f = (PlaceHolderFragment) object;
-
+        int count = 0;
         if (f != null && !f.flag) {
             f.update();
 
-//            return POSITION_NONE;
+            return POSITION_NONE;
         }
         return super.getItemPosition(object);
 //        return POSITION_NONE;
