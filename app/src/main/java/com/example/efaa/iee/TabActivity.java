@@ -121,7 +121,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
                                 new DialogInterface.OnMultiChoiceClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                        Clase clase;
+                                        Clase clase = new Clase();
                                         if (cursor.moveToPosition(which)) {
                                             clase = new Clase(cursor.getString(cursor.getColumnIndex(dataSource.Columnas.NOMBRE)),
                                                     cursor.getString(cursor.getColumnIndex(dataSource.Columnas.CODIGO)),
@@ -129,8 +129,18 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
                                                     cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.UV)),
                                                     cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
                                                     true);
-
+                                            if (isChecked) {
                                             clasesParaDialog.add(clase);
+                                                clase.position = clasesParaDialog.lastIndexOf(clase);
+                                            }
+                                        } else {
+                                            for (Clase clase1 :
+                                                    clasesParaDialog) {
+                                                switch (clase1.NOMBRE.compareTo(clase.NOMBRE)) {
+                                                    case 0:
+                                                        clasesParaDialog.remove(clasesParaDialog.lastIndexOf(clase1));
+                                                }
+                                            }
                                         }
                                     }
                                 })
@@ -171,6 +181,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
 
     dataSource DataSource = new dataSource();
     SQLiteDatabase dob;
+
     ArrayList<Clase> clasesParaDialog = new ArrayList<>();
 
 

@@ -1,7 +1,6 @@
 package com.example.efaa.iee;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
@@ -22,6 +21,8 @@ public class Clase extends Clas{
     public int UV;
     public int INDICE;
     public boolean CURSADA;
+
+    public int position = 0;
 
 //    private dataSource dtsrc = new dataSource();
 //    private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
