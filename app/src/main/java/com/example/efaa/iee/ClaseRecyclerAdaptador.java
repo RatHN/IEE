@@ -120,7 +120,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
         public ClaseViewHolder(View view) {
             super(view);
-            escuchador = (TabActivity) view.getContext();
+            escuchador = (InterfaceEscuchador) view.getContext();
             if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
                 return;
             } else {
@@ -132,7 +132,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 //Cambiamos la escucha y seteamos el escucha de click
                 listener = this;
                 nombre.setOnClickListener(listener);
-                escuchador = (TabActivity) view.getContext();
+                escuchador = (InterfaceEscuchador) view.getContext();
             }
         }
 

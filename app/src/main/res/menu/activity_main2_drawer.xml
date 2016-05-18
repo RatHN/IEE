@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+
+
+    <group>
+        <item
+            android:id="@+id/informacion"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Información" />
+        <item
+            android:id="@+id/plan"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Plan de Estudios" />
+        <item
+            android:id="@+id/face"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Facebook I.E.I." />
+        <item
+            android:id="@+id/pdf_otro"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Algo que se le olvido a Emil" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/bug_report"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Enviar comentarios" />
+            <item
+                android:id="@+id/rate"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Me gusta...! ¡Mueve!" />
+        </menu>
+    </item>
+
+</menu>

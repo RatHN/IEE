@@ -16,11 +16,16 @@
     <string name="porCursar">porcursar</string>
 
     <string name="title_activity_tab">Visor Calculador Masiso Buena Onda</string>
-    <string name="mensaje_calculador">Por lo que más quiera en este mundo: Seleccione las clases que
+    <string name="mensaje_calculador">Seleccione las clases que
         cursó el periodo anterior</string>
 
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_main2">I.E.I. UNAH-VS</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="icono_de_la_aplicacion">Icono de la aplicacion</string>
 
 </resources>
