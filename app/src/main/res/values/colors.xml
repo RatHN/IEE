@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3f51b5</color>
-    <color name="colorPrimaryDark">#303f9f</color>
-    <color name="colorAccent">#ffab00</color>
-    <color name="background_material_light">#5c6bc0</color>
-    <color name="statusBarColor">#303f9f</color>
-    <color name="primary_material_light">#9f8b30</color>
+    <color name="colorPrimary">#32ab79</color>
+    <color name="colorPrimaryDark">#4c697b</color>
+    <color name="colorAccent">#fc7e37</color>
+    <color name="background_material_light">#4c697b</color>
+    <color name="statusBarColor">#4c697b</color>
+    <color name="primary_material_light">#bcac5f</color>
     <color name="black">#000000</color>
+    <color name="negro_transparente">#82000000</color>
 </resources>

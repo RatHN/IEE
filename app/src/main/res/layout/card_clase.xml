@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@drawable/ic_menu_guardar">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -112,11 +113,11 @@
 
             <Button
                 android:id="@+id/per100Boton"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="?android:attr/buttonStyleInset"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="bottom"
-                android:text="Guardar" />
+                android:background="@drawable/ic_menu_guardar" />
         </LinearLayout>
 
 

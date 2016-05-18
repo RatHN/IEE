@@ -14,9 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -41,43 +38,10 @@ public class PlaceHolderFragment extends Fragment
     public Boolean flag = false;
     private static final String FLAG = "flag";
 
-    SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-    public View.OnClickListener checkBoxClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-
-            CheckBox checkBox = (CheckBox) view.findViewById(R.id.Nombre_de_Clase);
-            LinearLayout e = (LinearLayout) view.getParent();
-            TextView codigo = (TextView) view.findViewById(R.id.Codigo);
-            String cod = (String) codigo.getText();
-            String dato = null;
-
-            if (checkBox.isChecked()) {
-                dato = "1";
-            } else {
-                dato = "0";
-            }
-            String result = new dataSource().insertarUnoOCero(dob, cod, dataSource.Columnas.CURSADA, dato,
-                    new dataSource().queryCrearClase(dob, cod, view.getContext()), view.getContext());
-            if (result == "-1") {
-                checkBox.setChecked(true);
-            }
-
-//        ClassFragment fra = getShe
-            else if ((result != "0" || result != "1")
-                    && getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-
-            }
-            dob.releaseReference();
-
-
-        }
-    };
+    SQLiteDatabase dob;
 
     String COLUMNA;
-//    ClaseRecyclerAdaptador recyclerAdaptador;
-
+    getPermisos permisos;
 
 
     public PlaceHolderFragment() {
@@ -93,10 +57,10 @@ public class PlaceHolderFragment extends Fragment
         Boolean bol = null;
         switch (sectionNumber) {
             case 1:
-                bol = true;
+                bol = false;
                 break;
             case 2:
-                bol = false;
+                bol = true;
                 break;
         }
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
@@ -115,6 +79,7 @@ public class PlaceHolderFragment extends Fragment
 //        View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
         View rootView = inflater.inflate(R.layout.reciclador_tab, container, false);
 
+        permisos = (getPermisos) getActivity();
         //Conseguir el listView o RecyclerView
 //        lista = (ListView) rootView.findViewById(R.id.listViewFragment);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reciclador);
@@ -125,7 +90,7 @@ public class PlaceHolderFragment extends Fragment
         //Establecer el tipo de vista: Cursadas, Disponibles o especial
         String columna = dataSource.Columnas.DISPONIBLE;
         switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
-            case 1:
+            case 2:
                 columna = dataSource.Columnas.CURSADA;
         }
         COLUMNA = columna;
@@ -214,8 +179,13 @@ public class PlaceHolderFragment extends Fragment
             }
             @Override
             public ArrayList<Clase> loadInBackground() {
+                while (!permisos.getPermisos()) {
+                    ;
+                }
                 ArrayList array;
+                dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
                 array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
+                dob.releaseReference();
                 return array;
             }
         };
@@ -258,6 +228,10 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public String toString() {
         return COLUMNA;
+    }
+
+    public interface getPermisos {
+        public boolean getPermisos();
     }
 }
 

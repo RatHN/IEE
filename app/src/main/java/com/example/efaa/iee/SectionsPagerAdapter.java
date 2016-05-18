@@ -55,9 +55,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return CURSADAS;
-            case 1:
                 return DISPONIBLES;
+            case 1:
+                return CURSADAS;
             case 2:
                 return CALCULADORA;
         }

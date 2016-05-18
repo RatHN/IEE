@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         o.mkdirs();
                         CopyRaw(ID, "data.sqlite");
                     }
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
+                    // permission was granted, yay! Do the work
                 } else {
                     // 1. Instantiate an AlertDialog.Builder with its constructor
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -71,20 +69,15 @@ public class MainActivity extends AppCompatActivity {
                                     finish();
                                 }
                             });
-
                     // 3. Get the AlertDialog from create()
                     AlertDialog dialog = builder.create();
                     dialog.show();
                     Toast.makeText(this, "La aplicacion no puede continuar sin permisos de leer Y " +
                             "escribir en memoria", Toast.LENGTH_LONG).show();
-
-
                 }
                 return;
-
             }
         }
-
     }
 
     @Override
@@ -92,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Check permisos para escribir y si son permitidos: ESCRIBIR Y LEER la BASE DE DATOS
+        //Check permisos para escribir y si no son permitidos: ESCRIBIR Y LEER la BASE DE DATOS
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 

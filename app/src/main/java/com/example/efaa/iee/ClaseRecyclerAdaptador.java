@@ -1,14 +1,17 @@
 package com.example.efaa.iee;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -103,9 +106,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     }
 
 
-    public interface InterfaceEscuchador {
-        void Escuchador(boolean actualizarCursada);
-    }
 
     public class ClaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Campos de la clase
@@ -113,14 +113,17 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public CheckBox nombre;
         public TextView codigo;
         public TextView uv;
+        public Button guardar;
         public CardView mCardView;
-        public OnClickListener listener;
+        public OnClickListener checkListener;
         public InterfaceEscuchador escuchador;
+        public InterfaceSetearIndice setearIndice;
 
 
         public ClaseViewHolder(View view) {
             super(view);
             escuchador = (InterfaceEscuchador) view.getContext();
+            setearIndice = (InterfaceSetearIndice) view.getContext();
             if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
                 return;
             } else {
@@ -128,11 +131,29 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 nombre = (CheckBox) view.findViewById(R.id.Nombre_de_Clase);
                 codigo = (TextView) view.findViewById(R.id.Codigo);
                 uv = (TextView) view.findViewById(R.id.UV);
+                ((Button) view.findViewById(R.id.per100Boton)).setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        int ind = Integer.parseInt(indice.getText().toString());
+                        if (ind < 0 || ind > 100) {
+                            setIndice(v);
+                            return;
+                        }
+                        Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
+                                + codigo.getText());
+                        ContentValues values = new ContentValues();
+                        values.put(dataSource.Columnas.INDICE,
+                                String.valueOf(indice.getText()));
+                        String selection = dataSource.Columnas.CODIGO + " = ?";
+                        String[] selectionArgs = {String.valueOf(codigo.getText())};
+                        setearIndice.setearIndice(selection, selectionArgs, values);
+
+//            Log.e("OREJAS OTRA VEZ", String.valueOf());
+                    }
+                });
 
                 //Cambiamos la escucha y seteamos el escucha de click
-                listener = this;
-                nombre.setOnClickListener(listener);
-                escuchador = (InterfaceEscuchador) view.getContext();
+                checkListener = this;
+                nombre.setOnClickListener(checkListener);
             }
         }
 
@@ -140,6 +161,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public void onClick(View v) {
             remove_at(v.getContext(), v, getAdapterPosition());
         }
+
 
         private void remove_at(Context context1, View v, int position) {
             Clase clase = LISTA.get(position);
@@ -170,7 +192,21 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             Snackbar.make((View) v, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
+
+        private void setIndice(View view) {
+            Snackbar.make(view, "El valor es invalido", Snackbar.LENGTH_LONG).show();
+        }
     }
 
+
+    public interface InterfaceEscuchador {
+        void Escuchador(boolean actualizarCursada);
+
+        void EsconderTeclado();
+    }
+
+    public interface InterfaceSetearIndice {
+        void setearIndice(String selection, String[] selectionArgs, ContentValues values);
+    }
 
 }

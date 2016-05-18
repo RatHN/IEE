@@ -1,5 +1,6 @@
 package com.example.efaa.iee;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,7 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdaptador.InterfaceEscuchador {
+public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdaptador.InterfaceEscuchador, ClaseRecyclerAdaptador.InterfaceSetearIndice {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -232,5 +233,15 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
 //        transaction.replace(R.id.reciclador, fragment).commit();
         mSectionsPagerAdapter.notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void EsconderTeclado() {
+
+    }
+
+    @Override
+    public void setearIndice(String selection, String[] selectionArgs, ContentValues values) {
+        dob.update(dataSource.TABLE, values, selection, selectionArgs);
     }
 }
