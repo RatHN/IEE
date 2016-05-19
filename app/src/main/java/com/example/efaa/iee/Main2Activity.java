@@ -26,6 +26,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.test.mock.MockApplication;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,7 +65,7 @@ public class Main2Activity extends AppCompatActivity
     SQLiteDatabase dob;
     private String dbPath = "/sdcard/UNAH_IEE/data.sqlite";
     AlertDialog dialog1;
-    ArrayList<Clase> clasesParaDialog = new ArrayList<>();
+    ArrayList<String> clasesParaDialog = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,11 +176,11 @@ public class Main2Activity extends AppCompatActivity
                                                     cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
                                                     true);
                                             if (isChecked) {
-                                                clasesParaDialog.add(clase);
+                                                clasesParaDialog.add(clase.CODIGO);
                                                 clase.position = clasesParaDialog.lastIndexOf(clase);
                                             } else {
-                                                for (Clase clase1 : clasesParaDialog) {
-                                                    if (clase1.NOMBRE.compareTo(clase.NOMBRE) == 0) {
+                                                for (String clase1 : clasesParaDialog) {
+                                                    if (clase1.compareTo(clase.CODIGO) == 0) {
                                                         int index = clasesParaDialog.lastIndexOf(clase1);
                                                         clasesParaDialog.remove(index);
                                                         break;
@@ -199,7 +200,11 @@ public class Main2Activity extends AppCompatActivity
                                         }
                                         Toast.makeText(getApplicationContext(), clasesParaDialog.toString(),
                                                 Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+                                        Intent i = new Intent(getApplicationContext(), ChuncheActivity.class);
+                                        Bundle b = new Bundle();
+                                        b.putStringArrayList("Array", clasesParaDialog);
+                                        i.putExtras(b);
+                                        startActivity(i);
                                     }
                                 })
                         .setTitle(getResources().getString(R.string.mensaje_calculador))
@@ -310,6 +315,7 @@ public class Main2Activity extends AppCompatActivity
         dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
         dob.update(dataSource.TABLE, values, selection, selectionArgs);
         dob.releaseReference();
+        Snackbar.make(((View) mViewPager), "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
     }
 
     public void PDFOpen(int id) {

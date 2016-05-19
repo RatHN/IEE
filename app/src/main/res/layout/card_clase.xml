@@ -1,8 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:background="@drawable/ic_menu_guardar">
+    android:gravity="center">
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -19,10 +18,7 @@
         card_view:cardUseCompatPadding="true"
         android:hapticFeedbackEnabled="true"
         android:focusable="true"
-
-        card_view:cardBackgroundColor="@color/cardview_light_background"
-        android:backgroundTintMode="screen"
-        android:backgroundTint="@color/black">
+        card_view:cardBackgroundColor="@color/cardview_light_background">
 
 
         <LinearLayout
@@ -90,7 +86,7 @@
                     <android.support.v7.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Porcentaje" />
+                        android:text="Indice" />
 
                     <EditText
                         android:id="@+id/editText"
@@ -114,9 +110,13 @@
             <Button
                 android:id="@+id/per100Boton"
                 style="?android:attr/buttonStyleInset"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
                 android:layout_gravity="bottom"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:elevation="16dp"
                 android:background="@drawable/ic_menu_guardar" />
         </LinearLayout>
 

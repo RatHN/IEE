@@ -107,7 +107,7 @@ public class PlaceHolderFragment extends Fragment
         ar.add(new Clase("NADA", "NADA", null, getContext()));
         cAdaptador = new ClaseRecyclerAdaptador(ar);
 
-        //Establecemos adaptadores
+        //Establecemos adaptadoresx
 //        lista.setAdapter(adapter);
 //        lManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         lManager = new LinearLayoutManager(getContext());

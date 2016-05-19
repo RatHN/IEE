@@ -7,7 +7,7 @@ android {
         }
     }
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '23.0.3'
     defaultConfig {
         applicationId "com.example.efaa.iee"
         minSdkVersion 17
@@ -32,4 +32,5 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:recyclerview-v7:23.3.0'
     compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
 }
