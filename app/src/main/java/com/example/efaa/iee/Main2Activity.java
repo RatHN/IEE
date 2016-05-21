@@ -178,6 +178,7 @@ public class Main2Activity extends AppCompatActivity
                                             if (isChecked) {
                                                 clasesParaDialog.add(clase.CODIGO);
                                                 clase.position = clasesParaDialog.lastIndexOf(clase);
+                                                return;
                                             } else {
                                                 for (String clase1 : clasesParaDialog) {
                                                     if (clase1.compareTo(clase.CODIGO) == 0) {

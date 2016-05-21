@@ -8,11 +8,37 @@
     tools:context="com.example.efaa.iee.ChuncheActivity"
     tools:showIn="@layout/activity_cunche">
 
-    <ExpandableListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/expan">
 
-    </ExpandableListView>
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/t" />
+
+        <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_alignParentStart="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerInfo" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_below="@id/recyclerInfo"
+                android:paddingTop="2dp"
+                android:id="@+id/recyclerDisponibles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

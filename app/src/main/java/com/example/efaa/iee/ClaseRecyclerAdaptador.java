@@ -186,8 +186,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             LISTA.remove(position);
             notifyItemRemoved(position);
 
-
-//            notifyItemRangeChanged(position, LISTA.size());
             escuchador.Escuchador(cursada);
             Snackbar.make((View) v, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
