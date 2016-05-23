@@ -164,7 +164,7 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
 //                                        startActivity(intento);
 
 //                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getApplicationContext());
-//                                        builder1.setMessage(clasesParaDialog.toString());
+//                                        builder1.setMessage(clasesString.toString());
 //                                        AlertDialog dialog1 = builder1.create();
 //                                        dialog1.show();
                                         if (clasesParaDialog.size() == 0) {

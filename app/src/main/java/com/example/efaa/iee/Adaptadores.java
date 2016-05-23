@@ -4,7 +4,10 @@ package com.example.efaa.iee;
  * Created by Neri Ortez on 21/05/2016.
  */
 
+import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,7 @@ class AdaptadorDeDisponibles extends RecyclerView.Adapter<AdaptadorDeDisponibles
         holder.codigo.setText(clase.CODIGO);
         holder.nombre.setText(clase.NOMBRE);
         holder.uv.setText("Unidades Valorativas: " + String.valueOf(clase.UV));
+        holder.enab.setEnabled(!clase.CURSADA);
 
     }
 
@@ -52,17 +56,39 @@ class AdaptadorDeDisponibles extends RecyclerView.Adapter<AdaptadorDeDisponibles
         TextView uv;
         Comm iPadre;
         Clase CLASE;
+        View enab;
+
+        public void setEnablear(Boolean dale){
+
+        }
 
         public DisponibleViewHolder(View view) {
             super(view);
+            enab = view;
             iPadre = ((Comm) view.getContext());
             nombre = ((TextView) view.findViewById(R.id.Nombre_de_Clase));
             codigo = ((TextView) view.findViewById(R.id.Codigo));
             uv = (TextView) view.findViewById(R.id.UV);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    v.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
                     iPadre.agregarAInfo(CLASE, LISTA.lastIndexOf(CLASE));
+                }
+            });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        if (v.getElevation() != 10) {
+                            (v).setElevation(10);
+                        } else {
+                            v.setElevation(4);
+                        }
+                    }
+                    return true;
                 }
             });
         }
@@ -73,6 +99,13 @@ class AdaptadorDeDisponibles extends RecyclerView.Adapter<AdaptadorDeDisponibles
      */
     interface Comm {
         void agregarAInfo(Clase clase, int position);
+    }
+
+    /**
+     * Inhabilitar una vista en base a su posicion
+     */
+    public void inhabilitar(int pos){
+
     }
 
 }
@@ -98,10 +131,14 @@ class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoViewHolde
     public void onBindViewHolder(InfoViewHolder holder, int position) {
         Clase clase = LISTA.get(position);
         holder.CLASE = clase;
-        holder.codigo.setText(clase.CODIGO);
         holder.nombre.setText(clase.NOMBRE);
-        holder.uv.setText(String.valueOf(clase.UV));
-
+        holder.uv.setText("Unidades Valorativas: " + String.valueOf(clase.UV));
+        if (holder.codigo != null) {
+//            holder.codigo.setText(clase.CODIGO);
+            holder.codigo.setText(null);
+//            holder.uv.setText(String.valueOf(clase.UV));
+//            holder.uv.setText(null);
+        }
     }
 
     @Override
@@ -121,11 +158,28 @@ class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoViewHolde
             iPadre = ((CommInfo) view.getContext());
             nombre = ((TextView) view.findViewById(R.id.Nombre_de_Clase));
             codigo = ((TextView) view.findViewById(R.id.Codigo));
+//            codigo = null;
             uv = (TextView) view.findViewById(R.id.UV);
+//            uv = null;
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     iPadre.agregarADisponibles(CLASE, LISTA.lastIndexOf(CLASE));
+
+                }
+            });
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        if (v.getElevation() != 10) {
+                            (v).setElevation(10);
+                        } else {
+                            v.setElevation(2);
+                        }
+                    }
+                    return true;
                 }
             });
         }

@@ -10,10 +10,18 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding_top"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+<!--
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
@@ -33,9 +41,34 @@
 
 
         </android.support.design.widget.CollapsingToolbarLayout>
+-->
     </android.support.design.widget.AppBarLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl">
+        <ImageView
+            android:id="@+id/im"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:src="@drawable/fondo1"
+            android:tint="@color/colorAccent" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:id="@+id/tu"/>
+        <include
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            layout="@layout/content_cunche"
+            android:layout_below="@id/im"
+            />
+    </RelativeLayout>
 
-    <include layout="@layout/content_cunche" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

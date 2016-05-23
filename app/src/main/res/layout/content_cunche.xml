@@ -6,29 +6,44 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.efaa.iee.ChuncheActivity"
-    tools:showIn="@layout/activity_cunche">
+    tools:showIn="@layout/activity_cunche"
+    android:clipToPadding="false">
 
 
     <LinearLayout
+        android:background="@color/cardview_light_background"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clipToPadding="false">
+        <LinearLayout android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:clipToPadding="false">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/t" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/t" />
+
+        </LinearLayout>
+
 
         <RelativeLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clipToPadding="false">
 
             <android.support.v7.widget.RecyclerView
                 android:layout_alignParentStart="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
                 android:id="@+id/recyclerInfo" />
 
             <android.support.v7.widget.RecyclerView
@@ -36,7 +51,9 @@
                 android:paddingTop="2dp"
                 android:id="@+id/recyclerDisponibles"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:clipToPadding="false"/>
 
         </RelativeLayout>
     </LinearLayout>

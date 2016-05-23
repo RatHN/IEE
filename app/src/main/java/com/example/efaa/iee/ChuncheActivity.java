@@ -30,12 +30,28 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
     RecyclerView.LayoutManager lManager;
     ArrayList<String> array;
     ArrayList<Clase> arrayClases;
+    int totalIndice;
+    int totalUV;
+    TextView tu;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        /*for (Clase clase1 :
+                dAdapter.LISTA) {
+            arra
+        }
+        outState.putStringArray("Array", dAdapter.LISTA.toArray(array));*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         array = getIntent().getExtras().getStringArrayList("Array");
+        totalIndice = getIntent().getExtras().getInt("totalIndice");
+        totalUV = getIntent().getExtras().getInt("totalUV");
+
 
         setContentView(R.layout.activity_cunche);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,12 +69,12 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
         Info = (RecyclerView) findViewById(R.id.recyclerInfo);
 //        Info.setHasFixedSize(true);
-        Info.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        Info.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
 //        Info.setLayoutManager(new LinearLayoutManager(this));
         iAdapter = new AdaptadorDeInfo(new ArrayList<Clase>());
 
         Disponibles = ((RecyclerView) findViewById(R.id.recyclerDisponibles));
-        Disponibles.setHasFixedSize(true);
+//        Disponibles.setHasFixedSize(true);
 
 //        lManager = new LinearLayoutManager(this);
         lManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -69,12 +85,22 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 //        ListView expan = (ListView) findViewById(R.id.expan);
 //        expan.setAdapter(new ArrayAdapter<String>(array));
 //        expan.setAdapter(new ListaAdaptador(getApplicationContext(), array));
+
+        /*TextView ti = (TextView) findViewById(R.id.t);
+        ti.setText("Indice= " + totalIndice );*/
+        tu = (TextView) findViewById(R.id.tu);
+        tu.setText(R.string.UVDisponibles);
+        tu.setText(String.valueOf(tu.getText()) + "\n" + String.valueOf(totalUV));
+        tu.setTextSize(28);
+        if (Info.getAdapter() == null) {
+            getSupportLoaderManager().initLoader(0, null, this);
+        }
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -82,6 +108,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         return new AsyncTaskLoader<ArrayList<Clase>>(this) {
             @Override
             public void onStartLoading() {
+                if (Info.getAdapter() != null) return;
                 forceLoad();
             }
 
@@ -112,13 +139,23 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void agregarAInfo(Clase clase, int pos) {
-        Boolean t = ((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.remove(clase);
+        AdaptadorDeDisponibles adapter = (AdaptadorDeDisponibles) Disponibles.getAdapter();
+        Boolean t = adapter.LISTA.remove(clase);
         Disponibles.getAdapter().notifyItemRemoved(pos);
+
+        totalUV -= clase.UV;
+        tu.setText(R.string.UVDisponibles);
+        tu.setText(String.valueOf(tu.getText()) + "\n" + String.valueOf(totalUV));
+
+        for (Clase clase1 :
+                adapter.LISTA) {
+//            if (clase1.UV > totalUV) clase1.CURSADA = true;
+        }
+
         if (Info.getAdapter() != null) {
             ((AdaptadorDeInfo) Info.getAdapter()).LISTA.add(clase);
             Info.getAdapter().notifyItemInserted(((AdaptadorDeInfo) Info.getAdapter()).LISTA.lastIndexOf(clase));
         } else {
-
             ArrayList<Clase> array = new ArrayList<>();
             array.add(clase);
             Info.setAdapter(new AdaptadorDeInfo(array));
@@ -129,13 +166,24 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
     public void agregarADisponibles(Clase clase, int pos) {
         Boolean t = ((AdaptadorDeInfo) Info.getAdapter()).LISTA.remove(clase);
         Info.getAdapter().notifyItemRemoved(pos);
+
+        totalUV += clase.UV;
+        tu.setText(R.string.UVDisponibles);
+        tu.setText(String.valueOf(tu.getText()) + "\n"
+                + String.valueOf(totalUV));
+
+        for (Clase clase1 :
+                ((AdaptadorDeInfo) Info.getAdapter()).LISTA) {
+//            if (clase1.UV > totalUV) clase1.CURSADA = true;
+        }
+
         if (Disponibles.getAdapter() != null) {
             ((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.add(clase);
             Disponibles.getAdapter().notifyItemInserted(((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.lastIndexOf(clase));
         } else {
             ArrayList<Clase> array = new ArrayList<>();
             array.add(clase);
-            Disponibles.setAdapter(new AdaptadorDeInfo(array));
+            Disponibles.setAdapter(new AdaptadorDeDisponibles(array));
         }
     }
 }

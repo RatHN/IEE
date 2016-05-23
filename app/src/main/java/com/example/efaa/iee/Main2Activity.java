@@ -26,7 +26,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.test.mock.MockApplication;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +37,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -65,7 +66,12 @@ public class Main2Activity extends AppCompatActivity
     SQLiteDatabase dob;
     private String dbPath = "/sdcard/UNAH_IEE/data.sqlite";
     AlertDialog dialog1;
-    ArrayList<String> clasesParaDialog = new ArrayList<>();
+    ArrayList<String> clasesString = new ArrayList<>();
+    ArrayList<Clase> clasesClases = new ArrayList<>();
+    int uv[] = {12, 14, 16, 20, 22, 24};
+
+    int totalUV;
+    int totalIndice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +164,9 @@ public class Main2Activity extends AppCompatActivity
                     Log.i("TAG", a);
                 }
 
-                clasesParaDialog.clear();
+                clasesString.clear();
+                clasesClases.clear();
+                totalIndice = totalUV = 0;
                 // 1. Instantiate an AlertDialog.Builder with its constructor
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder
@@ -176,14 +184,23 @@ public class Main2Activity extends AppCompatActivity
                                                     cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
                                                     true);
                                             if (isChecked) {
-                                                clasesParaDialog.add(clase.CODIGO);
-                                                clase.position = clasesParaDialog.lastIndexOf(clase);
+                                                if ( !clasesString.contains(clase.CODIGO)) {
+                                                    clasesString.add(clase.CODIGO);
+                                                    clasesClases.add(clase);
+
+                                                    totalIndice += clase.INDICE;
+                                                    totalUV += clase.UV;
+                                                }
+//                                                clase.position = clasesString.lastIndexOf(clase);
                                                 return;
                                             } else {
-                                                for (String clase1 : clasesParaDialog) {
+                                                for (String clase1 : clasesString) {
                                                     if (clase1.compareTo(clase.CODIGO) == 0) {
-                                                        int index = clasesParaDialog.lastIndexOf(clase1);
-                                                        clasesParaDialog.remove(index);
+                                                        int index = clasesString.lastIndexOf(clase1);
+                                                        clasesString.remove(index);
+                                                        clasesClases.remove(clase);
+                                                        totalUV -= clase.UV;
+                                                        totalIndice -= clase.INDICE;
                                                         break;
                                                     }
                                                 }
@@ -195,15 +212,26 @@ public class Main2Activity extends AppCompatActivity
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if (clasesParaDialog.size() == 0) {
+                                        if (clasesString.size() == 0) {
                                             eSO();
                                             return;
                                         }
-                                        Toast.makeText(getApplicationContext(), clasesParaDialog.toString(),
+                                        Toast.makeText(getApplicationContext(), clasesString.toString(),
                                                 Toast.LENGTH_SHORT).show();
+                                        totalIndice = totalIndice / clasesString.size();
+
+                                        if (totalIndice < 40) totalUV = uv[0];      //12
+                                        else if (totalIndice < 60) totalUV = uv[1]; //14
+                                        else if (totalIndice < 70) totalUV = uv[2]; //16
+                                        else if (totalIndice < 80) totalUV = uv[4]; //22
+                                        else totalUV = uv[5];                       //24
+
                                         Intent i = new Intent(getApplicationContext(), ChuncheActivity.class);
                                         Bundle b = new Bundle();
-                                        b.putStringArrayList("Array", clasesParaDialog);
+                                        b.putStringArrayList("Array", clasesString);
+                                        b.putInt("totalUV", totalUV);
+                                        b.putInt("totalIndice", totalIndice);
+
                                         i.putExtras(b);
                                         startActivity(i);
                                     }
