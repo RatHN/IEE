@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -26,7 +29,7 @@ import java.util.List;
 public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAdaptador.ClaseViewHolder> {
 
     private Context context;
-    private List<Clase> LISTA;
+    public List<Clase> LISTA;
 
     public ClaseRecyclerAdaptador(List<Clase> Lista) {
         LISTA = Lista;
@@ -42,21 +45,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     }
 
-    public void removerItemEn(int position) {
-        LISTA.remove(position);
-        notifyItemRemoved(position);
-//        notifyDataSetChanged();
-//        notifyItemRangeChanged(position, LISTA.size());
-    }
-
-    public void insertarItem(Clase clase) {
-        LISTA.add(clase);
-
-        int position = LISTA.lastIndexOf(clase);
-//        notifyItemRangeChanged(LISTA.lastIndexOf(clase), 1);
-        notifyItemInserted(position);
-    }
-
     @Override
     public ClaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
@@ -70,9 +58,16 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 //            progressBar.setIndeterminate(true);
 //            v = progressBar;
 //        } else {
-            v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.card_clase, parent, false);
-
+        v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_clase, parent, false);
+        /*CheckBox c = (CheckBox)v.findViewById(R.id.Nombre_de_Clase);
+        c.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ((ClaseViewHolder)v.getParent().getParent()).onClick(v);
+                ((RecyclerView)v.getParent().getParent().getParent().getParent().getParent()).getAdapter()
+            }
+        });*/
 //        }
         return new ClaseViewHolder(v);
     }
@@ -91,6 +86,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             holder.uv.setText(String.valueOf(clase.UV));
             holder.nombre.setText(clase.NOMBRE);
             holder.nombre.setChecked(clase.CURSADA);
+
         }
 
     }
@@ -118,10 +114,15 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public OnClickListener checkListener;
         public InterfaceEscuchador escuchador;
         public InterfaceSetearIndice setearIndice;
+        public boolean cursada;
+        public int position;
+        private View v;
+        private View mRemoveableView;
 
 
         public ClaseViewHolder(View view) {
             super(view);
+            this.v = view;
             escuchador = (InterfaceEscuchador) view.getContext();
             setearIndice = (InterfaceSetearIndice) view.getContext();
             if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
@@ -135,7 +136,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                     public void onClick(View v) {
                         int ind = Integer.parseInt(indice.getText().toString());
                         if (ind < 0 || ind > 100) {
-                            setIndice(v);
+                            setIndiceError(v);
                             return;
                         }
                         Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
@@ -154,7 +155,9 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 //Cambiamos la escucha y seteamos el escucha de click
                 checkListener = this;
                 nombre.setOnClickListener(checkListener);
+
             }
+            mRemoveableView = view;
         }
 
         @Override
@@ -182,24 +185,90 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                         Snackbar.LENGTH_SHORT).show();
                 return;
             }
-            boolean cursada = LISTA.get(position).CURSADA;
-            LISTA.remove(position);
-            notifyItemRemoved(position);
+            cursada = LISTA.get(position).CURSADA;
 
-            escuchador.Escuchador(cursada);
-            Snackbar.make((View) v, "Replace with your own action", Snackbar.LENGTH_LONG)
+            // Se inhabilitó porque exite la manera de deshabilitar esto despues de la animacion... Naaaaaa
+            escuchador.Escuchador(cursada, position);
+            this.position = position;
+
+
+            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
 
-        private void setIndice(View view) {
+        public void remover(Context context1, View v, int position) {
+            Clase clase = LISTA.get(position);
+            dataSource source = new dataSource();
+            SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+            String resultado;
+            if (clase.CURSADA) {
+                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "0", clase, context1);
+            } else {
+                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
+            }
+
+            dob.releaseReference();
+            if (resultado == "-1") {
+                ((CheckBox) v).setChecked(true);
+                Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
+                                " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
+                        Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            cursada = LISTA.get(position).CURSADA;
+
+            // Se inhabilitó porque exite la manera de deshabilitar esto despues de la animacion... Naaaaaa
+            escuchador.Escuchador(cursada, position);
+            this.position = position;
+
+
+            Snackbar.make(((View) this.nombre), "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
+        public void eso(View v){
+            TranslateAnimation trans = new TranslateAnimation(
+                    0,
+//                    300 * (int)getResources().getDisplayMetrics().density,
+                    300 * this.v.getContext().getResources().getDisplayMetrics().density,
+                    0,
+                    0);
+            trans.setDuration(500);
+
+            trans.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+//                    remover();
+                    escuchador.Escuchador(cursada, position);
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+        }
+
+        private void setIndiceError(View view) {
             Snackbar.make(view, "El valor es invalido", Snackbar.LENGTH_LONG).show();
+        }
+
+        public View getSwipableView() {
+            return mRemoveableView;
         }
     }
 
 
     public interface InterfaceEscuchador {
         void Escuchador(boolean actualizarCursada);
-
+        void Escuchador(boolean actualizarCursada, int pos);
         void EsconderTeclado();
     }
 

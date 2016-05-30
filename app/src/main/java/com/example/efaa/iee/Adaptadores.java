@@ -4,6 +4,8 @@ package com.example.efaa.iee;
  * Created by Neri Ortez on 21/05/2016.
  */
 
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 /**
  * Adaptador para mostrar las clases de disponibles del lado de las disponibles
@@ -123,8 +127,23 @@ class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoViewHolde
 
     @Override
     public InfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new InfoViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.info_layout, parent, false));
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.info_layout, parent, false);
+        int[] array = new int[]
+                {Color.GRAY,
+                        Color.parseColor("lime"),
+                        Color.parseColor("aqua"),
+                        Color.parseColor("silver"),
+                        Color.parseColor("olive"),
+                        Color.parseColor("teal"),
+                        Color.LTGRAY,
+                        Color.YELLOW,
+                        Color.WHITE};
+
+        int rnd = new Random().nextInt(array.length);
+
+        ((CardView) v).setCardBackgroundColor(array[rnd]);
+        return new InfoViewHolder(v);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +20,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -31,6 +33,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabClickListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,6 +76,9 @@ public class Main2Activity extends AppCompatActivity
     ArrayList<Clase> clasesClases = new ArrayList<>();
     int uv[] = {12, 14, 16, 20, 22, 24};
 
+    SharedPreferences pref;
+    final String PERMISO = "PERMISO";
+
     int totalUV;
     int totalIndice;
 
@@ -77,10 +86,34 @@ public class Main2Activity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        /*BottomBar bt = BottomBar.attach(this, savedInstanceState);
+        bt.setItems(
+                new BottomBarTab(R.drawable.ic_menu_camera, "Dispo"),
+                new BottomBarTab(R.drawable.ic_menu_comentar, "Pasadas"));
+
+        bt.setOnTabClickListener(new OnTabClickListener() {
+            @Override
+            public void onTabSelected(int position) {
+                switch position{
+                case 0:
+
+
+            }
+
+            @Override
+            public void onTabReSelected(int position) {
+
+            }
+        });*/
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        copiarBD();
+        pref = getPreferences(MODE_PRIVATE);
+        if(!pref.getBoolean(PERMISO, false)) {
+            copiarBD();
+        } else this.Permisos = true;
 
         /**
          * Aqui empieza el incrustamiento masivo de datos masivos que contienen datos mas masivos
@@ -95,6 +128,7 @@ public class Main2Activity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
 //        mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -134,6 +168,7 @@ public class Main2Activity extends AppCompatActivity
         });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
         tabLayout.setupWithViewPager(mViewPager);
 
         //
@@ -334,6 +369,11 @@ public class Main2Activity extends AppCompatActivity
         mSectionsPagerAdapter.notifyDataSetChanged();
     }
 
+    public void Escuchador(boolean actualizarCursada, int pos) {
+        mSectionsPagerAdapter.update(actualizarCursada, pos);
+//        mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void EsconderTeclado() {
 
@@ -345,6 +385,44 @@ public class Main2Activity extends AppCompatActivity
         dob.update(dataSource.TABLE, values, selection, selectionArgs);
         dob.releaseReference();
         Snackbar.make(((View) mViewPager), "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
+    }
+
+    private boolean copiarBD() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Permisos = false;
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    123);
+        } else {
+            Permisos = true;
+            pref.edit().putBoolean(PERMISO, true).apply();
+            File fileDataBase = new File(dbPath);
+            if (!fileDataBase.exists()) {
+                int ID = R.raw.data;
+                File o = new File("/sdcard/UNAH_IEE/");
+                o.mkdirs();
+                CopyRaw(ID, "data.sqlite");
+            } else {
+                try {
+                    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
+                    Cursor c = db.rawQuery("SELECT indice FROM clases", null);
+                    if (c.getCount() < 2) {
+                        db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+                    }
+                    c.close();
+                    db.close();
+                } catch (SQLiteException e) {
+                    e.printStackTrace();
+                    (SQLiteDatabase.openOrCreateDatabase(dbPath, null))
+                            .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
     }
 
     public void PDFOpen(int id) {
@@ -413,41 +491,7 @@ public class Main2Activity extends AppCompatActivity
         }
     }
 
-    private boolean copiarBD() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Permisos = false;
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                    123);
-        } else {
-            Permisos = true;
-            File fileDataBase = new File(dbPath);
-            if (!fileDataBase.exists()) {
-                int ID = R.raw.data;
-                File o = new File("/sdcard/UNAH_IEE/");
-                o.mkdirs();
-                CopyRaw(ID, "data.sqlite");
-            } else {
-                try {
-                    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
-                    Cursor c = db.rawQuery("SELECT indice FROM clases", null);
-                    if (c.getCount() < 2) {
-                        db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
-                    }
-                    c.close();
-                    db.close();
-                } catch (SQLiteException e) {
-                    e.printStackTrace();
-                    (SQLiteDatabase.openOrCreateDatabase(dbPath, null))
-                            .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return true;
-    }
+
 
 
     @Override
@@ -455,6 +499,8 @@ public class Main2Activity extends AppCompatActivity
         switch (requestCode) {
             case 123:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pref.edit().putBoolean(PERMISO, true).apply();
+
                     copiarBD();
                 } else {
                     // 1. Instantiate an AlertDialog.Builder with its constructor

@@ -69,7 +69,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
         Info = (RecyclerView) findViewById(R.id.recyclerInfo);
 //        Info.setHasFixedSize(true);
-        Info.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+        Info.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 //        Info.setLayoutManager(new LinearLayoutManager(this));
         iAdapter = new AdaptadorDeInfo(new ArrayList<Clase>());
 
@@ -139,51 +139,56 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void agregarAInfo(Clase clase, int pos) {
-        AdaptadorDeDisponibles adapter = (AdaptadorDeDisponibles) Disponibles.getAdapter();
-        Boolean t = adapter.LISTA.remove(clase);
-        Disponibles.getAdapter().notifyItemRemoved(pos);
+        if (clase.UV <= totalUV) {
+            totalUV -= clase.UV;
+            AdaptadorDeDisponibles adapter = (AdaptadorDeDisponibles) Disponibles.getAdapter();
+            Boolean t = adapter.LISTA.remove(clase);
+            Disponibles.getAdapter().notifyItemRemoved(pos);
 
-        totalUV -= clase.UV;
-        tu.setText(R.string.UVDisponibles);
-        tu.setText(String.valueOf(tu.getText()) + "\n" + String.valueOf(totalUV));
 
-        for (Clase clase1 :
-                adapter.LISTA) {
-//            if (clase1.UV > totalUV) clase1.CURSADA = true;
-        }
+            tu.setText(R.string.UVDisponibles);
+            tu.setText(String.valueOf(tu.getText()) + "\n" + String.valueOf(totalUV));
 
-        if (Info.getAdapter() != null) {
-            ((AdaptadorDeInfo) Info.getAdapter()).LISTA.add(clase);
-            Info.getAdapter().notifyItemInserted(((AdaptadorDeInfo) Info.getAdapter()).LISTA.lastIndexOf(clase));
-        } else {
-            ArrayList<Clase> array = new ArrayList<>();
-            array.add(clase);
-            Info.setAdapter(new AdaptadorDeInfo(array));
-        }
+            for (Clase clase1 :
+                    adapter.LISTA) {
+    //            if (clase1.UV > totalUV) clase1.CURSADA = true;
+            }
+
+            if (Info.getAdapter() != null) {
+                ((AdaptadorDeInfo) Info.getAdapter()).LISTA.add(clase);
+                Info.getAdapter().notifyItemInserted(((AdaptadorDeInfo) Info.getAdapter()).LISTA.lastIndexOf(clase));
+            } else {
+                ArrayList<Clase> array = new ArrayList<>();
+                array.add(clase);
+                Info.setAdapter(new AdaptadorDeInfo(array));
+            }
+        } else Snackbar.make(tu, "No se puede che", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
     public void agregarADisponibles(Clase clase, int pos) {
-        Boolean t = ((AdaptadorDeInfo) Info.getAdapter()).LISTA.remove(clase);
-        Info.getAdapter().notifyItemRemoved(pos);
+        if (true) {
+            Boolean t = ((AdaptadorDeInfo) Info.getAdapter()).LISTA.remove(clase);
+            Info.getAdapter().notifyItemRemoved(pos);
 
-        totalUV += clase.UV;
-        tu.setText(R.string.UVDisponibles);
-        tu.setText(String.valueOf(tu.getText()) + "\n"
-                + String.valueOf(totalUV));
+            totalUV += clase.UV;
+            tu.setText(R.string.UVDisponibles);
+            tu.setText(String.valueOf(tu.getText()) + "\n"
+                    + String.valueOf(totalUV));
 
-        for (Clase clase1 :
-                ((AdaptadorDeInfo) Info.getAdapter()).LISTA) {
-//            if (clase1.UV > totalUV) clase1.CURSADA = true;
-        }
+            for (Clase clase1 :
+                    ((AdaptadorDeInfo) Info.getAdapter()).LISTA) {
+    //            if (clase1.UV > totalUV) clase1.CURSADA = true;
+            }
 
-        if (Disponibles.getAdapter() != null) {
-            ((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.add(clase);
-            Disponibles.getAdapter().notifyItemInserted(((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.lastIndexOf(clase));
-        } else {
-            ArrayList<Clase> array = new ArrayList<>();
-            array.add(clase);
-            Disponibles.setAdapter(new AdaptadorDeDisponibles(array));
+            if (Disponibles.getAdapter() != null) {
+                ((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.add(clase);
+                Disponibles.getAdapter().notifyItemInserted(((AdaptadorDeDisponibles) Disponibles.getAdapter()).LISTA.lastIndexOf(clase));
+            } else {
+                ArrayList<Clase> array = new ArrayList<>();
+                array.add(clase);
+                Disponibles.setAdapter(new AdaptadorDeDisponibles(array));
+            }
         }
     }
 }

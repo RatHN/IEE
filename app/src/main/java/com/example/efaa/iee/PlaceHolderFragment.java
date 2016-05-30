@@ -4,12 +4,15 @@ package com.example.efaa.iee;
  * Created by Neri Ortez on 09/05/2016.
  */
 
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +24,7 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class PlaceHolderFragment extends Fragment
-        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>> {
+        implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Clase>>, ClaseRecyclerAdaptador.InterfaceEscuchador {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -112,6 +115,22 @@ public class PlaceHolderFragment extends Fragment
 //        lManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         lManager = new LinearLayoutManager(getContext());
 
+
+
+
+
+        /*SwipeHellper itemTouchHelper = new SwipeHellper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(itemsRecyclerView);
+
+        itemsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext())
+        );
+        itemsRecyclerView.setAdapter(adapter);*/
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeHellper());
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+
         recyclerView.setLayoutManager(lManager);
         recyclerView.setAdapter(cAdaptador);
 
@@ -179,8 +198,10 @@ public class PlaceHolderFragment extends Fragment
             }
             @Override
             public ArrayList<Clase> loadInBackground() {
+
+
                 while (!permisos.getPermisos()) {
-                    ;
+                    Log.i("TAG", "ESPERando por permisos");
                 }
                 ArrayList array;
                 dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
@@ -217,10 +238,11 @@ public class PlaceHolderFragment extends Fragment
 
 //        ArrayList array = new ArrayList();
 //        array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
+//        recyclerView.getAdapter().notifyItemRemoved(pos);
         while (recyclerView.isAnimating()) {
             ;
         }
-        getLoaderManager().initLoader(0, ARGS, this);
+//        getLoaderManager().initLoader(0, ARGS, this);
 //        cAdaptador.cambiarLista(array);
 //        cAdaptador.notifyDataSetChanged();
     }
@@ -228,6 +250,21 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public String toString() {
         return COLUMNA;
+    }
+
+    @Override
+    public void Escuchador(boolean actualizarCursada) {
+
+    }
+
+    @Override
+    public void Escuchador(boolean actualizarCursada, int pos) {
+        recyclerView.getAdapter().notifyItemRemoved(pos);
+    }
+
+    @Override
+    public void EsconderTeclado() {
+
     }
 
     public interface getPermisos {

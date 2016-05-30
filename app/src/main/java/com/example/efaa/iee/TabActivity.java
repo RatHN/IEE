@@ -236,6 +236,11 @@ public class TabActivity extends AppCompatActivity implements ClaseRecyclerAdapt
     }
 
     @Override
+    public void Escuchador(boolean actualizarCursada, int pos) {
+
+    }
+
+    @Override
     public void EsconderTeclado() {
 
     }

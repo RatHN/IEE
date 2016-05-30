@@ -1,5 +1,6 @@
 package com.example.efaa.iee;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,15 +23,51 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         // TODO: Establecer el update a modo  que se actualize el fragmento contrario...
         // O mejor que se actualizen los dos, pero de manera suave.
         PlaceHolderFragment f = (PlaceHolderFragment) object;
-        int count = 0;
-        if (f != null && !f.flag) {
-            f.update();
+        if (!(f != null && !f.flag)) {
+            return super.getItemPosition(object);
+        }
 
+        else {
+            f.update();
             return POSITION_NONE;
         }
-        return super.getItemPosition(object);
-//        return POSITION_NONE;
+
     }
+    public void update(boolean cursada, int pos) {
+        Clase clase1 = null;
+        for (Fragment frag : fragments) {
+
+            if (!cursada && frag.toString().compareTo(dataSource.Columnas.DISPONIBLE) == 0){
+                clase1 = ((ClaseRecyclerAdaptador) ((PlaceHolderFragment) frag).recyclerView.getAdapter()).LISTA.get(pos);
+                clase1.CURSADA = true;
+                ((ClaseRecyclerAdaptador) ((PlaceHolderFragment) frag).recyclerView.getAdapter()).LISTA.remove(pos);
+                ((PlaceHolderFragment) frag).recyclerView.getAdapter().notifyItemRemoved(pos);
+                for (Fragment f : fragments){
+                    if (f.toString().contentEquals(frag.toString())){
+                        f.getLoaderManager().initLoader(0, ((PlaceHolderFragment)f).ARGS, ((PlaceHolderFragment)f)).forceLoad();
+                    } else {
+                        f.getLoaderManager().initLoader(0, ((PlaceHolderFragment)f).ARGS, ((PlaceHolderFragment)f)).forceLoad();
+                    }
+                }
+            }
+
+            else if (cursada && frag.toString().compareTo(dataSource.Columnas.CURSADA) == 0){
+                clase1 = ((ClaseRecyclerAdaptador) ((PlaceHolderFragment) frag).recyclerView.getAdapter()).LISTA.get(pos);
+                clase1.CURSADA = false;
+                ((ClaseRecyclerAdaptador) ((PlaceHolderFragment) frag).recyclerView.getAdapter()).LISTA.remove(pos);
+                ((PlaceHolderFragment) frag).recyclerView.getAdapter().notifyItemRemoved(pos);
+                for (Fragment f : fragments){
+                    if (f.toString().contentEquals(frag.toString())){
+                    } else {
+                        f.getLoaderManager().initLoader(0, ((PlaceHolderFragment)f).ARGS, ((PlaceHolderFragment)f)).forceLoad();
+                    }
+                }
+            }
+        }
+//        notifyDataSetChanged();
+    }
+    
+    
 
     @Override
     public Fragment getItem(int position) {
@@ -63,4 +100,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }
         return null;
     }
+
+
 }
