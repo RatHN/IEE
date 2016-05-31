@@ -13,12 +13,16 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +31,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -82,30 +88,55 @@ public class Main2Activity extends AppCompatActivity
     int totalUV;
     int totalIndice;
 
+    /**
+     * RecyclerView que se usará para la lista
+     * Agregado por el BottomBar
+     *
+     */
+    BottomBar mBottomBar;
+    RecyclerView mRecycler;
+    RecyclerView.LayoutManager mLManager;
+    ClaseRecyclerAdaptador mAdapter;
+    PlaceHolderFragment placeHolderFragment;
+    FragmentTransaction fragmentTransaction;
+    FloatingActionButton fab;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        /*BottomBar bt = BottomBar.attach(this, savedInstanceState);
-        bt.setItems(
+/*
+        mBottomBar = BottomBar.attach(this, savedInstanceState);
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout)findViewById(R.id.main_content),
+                savedInstanceState);
+*/
+
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout)findViewById(R.id.main_content),
+                findViewById(R.id.myScrollingContent),
+                savedInstanceState);
+        mBottomBar.setMaxFixedTabs(1);
+
+//        mBottomBar.noTopOffset();
+
+        mBottomBar.setItems(
                 new BottomBarTab(R.drawable.ic_menu_camera, "Dispo"),
-                new BottomBarTab(R.drawable.ic_menu_comentar, "Pasadas"));
+                new BottomBarTab(R.drawable.ic_menu_comentar, "Pasadas"),
+                new BottomBarTab(R.drawable.ic_menu_info, "Calc"));
 
-        bt.setOnTabClickListener(new OnTabClickListener() {
-            @Override
-            public void onTabSelected(int position) {
-                switch position{
-                case 0:
+//        mLManager = new LinearLayoutManager(this);
+//        mRecycler.setLayoutManager(mLManager);
+//        mRecycler.setAdapter(null);
 
+        /*
+         */
+        /*placeHolderFragment = new PlaceHolderFragment();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.f, placeHolderFragment);
+        fragmentTransaction.commit();
+*/
 
-            }
-
-            @Override
-            public void onTabReSelected(int position) {
-
-            }
-        });*/
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -115,11 +146,38 @@ public class Main2Activity extends AppCompatActivity
             copiarBD();
         } else this.Permisos = true;
 
+        mBottomBar.setOnTabClickListener(new OnTabClickListener() {
+            @Override
+            public void onTabSelected(int position) {
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                switch (position) {
+                    case 0:
+                        placeHolderFragment = PlaceHolderFragment.newInstance(1);
+                        fragmentTransaction.replace(R.id.f, placeHolderFragment);
+                        fragmentTransaction.commit();
+                        break;
+                    case 1:
+                        placeHolderFragment = PlaceHolderFragment.newInstance(2);
+                        fragmentTransaction.replace(R.id.f, placeHolderFragment).commit();
+                        break;
+                    case 2:
+                        mBottomBar.selectTabAtPosition(0, true);
+                        fab.callOnClick();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabReSelected(int position) {
+            }
+        });
+
         /**
          * Aqui empieza el incrustamiento masivo de datos masivos que contienen datos mas masivos
          * que la masa de baleadas
          */
 
+        /*
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -173,9 +231,11 @@ public class Main2Activity extends AppCompatActivity
 
         //
         // Aqui se detiene la masividad masiva recursiva de recursos
-        /*
-        * Empieza la customizacion del FAB */
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        */
+
+
+        //Empieza la customizacion del FAB */
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fab.setBackground(getDrawable(R.drawable.refre));
@@ -289,6 +349,7 @@ public class Main2Activity extends AppCompatActivity
 
             }
         });
+        fab.setVisibility(View.GONE);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -370,7 +431,23 @@ public class Main2Activity extends AppCompatActivity
     }
 
     public void Escuchador(boolean actualizarCursada, int pos) {
-        mSectionsPagerAdapter.update(actualizarCursada, pos);
+//        mSectionsPagerAdapter.update(actualizarCursada, pos);
+        Clase clase1 = null;
+
+        clase1 = ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter()).LISTA.get(pos);
+        clase1.CURSADA = true;
+        ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter()).LISTA.remove(pos);
+        placeHolderFragment.recyclerView.getAdapter().notifyItemRemoved(pos);
+
+        boolean cursada = actualizarCursada;
+        if(!actualizarCursada){
+            if (placeHolderFragment.toString().compareTo(dataSource.Columnas.DISPONIBLE) == 0){
+                Bundle b = new Bundle();
+                b.putString("COLUMNA", placeHolderFragment.COLUMNA);
+                placeHolderFragment.getLoaderManager().initLoader(0, b, placeHolderFragment).forceLoad();
+            }
+        }
+
 //        mSectionsPagerAdapter.notifyDataSetChanged();
     }
 
@@ -384,7 +461,7 @@ public class Main2Activity extends AppCompatActivity
         dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
         dob.update(dataSource.TABLE, values, selection, selectionArgs);
         dob.releaseReference();
-        Snackbar.make(((View) mViewPager), "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mViewPager, "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
     }
 
     private boolean copiarBD() {
@@ -537,5 +614,14 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean getPermisos() {
         return Permisos;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        mBottomBar.onSaveInstanceState(outState);
     }
 }

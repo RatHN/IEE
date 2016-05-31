@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
@@ -73,20 +74,23 @@ public class PlaceHolderFragment extends Fragment
         return fragment;
     }
 
-    private View ROOTVIEW;
+    ProgressBar progressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 //        Inflar la pestaña con el fragmento que contiene el ListView o el RecyclerView
-//        View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
         View rootView = inflater.inflate(R.layout.reciclador_tab, container, false);
+
+        progressBar = ((ProgressBar) rootView.findViewById(R.id.progressBar));
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
 
         permisos = (getPermisos) getActivity();
         //Conseguir el listView o RecyclerView
 //        lista = (ListView) rootView.findViewById(R.id.listViewFragment);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.reciclador);
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
 
 //        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
@@ -110,6 +114,7 @@ public class PlaceHolderFragment extends Fragment
         ar.add(new Clase("NADA", "NADA", null, getContext()));
         cAdaptador = new ClaseRecyclerAdaptador(ar);
 
+
         //Establecemos adaptadoresx
 //        lista.setAdapter(adapter);
 //        lManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -132,7 +137,7 @@ public class PlaceHolderFragment extends Fragment
 
 
         recyclerView.setLayoutManager(lManager);
-        recyclerView.setAdapter(cAdaptador);
+        recyclerView.setAdapter(new ClaseRecyclerAdaptador(new ArrayList<Clase>()));
 
         //Creamos los listener para clicks
         RecyclerView.OnItemTouchListener escucha = new RecyclerView.OnItemTouchListener() {
@@ -195,6 +200,7 @@ public class PlaceHolderFragment extends Fragment
             @Override
             public void onStartLoading() {
                 forceLoad();
+
             }
             @Override
             public ArrayList<Clase> loadInBackground() {
@@ -222,6 +228,8 @@ public class PlaceHolderFragment extends Fragment
 //        cAdaptador = new ClaseRecyclerAdaptador(data);
 
         recyclerView.setAdapter(new ClaseRecyclerAdaptador(data));
+        recyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
 
 //        recyclerView.getAdapter().notifyItemRangeChanged(0, fin);
 //        }

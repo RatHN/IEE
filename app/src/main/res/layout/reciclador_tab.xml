@@ -8,8 +8,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.efaa.iee.TabActivity$PlaceholderFragment">
 
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar" />
+
     <android.support.v7.widget.RecyclerView
+        android:layout_centerHorizontal="true"
         android:id="@+id/reciclador"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </RelativeLayout>

@@ -58,6 +58,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 ((PlaceHolderFragment) frag).recyclerView.getAdapter().notifyItemRemoved(pos);
                 for (Fragment f : fragments){
                     if (f.toString().contentEquals(frag.toString())){
+                        ;
                     } else {
                         f.getLoaderManager().initLoader(0, ((PlaceHolderFragment)f).ARGS, ((PlaceHolderFragment)f)).forceLoad();
                     }

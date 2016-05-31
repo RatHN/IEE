@@ -3,6 +3,7 @@ package com.example.efaa.iee;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
@@ -208,21 +209,28 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             }
 
             dob.releaseReference();
+            cursada = LISTA.get(position).CURSADA;
+
             if (resultado == "-1") {
-                ((CheckBox) v).setChecked(true);
+                ((CheckBox) v.findViewById(R.id.Nombre_de_Clase)).setChecked(true);
                 Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
                                 " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
                         Snackbar.LENGTH_SHORT).show();
+                Bundle b = new Bundle();
+                Main2Activity context11 = (Main2Activity) context1;
+                b.putString("COLUMNA", context11.placeHolderFragment.COLUMNA);
+
+                context11.placeHolderFragment.getLoaderManager().initLoader(0, b,context11.placeHolderFragment);
                 return;
             }
-            cursada = LISTA.get(position).CURSADA;
+
 
             // Se inhabilitó porque exite la manera de deshabilitar esto despues de la animacion... Naaaaaa
             escuchador.Escuchador(cursada, position);
             this.position = position;
 
 
-            Snackbar.make(((View) this.nombre), "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(((View) this.nombre), "Exitoso", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
         public void eso(View v){

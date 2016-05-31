@@ -1,8 +1,10 @@
 package com.example.efaa.iee;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 
 
 public class SwipeHellper extends ItemTouchHelper.Callback {
@@ -31,10 +33,11 @@ public class SwipeHellper extends ItemTouchHelper.Callback {
         /*((ClaseRecyclerAdaptador.ClaseViewHolder)viewHolder).onClick();
         ((ClaseRecyclerAdaptador) mRecyclerView.getAdapter()).LISTA.remove(i);
         mRecyclerView.getAdapter().notifyItemRemoved(i);*/
-        ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder)
-                .remover(mRecyclerView.getContext(),
-                        ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getSwipableView(),
-                        viewHolder.getAdapterPosition());
+        ClaseRecyclerAdaptador.ClaseViewHolder viewHolder1 = (ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder;
+        View swipableView = viewHolder1.getSwipableView();
+        Context context = mRecyclerView.getContext();
+
+        viewHolder1.remover(context, swipableView, i);
     }
 
     @Override
