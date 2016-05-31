@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -210,6 +211,10 @@ public class PlaceHolderFragment extends Fragment
                     Log.i("TAG", "ESPERando por permisos");
                 }
                 ArrayList array;
+                File f = new File("/sdcard/UNAH_IEE/data.sqlite");
+                if (!f.exists()) {
+                    Log.i("Base de Datos",  "No se ha creado aun");
+                }
                 dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
                 array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
                 dob.releaseReference();

@@ -71,7 +71,7 @@ public class Main2Activity extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
     public ViewPager mViewPager;
-    public boolean Permisos;
+    public boolean Permisos = false;
 
 
     dataSource DataSource = new dataSource();
@@ -107,6 +107,20 @@ public class Main2Activity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        pref = getPreferences(MODE_PRIVATE);
+        File fileDataBase = new File(dbPath);
+
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) || !fileDataBase.exists()) {
+            this.Permisos = false;
+            copiarBD();
+        } else this.Permisos = true;
+
+
+//        this.Permisos =  (fileDataBase.exists());
+//        if(!pref.getBoolean(PERMISO, false)) {
+//            copiarBD();
+//        } else this.Permisos = true;
 /*
         mBottomBar = BottomBar.attach(this, savedInstanceState);
         mBottomBar = BottomBar.attachShy((CoordinatorLayout)findViewById(R.id.main_content),
@@ -141,10 +155,7 @@ public class Main2Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pref = getPreferences(MODE_PRIVATE);
-        if(!pref.getBoolean(PERMISO, false)) {
-            copiarBD();
-        } else this.Permisos = true;
+
 
         mBottomBar.setOnTabClickListener(new OnTabClickListener() {
             @Override
@@ -352,7 +363,8 @@ public class Main2Activity extends AppCompatActivity
         fab.setVisibility(View.GONE);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -361,6 +373,7 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+    DrawerLayout drawer;
 
     @Override
     public void onBackPressed() {
@@ -461,7 +474,7 @@ public class Main2Activity extends AppCompatActivity
         dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
         dob.update(dataSource.TABLE, values, selection, selectionArgs);
         dob.releaseReference();
-        Snackbar.make(mViewPager, "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.drawer_layout)/*this.placeHolderFragment.getView()*/, "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
     }
 
     private boolean copiarBD() {
@@ -473,7 +486,6 @@ public class Main2Activity extends AppCompatActivity
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                     123);
         } else {
-            Permisos = true;
             pref.edit().putBoolean(PERMISO, true).apply();
             File fileDataBase = new File(dbPath);
             if (!fileDataBase.exists()) {
@@ -481,12 +493,16 @@ public class Main2Activity extends AppCompatActivity
                 File o = new File("/sdcard/UNAH_IEE/");
                 o.mkdirs();
                 CopyRaw(ID, "data.sqlite");
+                Log.d("DB", "Database created");
+                Permisos = true;
             } else {
                 try {
                     SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
                     Cursor c = db.rawQuery("SELECT indice FROM clases", null);
                     if (c.getCount() < 2) {
                         db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+                        Log.d("DB", "Database altered");
+                        Permisos = true;
                     }
                     c.close();
                     db.close();
@@ -494,6 +510,8 @@ public class Main2Activity extends AppCompatActivity
                     e.printStackTrace();
                     (SQLiteDatabase.openOrCreateDatabase(dbPath, null))
                             .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+                    Log.d("DB", "Database altered");
+                    Permisos = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
