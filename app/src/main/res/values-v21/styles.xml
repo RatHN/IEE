@@ -1,4 +1,4 @@
-<resources>>
+<resources>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -14,7 +14,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:navigationBarColor">@color/negro_transparente</item>
         <item name="android:colorBackground">@color/colorPrimaryDark</item>
-        <item name="android:windowBackground">@color/primary_material_light</item>
+        <item name="android:windowBackground">@color/primary_material_light_nery</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
 
 

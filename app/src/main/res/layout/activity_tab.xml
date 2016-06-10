@@ -5,7 +5,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     tools:context="com.example.efaa.iee.Main2Activity">
 
     <android.support.design.widget.AppBarLayout
@@ -36,23 +36,19 @@
         android:background="@color/background_material_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
-    <!--<android.support.v7.widget.RecyclerView
+    <!--<android.suppoé®rt.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/reCycler"></android.support.v7.widget.RecyclerView>-->
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/myScrollingContent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <FrameLayout
+            android:layout_marginTop="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/f"></FrameLayout>
+            android:id="@+id/f"/>
 
-    </android.support.v4.widget.NestedScrollView>
 
 
 

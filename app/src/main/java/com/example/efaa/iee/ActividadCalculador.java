@@ -228,7 +228,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
         for (int o = 0; firstDay < listaClases.size(); firstDay++) {
             int frame = lista[firstDay];
-            ClassFragment newFragment = new ClassFragment(listaClases.get(firstDay));
+            ClassFragment newFragment = ClassFragment.newInstance(listaClases.get(firstDay));
             Bundle bundle1 = new Bundle();
 
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);

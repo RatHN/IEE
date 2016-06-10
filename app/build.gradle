@@ -3,7 +3,16 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
+            keyAlias 'iei'
+            keyPassword 'IEEUNAHVS1503'
             storeFile file('C:/Users/Neri Ortez/Desktop/keystroke.jks')
+            storePassword 'IEEUNAHVS1503'
+        }
+        release {
+            keyAlias 'iei'
+            keyPassword 'IEEUNAHVS1503'
+            storeFile file('C:/Users/Neri Ortez/Desktop/keystroke.jks')
+            storePassword 'IEEUNAHVS1503'
         }
     }
     compileSdkVersion 23
@@ -19,7 +28,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -27,7 +36,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.android.support:cardview-v7:23.4.0'

@@ -63,6 +63,7 @@
             <ImageView
                 android:layout_alignParentStart="true"
                 android:src="@drawable/fondo2"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageView2"
@@ -83,12 +84,46 @@
                 android:elevation="10dp"/>
         </RelativeLayout>
 
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            layout="@layout/content_cunche"
-            android:layout_below="@id/rl2"
-            />
+
+
+            <LinearLayout
+                android:layout_below="@id/rl2"
+
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:clipToPadding="false">
+
+
+                <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:clipToPadding="false">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:padding="2dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingBottom="@dimen/activity_horizontal_margin"
+                        android:id="@+id/recyclerInfo" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:padding="2dp"
+                        android:layout_below="@id/recyclerInfo"
+                        android:paddingTop="2dp"
+                        android:id="@+id/recyclerDisponibles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/activity_horizontal_margin"
+                        android:clipToPadding="false"/>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+
     </RelativeLayout>
 
 

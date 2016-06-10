@@ -49,8 +49,10 @@ public class ClassFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public ClassFragment(Clase clase){
-        cLase = clase;
+    public static ClassFragment newInstance(Clase clase){
+        ClassFragment classFragment = new ClassFragment();
+        classFragment.cLase = clase;
+        return classFragment;
     }
 
     /**

@@ -7,14 +7,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.text.Html;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,10 +32,12 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
     int totalIndice;
     int totalUV;
     TextView tu;
+    boolean inicio = false;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt("fd", 1);
         /*for (Clase clase1 :
                 dAdapter.LISTA) {
             arra
@@ -44,13 +45,29 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         outState.putStringArray("Array", dAdapter.LISTA.toArray(array));*/
     }
 
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         array = getIntent().getExtras().getStringArrayList("Array");
         totalIndice = getIntent().getExtras().getInt("totalIndice");
         totalUV = getIntent().getExtras().getInt("totalUV");
+        if(!inicio){
+            String f = " Vos tenés " + "<b> " + (String.valueOf(totalUV)) + "</b>" +
+                    " Unidades Valorativas disponibles para seleccionar clases futuras" +
+                    "<p>Patrocinadas por las clases que seleccionaste:<br>" + array;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Un pequeño recado de parte del sistema").setMessage(Html.fromHtml(f))
+                    .setPositiveButton("Masiso...!", null)
+                    .setNegativeButton("Ni modo, asi es la vida", null)
+                    .create()
+                    .show();
+
+        }
 
 
         setContentView(R.layout.activity_cunche);
@@ -69,7 +86,8 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
         Info = (RecyclerView) findViewById(R.id.recyclerInfo);
 //        Info.setHasFixedSize(true);
-        Info.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            Info.setLayoutManager(new LinearLayoutManager(this));
+
 //        Info.setLayoutManager(new LinearLayoutManager(this));
         iAdapter = new AdaptadorDeInfo(new ArrayList<Clase>());
 
@@ -77,8 +95,8 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 //        Disponibles.setHasFixedSize(true);
 
 //        lManager = new LinearLayoutManager(this);
-        lManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        Disponibles.setLayoutManager(lManager);
+            Disponibles.setLayoutManager(new LinearLayoutManager(this));
+//        Disponibles.setLayoutManager(lManager);
 
         dAdapter = new AdaptadorDeDisponibles(new ArrayList<Clase>());
         Disponibles.setAdapter(dAdapter);
@@ -101,6 +119,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onStart() {
         super.onStart();
+
     }
 
     @Override

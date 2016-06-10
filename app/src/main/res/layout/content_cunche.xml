@@ -23,14 +23,11 @@
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:clipToPadding="false">
-
-            <android.support.v7.widget.RecyclerView
-                android:layout_alignParentStart="true"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:id="@+id/recyclerInfo" />
+                android:layout_centerInParent="true"
+                android:id="@+id/t"/>
 
             <android.support.v7.widget.RecyclerView
                 android:layout_below="@id/recyclerInfo"
@@ -38,8 +35,20 @@
                 android:id="@+id/recyclerDisponibles"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:layout_alignParentStart="true"
+                android:layout_alignEnd="@id/t"
                 android:clipToPadding="false"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_alignEnd="@id/t"
+                android:layout_alignParentEnd="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:id="@+id/recyclerInfo" />
+
+
 
         </RelativeLayout>
     </LinearLayout>

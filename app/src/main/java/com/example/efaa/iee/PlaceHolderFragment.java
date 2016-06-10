@@ -213,7 +213,6 @@ public class PlaceHolderFragment extends Fragment
                 ArrayList array;
                 File f = new File("/sdcard/UNAH_IEE/data.sqlite");
                 if (!f.exists()) {
-                    Log.i("Base de Datos",  "No se ha creado aun");
                 }
                 dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
                 array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());

@@ -31,6 +31,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckedTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
@@ -114,7 +116,7 @@ public class Main2Activity extends AppCompatActivity
                 != PackageManager.PERMISSION_GRANTED) || !fileDataBase.exists()) {
             this.Permisos = false;
             copiarBD();
-        } else this.Permisos = true;
+        }else this.Permisos = true;
 
 
 //        this.Permisos =  (fileDataBase.exists());
@@ -128,7 +130,7 @@ public class Main2Activity extends AppCompatActivity
 */
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout)findViewById(R.id.main_content),
-                findViewById(R.id.myScrollingContent),
+                findViewById(R.id.f),
                 savedInstanceState);
         mBottomBar.setMaxFixedTabs(1);
 
@@ -138,6 +140,10 @@ public class Main2Activity extends AppCompatActivity
                 new BottomBarTab(R.drawable.ic_menu_camera, "Dispo"),
                 new BottomBarTab(R.drawable.ic_menu_comentar, "Pasadas"),
                 new BottomBarTab(R.drawable.ic_menu_info, "Calc"));
+
+        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
+        mBottomBar.mapColorForTab(1, 0xFF5D4037);
+        mBottomBar.mapColorForTab(2, "#7B1FA2");
 
 //        mLManager = new LinearLayoutManager(this);
 //        mRecycler.setLayoutManager(mLManager);
@@ -291,11 +297,15 @@ public class Main2Activity extends AppCompatActivity
                                                     true);
                                             if (isChecked) {
                                                 if ( !clasesString.contains(clase.CODIGO)) {
-                                                    clasesString.add(clase.CODIGO);
-                                                    clasesClases.add(clase);
+                                                    if ((totalUV + clase.UV) < 25) {
+                                                        clasesString.add(clase.CODIGO);
+                                                        clasesClases.add(clase);
 
-                                                    totalIndice += clase.INDICE;
-                                                    totalUV += clase.UV;
+                                                        totalIndice += clase.INDICE;
+                                                        totalUV += clase.UV;
+                                                    } else{
+                                                        ((AppCompatCheckedTextView) ((AlertDialog) dialog).getListView().getChildAt(which)).setChecked(false);
+                                                    }
                                                 }
 //                                                clase.position = clasesString.lastIndexOf(clase);
                                                 return;
@@ -338,6 +348,7 @@ public class Main2Activity extends AppCompatActivity
                                         b.putInt("totalUV", totalUV);
                                         b.putInt("totalIndice", totalIndice);
 
+
                                         i.putExtras(b);
                                         startActivity(i);
                                     }
@@ -355,8 +366,20 @@ public class Main2Activity extends AppCompatActivity
 
                 dialog1 = builder.create();
                 dialog1.setIcon(R.mipmap.r04);
-                dialog1.show();
                 dob.releaseReference();
+
+                DialogInterface.OnClickListener op = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog1.show();
+                    }
+                };
+                AlertDialog p = new AlertDialog.Builder(view.getContext()).setMessage("Antes de continuar: Recuerde " +
+                        "ingresar el indice por cada clase que haya aprobado/cursado el periodo anterior en " +
+                        "la pestaña Cursadas")
+                        .setNegativeButton("¡Íjole! Ctrl+Z Ctrl+Z", null)
+                        .setPositiveButton("Quien dijo miedo! Vos dale", op).create();
+                p.show();
 
             }
         });
@@ -494,7 +517,7 @@ public class Main2Activity extends AppCompatActivity
                 o.mkdirs();
                 CopyRaw(ID, "data.sqlite");
                 Log.d("DB", "Database created");
-                Permisos = true;
+                this.Permisos = true;
             } else {
                 try {
                     SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
@@ -502,7 +525,7 @@ public class Main2Activity extends AppCompatActivity
                     if (c.getCount() < 2) {
                         db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
                         Log.d("DB", "Database altered");
-                        Permisos = true;
+                        this.Permisos = true;
                     }
                     c.close();
                     db.close();
@@ -511,7 +534,7 @@ public class Main2Activity extends AppCompatActivity
                     (SQLiteDatabase.openOrCreateDatabase(dbPath, null))
                             .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
                     Log.d("DB", "Database altered");
-                    Permisos = true;
+                    this.Permisos = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -595,8 +618,9 @@ public class Main2Activity extends AppCompatActivity
             case 123:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pref.edit().putBoolean(PERMISO, true).apply();
-
-                    copiarBD();
+                    startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+                    finish();
+                    /*copiarBD();*/
                 } else {
                     // 1. Instantiate an AlertDialog.Builder with its constructor
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
