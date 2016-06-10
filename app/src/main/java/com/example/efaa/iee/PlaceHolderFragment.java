@@ -22,6 +22,8 @@ import android.widget.ProgressBar;
 import java.io.File;
 import java.util.ArrayList;
 
+import static android.view.View.GONE;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -195,7 +197,7 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public Loader<ArrayList<Clase>> onCreateLoader(int id, Bundle args) {
         final String columna = args.getString("COLUMNA");
-        recyclerView.setVisibility(View.GONE);
+        recyclerView.setVisibility(GONE);
         progressBar.setVisibility(View.VISIBLE);
 
 //        return new ClaseLoader(getContext(), COLUMNA);
@@ -235,7 +237,7 @@ public class PlaceHolderFragment extends Fragment
 
         recyclerView.setAdapter(new ClaseRecyclerAdaptador(data));
         recyclerView.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(GONE);
 
 //        recyclerView.getAdapter().notifyItemRangeChanged(0, fin);
 //        }
@@ -245,6 +247,8 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<ArrayList<Clase>> loader) {
         recyclerView.setAdapter(null);
+        recyclerView.setVisibility(GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void update() {
