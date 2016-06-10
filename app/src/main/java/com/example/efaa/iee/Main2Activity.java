@@ -261,8 +261,8 @@ public class Main2Activity extends AppCompatActivity
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
 
-            public void eSO() {
-                Snackbar.make(getCurrentFocus(), "No ha seleccionado ninguna clase",
+            public void eSO(String s) {
+                Snackbar.make(getCurrentFocus(), s,
                         Snackbar.LENGTH_LONG).show();
 
             }
@@ -297,15 +297,13 @@ public class Main2Activity extends AppCompatActivity
                                                     true);
                                             if (isChecked) {
                                                 if ( !clasesString.contains(clase.CODIGO)) {
-                                                    if ((totalUV + clase.UV) < 25) {
+
                                                         clasesString.add(clase.CODIGO);
                                                         clasesClases.add(clase);
 
                                                         totalIndice += clase.INDICE;
                                                         totalUV += clase.UV;
-                                                    } else{
-                                                        ((AppCompatCheckedTextView) ((AlertDialog) dialog).getListView().getChildAt(which)).setChecked(false);
-                                                    }
+
                                                 }
 //                                                clase.position = clasesString.lastIndexOf(clase);
                                                 return;
@@ -329,7 +327,11 @@ public class Main2Activity extends AppCompatActivity
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         if (clasesString.size() == 0) {
-                                            eSO();
+                                            eSO("No ha seleccionado ninguna clase");
+                                            return;
+                                        }
+                                        else if(totalUV >24){
+                                            eSO("Seleccionaste demasiadas clases. Volvé a intentarlo otra vez de vuelta de nuevo");
                                             return;
                                         }
                                         Toast.makeText(getApplicationContext(), clasesString.toString(),

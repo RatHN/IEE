@@ -195,6 +195,8 @@ public class PlaceHolderFragment extends Fragment
     @Override
     public Loader<ArrayList<Clase>> onCreateLoader(int id, Bundle args) {
         final String columna = args.getString("COLUMNA");
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
 //        return new ClaseLoader(getContext(), COLUMNA);
         return new android.support.v4.content.AsyncTaskLoader<ArrayList<Clase>>(getActivity()) {
