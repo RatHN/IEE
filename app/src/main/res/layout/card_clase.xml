@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:layout_gravity="center_horizontal">
@@ -21,107 +22,112 @@
         android:focusable="true"
         card_view:cardBackgroundColor="@color/cardview_light_background">
 
-
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/Nombre_de_Clase"
+                android:maxEms="15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:maxLines="3"
+                android:breakStrategy="simple"
+                android:text="" />
+
 
             <LinearLayout
-                android:id="@+id/grid"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="10dp">
-
-                <CheckBox
-                    android:id="@+id/Nombre_de_Clase"
-                    android:ems="15"
-                    android:maxEms="15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    android:breakStrategy="simple"
-                    android:text="HOla Fragmento" />
+                android:layout_width="wrap_content"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/grid"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:paddingStart="10dp"
+                    tools:ignore="RtlSymmetry">
 
-                    <TextView
-                        android:id="@+id/Codigo"
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                        android:text="@string/historia" />
+                        <TextView
+                            android:id="@+id/Codigo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minEms="3"
+                            android:text="@string/historia" />
 
-                    <TextView
-                        android:id="@+id/textView"
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="20dp"
+                            android:text="@string/UV" />
+                        <!--android:focusable="true"-->
+
+
+                        <TextView
+                            android:id="@+id/UV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:layout_marginStart="1dp"
+                            android:text="5" />
+                        <!--android:focusable="true"-->
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="top"
-                        android:layout_marginStart="20dp"
-                        android:text="@string/UV" />
-                    <!--android:focusable="true"-->
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Indice" />
+
+                        <EditText
+                            android:id="@+id/editText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:allowUndo="true"
+                            android:enabled="true"
+
+                            android:hint="Porcentaje"
+                            android:inputType="numberDecimal"
+                            android:singleLine="true" />
 
 
-                    <TextView
-                        android:id="@+id/UV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top"
-                        android:layout_marginStart="1dp"
-                        android:text="5" />
-                    <!--android:focusable="true"-->
+                        <!--android:focusable="true"-->
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:orientation="horizontal">
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Indice" />
-
-                    <EditText
-                        android:id="@+id/editText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:allowUndo="true"
-                        android:enabled="true"
-
-                        android:hint="Porcentaje"
-                        android:inputType="numberDecimal"
-                        android:singleLine="true" />
-
-
-                    <!--android:focusable="true"-->
-
-                </LinearLayout>
-
-
+                <Button
+                    android:id="@+id/per100Boton"
+                    style="?android:attr/buttonStyleInset"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="bottom"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:background="@drawable/ic_menu_guardar" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/per100Boton"
-                style="?android:attr/buttonStyleInset"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:layout_gravity="bottom"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:elevation="16dp"
-                android:background="@drawable/ic_menu_guardar" />
         </LinearLayout>
-
-
 
 
     </android.support.v7.widget.CardView>

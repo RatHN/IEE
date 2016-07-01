@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.example.efaa.iee.Main2Activity$PlaceholderFragment">
+    tools:context="com.example.efaa.iee.PlaceHolderFragment">
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -17,5 +17,6 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/reciclador"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/card_clase" />
 </RelativeLayout>

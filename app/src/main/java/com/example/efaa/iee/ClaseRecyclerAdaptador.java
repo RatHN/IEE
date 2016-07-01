@@ -86,7 +86,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             holder.indice.setText(String.valueOf(clase.INDICE));
             holder.uv.setText(String.valueOf(clase.UV));
             holder.nombre.setText(clase.NOMBRE);
-            holder.nombre.setChecked(clase.CURSADA);
+//            holder.nombre.setChecked(clase.CURSADA);
 
         }
 
@@ -107,7 +107,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     public class ClaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Campos de la clase
         public EditText indice;
-        public CheckBox nombre;
+        public TextView nombre;
         public TextView codigo;
         public TextView uv;
         public Button guardar;
@@ -130,7 +130,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 return;
             } else {
                 indice = (EditText) view.findViewById(R.id.editText);
-                nombre = (CheckBox) view.findViewById(R.id.Nombre_de_Clase);
+                nombre = (TextView) view.findViewById(R.id.Nombre_de_Clase);
                 codigo = (TextView) view.findViewById(R.id.Codigo);
                 uv = (TextView) view.findViewById(R.id.UV);
                 ((Button) view.findViewById(R.id.per100Boton)).setOnClickListener(new View.OnClickListener() {
@@ -153,9 +153,11 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                     }
                 });
 
+/*
                 //Cambiamos la escucha y seteamos el escucha de click
                 checkListener = this;
                 nombre.setOnClickListener(checkListener);
+*/
 
             }
             mRemoveableView = view;
@@ -163,11 +165,11 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
         @Override
         public void onClick(View v) {
-            remove_at(v.getContext(), v, getAdapterPosition());
+            remove_at(v.getContext(), (TextView)v, getAdapterPosition());
         }
 
 
-        private void remove_at(Context context1, View v, int position) {
+        private void remove_at(Context context1, TextView v, int position) {
             Clase clase = LISTA.get(position);
             dataSource source = new dataSource();
             SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
@@ -180,7 +182,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
             dob.releaseReference();
             if (resultado == "-1") {
-                ((CheckBox) v).setChecked(true);
+//                ((CheckBox) v).setChecked(true);
                 Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
                                 " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
                         Snackbar.LENGTH_SHORT).show();
@@ -193,11 +195,11 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             this.position = position;
 
 
-            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+//            Snackbar.make(v.getRootView(), "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show();
         }
 
-        public void remover(Context context1, View v, int position) {
+        void remover(Context context1, View v, int position) {
             Clase clase = LISTA.get(position);
             dataSource source = new dataSource();
             SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
@@ -212,7 +214,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             cursada = LISTA.get(position).CURSADA;
 
             if (resultado == "-1") {
-                ((CheckBox) v.findViewById(R.id.Nombre_de_Clase)).setChecked(true);
+//                ((CheckBox) v.findViewById(R.id.Nombre_de_Clase)).setChecked(true);
                 Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
                                 " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
                         Snackbar.LENGTH_SHORT).show();

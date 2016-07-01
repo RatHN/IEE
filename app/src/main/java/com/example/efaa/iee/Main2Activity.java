@@ -43,6 +43,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
 
@@ -145,6 +146,8 @@ public class Main2Activity extends AppCompatActivity
         mBottomBar.mapColorForTab(1, 0xFF5D4037);
         mBottomBar.mapColorForTab(2, "#7B1FA2");
 
+        unreadClases = mBottomBar.makeBadgeForTabAt(1, "#FF0000", unread);
+
 //        mLManager = new LinearLayoutManager(this);
 //        mRecycler.setLayoutManager(mLManager);
 //        mRecycler.setAdapter(null);
@@ -174,6 +177,7 @@ public class Main2Activity extends AppCompatActivity
                         fragmentTransaction.commit();
                         break;
                     case 1:
+                        unread =0;
                         placeHolderFragment = PlaceHolderFragment.newInstance(2);
                         fragmentTransaction.replace(R.id.f, placeHolderFragment).commit();
                         break;
@@ -480,6 +484,10 @@ public class Main2Activity extends AppCompatActivity
         boolean cursada = actualizarCursada;
         if(!actualizarCursada){
             if (placeHolderFragment.toString().compareTo(dataSource.Columnas.DISPONIBLE) == 0){
+                unread += 1;
+                unreadClases.setCount(unread);
+                unreadClases.setAnimationDuration(200);
+                unreadClases.show();
                 Bundle b = new Bundle();
                 b.putString("COLUMNA", placeHolderFragment.COLUMNA);
                 placeHolderFragment.getLoaderManager().initLoader(0, b, placeHolderFragment).forceLoad();
@@ -488,6 +496,8 @@ public class Main2Activity extends AppCompatActivity
 
 //        mSectionsPagerAdapter.notifyDataSetChanged();
     }
+    int unread = 0;
+    BottomBarBadge unreadClases;
 
     @Override
     public void EsconderTeclado() {
