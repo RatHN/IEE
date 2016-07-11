@@ -20,6 +20,7 @@
             android:text="Nombre de la clase"
             android:textStyle="bold"
             android:paddingStart="@dimen/appbar_padding_top"
+            android:paddingEnd="8dp"
             android:paddingTop="@dimen/appbar_padding_top" />
 
         <TextView

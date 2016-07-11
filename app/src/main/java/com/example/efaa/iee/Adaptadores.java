@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -54,6 +55,20 @@ class AdaptadorDeDisponibles extends RecyclerView.Adapter<AdaptadorDeDisponibles
         return LISTA.size();
     }
 
+    /**
+     * Inhabilitar una vista en base a su posicion
+     */
+    public void inhabilitar(int pos) {
+
+    }
+
+    /**
+     * Interfas de comunicacion de este adaptador con su padre
+     */
+    interface Comm {
+        void agregarAInfo(Clase clase, int position);
+    }
+
     class DisponibleViewHolder extends RecyclerView.ViewHolder {
         TextView nombre;
         TextView codigo;
@@ -61,10 +76,6 @@ class AdaptadorDeDisponibles extends RecyclerView.Adapter<AdaptadorDeDisponibles
         Comm iPadre;
         Clase CLASE;
         View enab;
-
-        public void setEnablear(Boolean dale){
-
-        }
 
         public DisponibleViewHolder(View view) {
             super(view);
@@ -96,20 +107,10 @@ class AdaptadorDeDisponibles extends RecyclerView.Adapter<AdaptadorDeDisponibles
                 }
             });
         }
-    }
 
-    /**
-     * Interfas de comunicacion de este adaptador con su padre
-     */
-    interface Comm {
-        void agregarAInfo(Clase clase, int position);
-    }
+        public void setEnablear(Boolean dale) {
 
-    /**
-     * Inhabilitar una vista en base a su posicion
-     */
-    public void inhabilitar(int pos){
-
+        }
     }
 
 }
@@ -130,15 +131,15 @@ class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoViewHolde
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.info_layout, parent, false);
         int[] array = new int[]
-                {Color.GRAY,
-                        Color.parseColor("lime"),
-                        Color.parseColor("aqua"),
+                {Color.parseColor("lime"),
+                        /*Color.parseColor("aqua"),
+                        Color.GRAY,
                         Color.parseColor("silver"),
                         Color.parseColor("olive"),
                         Color.parseColor("teal"),
                         Color.LTGRAY,
                         Color.YELLOW,
-                        Color.WHITE};
+                        Color.WHITE*/};
 
         int rnd = new Random().nextInt(array.length);
 
@@ -163,6 +164,13 @@ class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoViewHolde
     @Override
     public int getItemCount() {
         return LISTA.size();
+    }
+
+    /**
+     * Interfas de comunicacion de este adaptador con su padre
+     */
+    interface CommInfo {
+        void agregarADisponibles(Clase clase, int position);
     }
 
     class InfoViewHolder extends RecyclerView.ViewHolder {
@@ -202,12 +210,5 @@ class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoViewHolde
                 }
             });
         }
-    }
-
-    /**
-     * Interfas de comunicacion de este adaptador con su padre
-     */
-    interface CommInfo {
-        void agregarADisponibles(Clase clase, int position);
     }
 }

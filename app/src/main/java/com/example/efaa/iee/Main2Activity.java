@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -142,7 +143,7 @@ public class Main2Activity extends AppCompatActivity
                 new BottomBarTab(R.drawable.ic_menu_comentar, "Pasadas"),
                 new BottomBarTab(R.drawable.ic_menu_info, "Calc"));
 
-        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
+        mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.cardview_dark_background));
         mBottomBar.mapColorForTab(1, 0xFF5D4037);
         mBottomBar.mapColorForTab(2, "#7B1FA2");
 
@@ -380,11 +381,12 @@ public class Main2Activity extends AppCompatActivity
                         dialog1.show();
                     }
                 };
-                AlertDialog p = new AlertDialog.Builder(view.getContext()).setMessage("Antes de continuar: Recuerde " +
+                AlertDialog p = new AlertDialog.Builder(view.getContext()).setMessage("Recuerde " +
                         "ingresar el indice por cada clase que haya aprobado/cursado el periodo anterior en " +
                         "la pestaña Cursadas")
-                        .setNegativeButton("¡Íjole! Ctrl+Z Ctrl+Z", null)
-                        .setPositiveButton("Quien dijo miedo! Vos dale", op).create();
+                        .setTitle("Antes de continuar")
+                        .setNegativeButton("¡Vamo pa'tras!", null)
+                        .setPositiveButton(" Vos dale", op).create();
                 p.show();
 
             }
@@ -505,11 +507,16 @@ public class Main2Activity extends AppCompatActivity
     }
 
     @Override
-    public void setearIndice(String selection, String[] selectionArgs, ContentValues values) {
+    public void setearIndice(String selection, String[] selectionArgs, ContentValues values, View v) {
         dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
         dob.update(dataSource.TABLE, values, selection, selectionArgs);
         dob.releaseReference();
-        Snackbar.make(findViewById(R.id.drawer_layout)/*this.placeHolderFragment.getView()*/, "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext()).setMessage(
+                "Guardado exitosamente")
+                .setPositiveButton("OK", null);
+        dialog1 = builder.create();
+        dialog1.show();
+//        Snackbar.make(findViewById(R.id.drawer_layout)/*this.placeHolderFragment.getView()*/, "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
     }
 
     private boolean copiarBD() {

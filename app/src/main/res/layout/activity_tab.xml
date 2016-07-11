@@ -26,15 +26,14 @@
         </android.support.v7.widget.Toolbar>
 
 
-
     </android.support.design.widget.AppBarLayout>
 
-   <!-- <android.support.v4.view.ViewPager
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_material_light"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+    <!-- <android.support.v4.view.ViewPager
+         android:id="@+id/container"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@color/background_material_light"
+         app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
     <!--<android.suppoé®rt.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -42,15 +41,11 @@
         android:id="@+id/reCycler"></android.support.v7.widget.RecyclerView>-->
 
 
-
-        <FrameLayout
-            android:layout_marginTop="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/f"/>
-
-
-
+    <FrameLayout
+        android:id="@+id/f"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize" />
 
 
     <android.support.design.widget.FloatingActionButton
@@ -60,8 +55,8 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
 
-        android:src="@drawable/refre"
         android:adjustViewBounds="false"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/refre" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -4,11 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -103,7 +106,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     }
 
 
-
     public class ClaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Campos de la clase
         public EditText indice;
@@ -133,23 +135,15 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 nombre = (TextView) view.findViewById(R.id.Nombre_de_Clase);
                 codigo = (TextView) view.findViewById(R.id.Codigo);
                 uv = (TextView) view.findViewById(R.id.UV);
-                ((Button) view.findViewById(R.id.per100Boton)).setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        int ind = Integer.parseInt(indice.getText().toString());
-                        if (ind < 0 || ind > 100) {
-                            setIndiceError(v);
-                            return;
-                        }
-                        Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
-                                + codigo.getText());
-                        ContentValues values = new ContentValues();
-                        values.put(dataSource.Columnas.INDICE,
-                                String.valueOf(indice.getText()));
-                        String selection = dataSource.Columnas.CODIGO + " = ?";
-                        String[] selectionArgs = {String.valueOf(codigo.getText())};
-                        setearIndice.setearIndice(selection, selectionArgs, values);
 
-//            Log.e("OREJAS OTRA VEZ", String.valueOf());
+                view.findViewById(R.id.per100Boton).setOnClickListener(botonClicked());
+
+                ((EditText) view.findViewById(R.id.editText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                        botonClicked().onClick(v);
+                        return true;
                     }
                 });
 
@@ -163,9 +157,31 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             mRemoveableView = view;
         }
 
+        OnClickListener botonClicked() {
+            return new View.OnClickListener() {
+                public void onClick(View v) {
+                    int ind = Integer.parseInt(indice.getText().toString());
+                    if (ind < 0 || ind > 100) {
+                        setIndiceError(v);
+                        return;
+                    }
+                    Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
+                            + codigo.getText());
+                    ContentValues values = new ContentValues();
+                    values.put(dataSource.Columnas.INDICE,
+                            String.valueOf(indice.getText()));
+                    String selection = dataSource.Columnas.CODIGO + " = ?";
+                    String[] selectionArgs = {String.valueOf(codigo.getText())};
+                    setearIndice.setearIndice(selection, selectionArgs, values, v);
+
+//            Log.e("OREJAS OTRA VEZ", String.valueOf());
+                }
+            };
+        }
+
         @Override
         public void onClick(View v) {
-            remove_at(v.getContext(), (TextView)v, getAdapterPosition());
+            remove_at(v.getContext(), (TextView) v, getAdapterPosition());
         }
 
 
@@ -222,7 +238,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 Main2Activity context11 = (Main2Activity) context1;
                 b.putString("COLUMNA", context11.placeHolderFragment.COLUMNA);
 
-                context11.placeHolderFragment.getLoaderManager().initLoader(0, b,context11.placeHolderFragment);
+                context11.placeHolderFragment.getLoaderManager().initLoader(0, b, context11.placeHolderFragment);
                 return;
             }
 
@@ -235,7 +251,8 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             Snackbar.make(((View) this.nombre), "Exitoso", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
-        public void eso(View v){
+
+        public void eso(View v) {
             TranslateAnimation trans = new TranslateAnimation(
                     0,
 //                    300 * (int)getResources().getDisplayMetrics().density,
@@ -267,7 +284,8 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         }
 
         private void setIndiceError(View view) {
-            Snackbar.make(view, "El valor es invalido", Snackbar.LENGTH_LONG).show();
+//            Snackbar.make(view, "El valor es invalido", Snackbar.LENGTH_LONG).show();
+            new AlertDialog.Builder(view.getContext()).setPositiveButton("Pucha...!", null).setMessage("El valor es invalido").create().show();
         }
 
         public View getSwipableView() {
@@ -278,12 +296,14 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     public interface InterfaceEscuchador {
         void Escuchador(boolean actualizarCursada);
+
         void Escuchador(boolean actualizarCursada, int pos);
+
         void EsconderTeclado();
     }
 
     public interface InterfaceSetearIndice {
-        void setearIndice(String selection, String[] selectionArgs, ContentValues values);
+        void setearIndice(String selection, String[] selectionArgs, ContentValues values, View v);
     }
 
 }

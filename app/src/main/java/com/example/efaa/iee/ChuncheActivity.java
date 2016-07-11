@@ -1,5 +1,6 @@
 package com.example.efaa.iee;
 
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -52,7 +53,6 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
 
 
-
         array = getIntent().getExtras().getStringArrayList("Array");
         totalIndice = getIntent().getExtras().getInt("totalIndice");
         totalUV = getIntent().getExtras().getInt("totalUV");
@@ -62,11 +62,14 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
                     "<p>Patrocinadas por las clases que seleccionaste:<br>" + array;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Un pequeño recado de parte del sistema").setMessage(Html.fromHtml(f))
-                    .setPositiveButton("Masiso...!", null)
-                    .setNegativeButton("Ni modo, asi es la vida", null)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            Snackbar.make(tu, "Presioná en las clases que querés seleccionar", Snackbar.LENGTH_LONG).show();
+                        }
+                    })
                     .create()
                     .show();
-
         }
 
 
@@ -75,13 +78,20 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String f = "En esta pantalla podrás " +
+                    "hacer un calculo rápido de las clases que podés matricular segun el indice" +
+                            " y las normas de tu <i>querida rectora</i>." +
+                            "<p>Este cálculo no es una garantía de que el sistema de la UNAH te permita matricular" +
+                            " dichas clases. Por favor verifica que la informacion sea correcta";
+                    new AlertDialog.Builder(view.getContext()).setMessage(Html.fromHtml(f)).setTitle(
+                            "Información").create().show();
+                }
+            });
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Info = (RecyclerView) findViewById(R.id.recyclerInfo);
