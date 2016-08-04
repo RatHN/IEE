@@ -3,6 +3,7 @@ package com.example.efaa.iee;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -34,6 +36,9 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     private Context context;
     public List<Clase> LISTA;
+    final int INDICE_MINIMO = 65;
+    final int COLOR_PASADO = Color.WHITE;
+    final int COLOR_NO_PASADO = Color.LTGRAY;
 
     public ClaseRecyclerAdaptador(List<Clase> Lista) {
         LISTA = Lista;
@@ -87,6 +92,13 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             //Seteando datos, tomando el holder.
             holder.codigo.setText(clase.CODIGO);
             holder.indice.setText(String.valueOf(clase.INDICE));
+
+            if (clase.INDICE < INDICE_MINIMO) {
+                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
+            } else {
+                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_PASADO);
+            }
+
             holder.uv.setText(String.valueOf(clase.UV));
             holder.nombre.setText(clase.NOMBRE);
 //            holder.nombre.setChecked(clase.CURSADA);
@@ -165,6 +177,23 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                         setIndiceError(v);
                         return;
                     }
+                    do {
+                        if (v instanceof CardView) {
+                            break;
+                        }
+                        if (v != null) {
+                            // Else, we will loop and crawl up the view hierarchy and try to find a parent
+                            final ViewParent parent = v.getParent();
+                            v = parent instanceof View ? (View) parent : null;
+                        }
+                    } while (v != null);
+
+                    assert v != null;
+                    if (ind < INDICE_MINIMO)
+                        ((CardView) v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
+                    else
+                        ((CardView) v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_PASADO);
+
                     Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
                             + codigo.getText());
                     ContentValues values = new ContentValues();
@@ -248,7 +277,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             this.position = position;
 
 
-            Snackbar.make(((View) this.nombre), "Exitoso", Snackbar.LENGTH_LONG)
+            Snackbar.make(this.nombre, "Exitoso", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
 

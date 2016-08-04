@@ -9,7 +9,13 @@ import android.view.View;
 
 public class SwipeHellper extends ItemTouchHelper.Callback {
 
+    private static final float ALPHA_FULL = 1.0f;
     private RecyclerView mRecyclerView;
+
+    @Override
+    public boolean isItemViewSwipeEnabled() {
+        return true;
+    }
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
@@ -40,33 +46,43 @@ public class SwipeHellper extends ItemTouchHelper.Callback {
         viewHolder1.remover(context, swipableView, i);
     }
 
-    @Override
-    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-//        super.onSelectedChanged(viewHolder, actionState);
-        if (viewHolder != null) {
-            getDefaultUIUtil().onSelected(((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getSwipableView());
-        }
-    }
 
-    @Override
-    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-//        super.clearView(recyclerView, viewHolder);
-        getDefaultUIUtil().clearView(((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getSwipableView());
-    }
+    /*
+     @Override
+     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+ //        super.onSelectedChanged(viewHolder, actionState);
+         if (viewHolder != null) {
+             getDefaultUIUtil().onSelected(((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getSwipableView());
+         }
+     }
 
+  @Override
+     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+ //        super.clearView(recyclerView, viewHolder);
+         getDefaultUIUtil().clearView(((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getSwipableView());
+     }
+ */
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
 //        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-        getDefaultUIUtil().onDraw(c, recyclerView, ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder)
-                .getSwipableView(), dX, dY, actionState, isCurrentlyActive);
+        /*getDefaultUIUtil().onDraw(c, recyclerView, ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder)
+                .getSwipableView(), dX, dY, actionState, isCurrentlyActive);*/
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            // Fade out the view as it is swiped out of the parent's bounds
+            final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+            viewHolder.itemView.setAlpha(alpha);
+            viewHolder.itemView.setTranslationX(dX);
+        } else {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
     }
-
+/*
     @Override
     public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
 //        super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         getDefaultUIUtil().onDrawOver(c, recyclerView, ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder)
                 .getSwipableView(), dX, dY, actionState, isCurrentlyActive);
-    }
+    }*/
 }

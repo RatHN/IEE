@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ChuncheActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Clase>>,
         AdaptadorDeDisponibles.Comm, AdaptadorDeInfo.CommInfo {
@@ -34,6 +35,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
     int totalUV;
     TextView tu;
     boolean inicio = false;
+    boolean reprobadas_aparecen;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -56,6 +58,8 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         array = getIntent().getExtras().getStringArrayList("Array");
         totalIndice = getIntent().getExtras().getInt("totalIndice");
         totalUV = getIntent().getExtras().getInt("totalUV");
+        reprobadas_aparecen = getIntent().getExtras().getBoolean("reprobadas_aparecen");
+
         if(!inicio){
             String f = " Vos tenés " + "<b> " + (String.valueOf(totalUV)) + "</b>" +
                     " Unidades Valorativas disponibles para seleccionar clases futuras" +
@@ -117,6 +121,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         /*TextView ti = (TextView) findViewById(R.id.t);
         ti.setText("Indice= " + totalIndice );*/
         tu = (TextView) findViewById(R.id.tu);
+        assert tu != null;
         tu.setText(R.string.UVDisponibles);
         tu.setText(String.valueOf(tu.getText()) + "\n" + String.valueOf(totalUV));
         tu.setTextSize(28);
@@ -143,9 +148,20 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
             @Override
             public ArrayList<Clase> loadInBackground() {
-                ArrayList array;
+                ArrayList<Clase> array;
                 SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
                 array = dataSource.queryPasadasODisponibles(dob, dataSource.Columnas.DISPONIBLE, "1", getContext());
+
+
+                if (reprobadas_aparecen) {
+                    ArrayList<Clase> reprobadas = dataSource.queryPasadasODisponibles(dob, dataSource.Columnas.DISPONIBLE, "0", getContext());
+
+                    for (Clase clase1 :
+                            reprobadas) {
+                        array.add(clase1);
+                    }
+                }
+
                 dob.releaseReference();
                 return array;
             }

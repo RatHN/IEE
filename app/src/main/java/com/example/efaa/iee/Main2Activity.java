@@ -57,6 +57,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ClaseRecyclerAdaptador.InterfaceEscuchador, ClaseRecyclerAdaptador.InterfaceSetearIndice, PlaceHolderFragment.getPermisos {
@@ -78,24 +80,27 @@ public class Main2Activity extends AppCompatActivity
     public boolean Permisos = false;
 
 
-    dataSource DataSource = new dataSource();
+    private dataSource DataSource = new dataSource();
     SQLiteDatabase dob;
     private String dbPath = "/sdcard/UNAH_IEE/data.sqlite";
-    AlertDialog dialog1;
+    private AlertDialog dialog1;
     ArrayList<String> clasesString = new ArrayList<>();
     ArrayList<Clase> clasesClases = new ArrayList<>();
     int uv[] = {12, 14, 16, 20, 22, 24};
 
     SharedPreferences pref;
-    final String PERMISO = "PERMISO";
+    private final String PERMISO = "PERMISO";
 
-    int totalUV;
-    int totalIndice;
+    private int totalUV;
+    private int totalIndice;
+    private boolean reprobadas_aparecen;
+
+    Intent i;
+    Bundle b;
 
     /**
      * RecyclerView que se usará para la lista
      * Agregado por el BottomBar
-     *
      */
     BottomBar mBottomBar;
     RecyclerView mRecycler;
@@ -118,7 +123,7 @@ public class Main2Activity extends AppCompatActivity
                 != PackageManager.PERMISSION_GRANTED) || !fileDataBase.exists()) {
             this.Permisos = false;
             copiarBD();
-        }else this.Permisos = true;
+        } else this.Permisos = true;
 
 
 //        this.Permisos =  (fileDataBase.exists());
@@ -131,7 +136,7 @@ public class Main2Activity extends AppCompatActivity
                 savedInstanceState);
 */
 
-        mBottomBar = BottomBar.attachShy((CoordinatorLayout)findViewById(R.id.main_content),
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.main_content),
                 findViewById(R.id.f),
                 savedInstanceState);
         mBottomBar.setMaxFixedTabs(1);
@@ -166,7 +171,6 @@ public class Main2Activity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
         mBottomBar.setOnTabClickListener(new OnTabClickListener() {
             @Override
             public void onTabSelected(int position) {
@@ -178,7 +182,7 @@ public class Main2Activity extends AppCompatActivity
                         fragmentTransaction.commit();
                         break;
                     case 1:
-                        unread =0;
+                        unread = 0;
                         placeHolderFragment = PlaceHolderFragment.newInstance(2);
                         fragmentTransaction.replace(R.id.f, placeHolderFragment).commit();
                         break;
@@ -301,13 +305,13 @@ public class Main2Activity extends AppCompatActivity
                                                     cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
                                                     true);
                                             if (isChecked) {
-                                                if ( !clasesString.contains(clase.CODIGO)) {
+                                                if (!clasesString.contains(clase.CODIGO)) {
 
-                                                        clasesString.add(clase.CODIGO);
-                                                        clasesClases.add(clase);
+                                                    clasesString.add(clase.CODIGO);
+                                                    clasesClases.add(clase);
 
-                                                        totalIndice += clase.INDICE;
-                                                        totalUV += clase.UV;
+                                                    totalIndice += clase.INDICE;
+                                                    totalUV += clase.UV;
 
                                                 }
 //                                                clase.position = clasesString.lastIndexOf(clase);
@@ -334,8 +338,7 @@ public class Main2Activity extends AppCompatActivity
                                         if (clasesString.size() == 0) {
                                             eSO("No ha seleccionado ninguna clase");
                                             return;
-                                        }
-                                        else if(totalUV >24){
+                                        } else if (totalUV > 24) {
                                             eSO("Seleccionaste demasiadas clases. Volvé a intentarlo otra vez de vuelta de nuevo");
                                             return;
                                         }
@@ -349,15 +352,33 @@ public class Main2Activity extends AppCompatActivity
                                         else if (totalIndice < 80) totalUV = uv[4]; //22
                                         else totalUV = uv[5];                       //24
 
-                                        Intent i = new Intent(getApplicationContext(), ChuncheActivity.class);
-                                        Bundle b = new Bundle();
+                                        b = new Bundle();
                                         b.putStringArrayList("Array", clasesString);
                                         b.putInt("totalUV", totalUV);
                                         b.putInt("totalIndice", totalIndice);
 
+                                        reprobadas_aparecen = false;
+                                        i = new Intent(getApplicationContext(), ChuncheActivity.class);
 
-                                        i.putExtras(b);
-                                        startActivity(i);
+                                        DialogInterface.OnClickListener op = new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                b.putBoolean("reprobadas_aparecen", which == BUTTON_POSITIVE);
+                                                i.putExtras(b);
+
+                                                startActivity(i);
+                                            }
+                                        };
+                                        AlertDialog p = new AlertDialog.Builder(dialog1.getContext()).setMessage("¿Querés que " +
+                                                "aparezcan las clases reprobadas en la lista?")
+                                                .setTitle("Antes de continuar")
+                                                .setNegativeButton("No", op)
+                                                .setPositiveButton("Sí", op).create();
+
+                                        p.show();
+
+//                                        b.putBoolean("reprobadas_aparecen", reprobadas_aparecen);
+
                                     }
                                 })
                         .setTitle(getResources().getString(R.string.mensaje_calculador))
@@ -381,18 +402,17 @@ public class Main2Activity extends AppCompatActivity
                         dialog1.show();
                     }
                 };
-                AlertDialog p = new AlertDialog.Builder(view.getContext()).setMessage("Recuerde " +
+                AlertDialog p1 = new AlertDialog.Builder(view.getContext()).setMessage("Recuerde " +
                         "ingresar el indice por cada clase que haya aprobado/cursado el periodo anterior en " +
                         "la pestaña Cursadas")
                         .setTitle("Antes de continuar")
                         .setNegativeButton("¡Vamo pa'tras!", null)
                         .setPositiveButton(" Vos dale", op).create();
-                p.show();
+                p1.show();
 
             }
         });
         fab.setVisibility(View.GONE);
-
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -404,7 +424,8 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    DrawerLayout drawer;
+
+    private DrawerLayout drawer;
 
     @Override
     public void onBackPressed() {
@@ -419,7 +440,7 @@ public class Main2Activity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
+        //getMenuInflater().inflate(R.menu.main2, menu);
         return true;
     }
 
@@ -456,12 +477,32 @@ public class Main2Activity extends AppCompatActivity
             }
         } else if (id == R.id.pdf_otro) {
 //            PDFOpen(id);
-            Snackbar.make(this.mViewPager, "Falta implementar... Esperand ol PDF de Emilson",
+            Snackbar.make(drawer, "Falta implementar... Esperando el PDF de Emilson",
                     Snackbar.LENGTH_SHORT).show();
         } else if (id == R.id.bug_report) {
+            try {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "neryortez@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Comentarios");
 
+                startActivity(Intent.createChooser(emailIntent, "Enviar comentarios por correo"));
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(this, "Error Desconocido", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.rate) {
-
+            Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+            // To count with Play market backstack, After pressing back button,
+            // to taken back to our application, we need to add following flags to intent.
+            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                    Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            try {
+                startActivity(goToMarket);
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -484,8 +525,8 @@ public class Main2Activity extends AppCompatActivity
         placeHolderFragment.recyclerView.getAdapter().notifyItemRemoved(pos);
 
         boolean cursada = actualizarCursada;
-        if(!actualizarCursada){
-            if (placeHolderFragment.toString().compareTo(dataSource.Columnas.DISPONIBLE) == 0){
+        if (!actualizarCursada) {
+            if (placeHolderFragment.toString().compareTo(dataSource.Columnas.DISPONIBLE) == 0) {
                 unread += 1;
                 unreadClases.setCount(unread);
                 unreadClases.setAnimationDuration(200);
@@ -498,6 +539,7 @@ public class Main2Activity extends AppCompatActivity
 
 //        mSectionsPagerAdapter.notifyDataSetChanged();
     }
+
     int unread = 0;
     BottomBarBadge unreadClases;
 
@@ -627,8 +669,6 @@ public class Main2Activity extends AppCompatActivity
             out.write(buffer, 0, read);
         }
     }
-
-
 
 
     @Override
