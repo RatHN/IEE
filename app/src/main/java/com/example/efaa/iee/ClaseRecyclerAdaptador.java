@@ -5,10 +5,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,10 +19,11 @@ import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 //import com.google.android.gms.location.places.Place;
@@ -36,12 +35,23 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
     private Context context;
     public List<Clase> LISTA;
+    public List<Clase> LISTA_EDITADA;
+    public List<Clase> LISTA_NO_EDITADA;
     final int INDICE_MINIMO = 65;
     final int COLOR_PASADO = Color.WHITE;
     final int COLOR_NO_PASADO = Color.LTGRAY;
 
     public ClaseRecyclerAdaptador(List<Clase> Lista) {
         LISTA = Lista;
+        LISTA_NO_EDITADA= new ArrayList<>(Lista);
+        List<Clase> list = new ArrayList<>();
+        for (Iterator<Clase> it = LISTA.iterator(); it.hasNext();) {
+            Clase clase = it.next();
+            if (clase.INDICE > 65) {
+                list.add(clase);
+            }
+        }
+        LISTA_EDITADA = list;
     }
 
     public List<Clase> getLISTA() {
@@ -244,7 +254,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 //                    .setAction("Action", null).show();
         }
 
-        void remover(Context context1, View v, int position) {
+        boolean remover(Context context1, View v, int position) {
             Clase clase = LISTA.get(position);
             dataSource source = new dataSource();
             SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
@@ -268,7 +278,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                 b.putString("COLUMNA", context11.placeHolderFragment.COLUMNA);
 
                 context11.placeHolderFragment.getLoaderManager().initLoader(0, b, context11.placeHolderFragment);
-                return;
+                return false;
             }
 
 
@@ -279,6 +289,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
             Snackbar.make(this.nombre, "Exitoso", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
+            return true;
         }
 
         public void eso(View v) {

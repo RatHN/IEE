@@ -72,6 +72,17 @@ public class SwipeHellper extends ItemTouchHelper.Callback {
             // Fade out the view as it is swiped out of the parent's bounds
             final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
             viewHolder.itemView.setAlpha(alpha);
+            /*if ((Math.abs(dX) / (float) viewHolder.itemView.getWidth()) < getSwipeThreshold(viewHolder)) {
+                viewHolder.itemView.setTranslationX(dX);
+            }else {
+                if (((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).remover(mRecyclerView.getContext(),
+                        ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getSwipableView(), ((ClaseRecyclerAdaptador.ClaseViewHolder) viewHolder).getAdapterPosition())) {
+                    viewHolder.itemView.setTranslationX(dX);
+                }
+                else{
+                    viewHolder.itemView.setTranslationX(0.5f);
+                }
+            }*/
             viewHolder.itemView.setTranslationX(dX);
         } else {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

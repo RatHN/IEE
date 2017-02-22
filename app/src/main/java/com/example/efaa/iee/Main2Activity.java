@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -18,31 +17,26 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatCheckedTextView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
@@ -53,9 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
@@ -143,11 +135,13 @@ public class Main2Activity extends AppCompatActivity
 
 //        mBottomBar.noTopOffset();
 
+        BottomBarTab disponibles = new BottomBarTab(R.drawable.ic_check_box_outline_blank_black_24dp, "Disponibles");
+        BottomBarTab cursadas = new BottomBarTab(R.drawable.ic_check_box_black_24dp, "Cursadas");
+        BottomBarTab calc = new BottomBarTab(R.drawable.ic_menu_info, "Calc");
         mBottomBar.setItems(
-                new BottomBarTab(R.drawable.ic_menu_camera, "Dispo"),
-                new BottomBarTab(R.drawable.ic_menu_comentar, "Pasadas"),
-                new BottomBarTab(R.drawable.ic_menu_info, "Calc"));
-
+                disponibles,
+                cursadas,
+                calc);
         mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.cardview_dark_background));
         mBottomBar.mapColorForTab(1, 0xFF5D4037);
         mBottomBar.mapColorForTab(2, "#7B1FA2");
@@ -423,7 +417,21 @@ public class Main2Activity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        runTutorial();
     }
+
+    private void runTutorial() {
+        new ShowcaseView.Builder(this)
+                .setTarget(
+                        new ViewTarget(mBottomBar.getBar()))
+                .setContentTitle("¡Bienvenido!")
+                .setContentText("En esta pestaña podrás ver las clases que estan disponibles segun tu" +
+                        " historial. Aqui podrás marcas las clases que has cursado anteriormente")
+                .hideOnTouchOutside()
+                .setStyle(R.style.ShowcaseUNAH)
+                .build();
+    }
+
 
     private DrawerLayout drawer;
 
@@ -452,7 +460,21 @@ public class Main2Activity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.editar) {
+            ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter()).cambiarLista(
+                    ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter())
+                            .LISTA_EDITADA);
+            placeHolderFragment.recyclerView.getAdapter().notifyDataSetChanged();
+
+            return true;
+        }
+
+        if (id == R.id.no_editar) {
+            ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter()).cambiarLista(
+                    ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter())
+                            .LISTA_NO_EDITADA);
+            placeHolderFragment.recyclerView.getAdapter().notifyDataSetChanged();
+
             return true;
         }
 

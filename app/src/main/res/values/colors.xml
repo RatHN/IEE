@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="colorPrimary">#32ab79</color>
+    <color name="colorPrimary">#003973</color>
     <color name="colorPrimaryDark">#4c697b</color>
-    <color name="colorAccent">#fc7e37</color>
+    <color name="colorAccent">#fcc904</color>
     <color tools:override="true" name="background_material_light">#4c697b</color>
     <color name="statusBarColor">#4c697b</color>
-    <color name="primary_material_light_nery">#bcac5f</color>
+    <color name="primary_material_light_nery">#fcc904</color>
     <color name="black" tools:override="true">#000000</color>
     <color name="negro_transparente">#82000000</color>
 </resources>
