@@ -1,7 +1,6 @@
 package com.example.efaa.iee;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
@@ -21,9 +20,12 @@ public class Clase extends Clas{
     public ArrayList<Clas> ARRAYdEPENDENCIAS;
     public int UV;
     public int INDICE;
+    public boolean CURSADA;
 
-    private dataSource dtsrc = new dataSource();
-    private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+    public int position = 0;
+
+//    private dataSource dtsrc = new dataSource();
+//    private SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
 
     Clase(){
         return;
@@ -41,13 +43,13 @@ public class Clase extends Clas{
 //        }
     }
 
-    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList, int uv, int indice) {
+    public Clase(String nombre, String codigo, ArrayList<Clas> clasArrayList, int uv, int indice, boolean cursada) {
         CODIGO = codigo;
         NOMBRE = nombre;
         ARRAYdEPENDENCIAS = clasArrayList;
         UV = uv;
         INDICE = indice;
-
+        CURSADA = cursada;
         return;
     }
 
@@ -67,6 +69,6 @@ public class Clase extends Clas{
     }
 
     public String toString(){
-        return "Clase";
+        return NOMBRE;
     }
 }

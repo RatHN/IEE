@@ -6,8 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorBackground">@color/background_material_light</item>
-        <item name="android:windowBackground">@color/primary_material_light</item>
+        <item name="android:colorBackground">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@color/primary_material_light_nery</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -18,5 +18,9 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ShowcaseUNAH" parent="ShowcaseView">
+        <item name="sv_backgroundColor">#da283593</item>
+    </style>
 
 </resources>

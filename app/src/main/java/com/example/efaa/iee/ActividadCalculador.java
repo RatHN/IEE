@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -61,29 +62,6 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
             ClassFragment frag = (ClassFragment) getSupportFragmentManager().findFragmentByTag(cod);
 
             frag.animar();
-//            trans = getSupportFragmentManager().beginTransaction();
-//            trans.remove(p);
-//            trans.replace(frag.getView().getId(), p);
-            //trans.commit();
-//            trans.remove(p);
-
-//            trans.commit();
-//            new Thread(new Runnable() {
-//                public void run() {
-//                    ClassFragment p = new ClassFragment();
-//                    FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
-//                            .setCustomAnimations(R.anim.slide_in, R.anim.slide_in);
-//
-//                    //trans.remove(frag);
-//                    trans.replace(frag.getView().getId(), p);
-//                    //trans.commit();
-//                    //trans.remove(p);
-//
-//                    trans.commit();
-//                }
-//            }).start();
-
-
         }
 
     }
@@ -101,7 +79,14 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         dataSource.Columnas colum = new dataSource.Columnas();
 
         setContentView(R.layout.activity_actividad_calculador);
-        ESTADO = getIntent().getExtras().getString("CurPas");
+
+        this.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        ESTADO = "Cursar";
+        if (getIntent().getExtras() != null) {
+            ESTADO = getIntent().getExtras().getString("CurPas");
+        }
         Button botn = (Button) findViewById(R.id.button2);
         String textoBoton = "IR A";
         if (ESTADO.compareTo("Cursar") == 0) {
@@ -243,7 +228,7 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
         for (int o = 0; firstDay < listaClases.size(); firstDay++) {
             int frame = lista[firstDay];
-            ClassFragment newFragment = new ClassFragment(listaClases.get(firstDay));
+            ClassFragment newFragment = ClassFragment.newInstance(listaClases.get(firstDay));
             Bundle bundle1 = new Bundle();
 
             bundle1.putString(ClassFragment.CODIGO_CLASE, listaClases.get(firstDay).CODIGO);
@@ -305,4 +290,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         transaction.remove(classFragment);
         transaction.commit();
     }
+
+//    public void removerFragmento(ClaseView claseView) {
+//        claseView = null;
+//    }
 }

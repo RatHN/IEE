@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">I.E.I. UNAH-VS</string>
+    <string name="app_name">Derecho UNAH-VS</string>
     <string name="historia">HolasHOla </string>
     <string name="boton2"> Informacion de la Carrera</string>
     <string name="boton"> Informacion de Clases</string>
     <string name="hello_world">TectoTextoTextoTextoTexto</string>
-    <string name="title_activity_scrolling">ScrollingActivity</string>
+
     <string name="UV">Unidades Valorativas: </string>
+    <string name="UVDisponibles">Unidades Valorativas Disponibles: </string>
     <string name="uv">UV=</string>
-    <string name="action_settings">Settings</string>
 
     <string name="TABLE">clases</string>
     <string name="cNombre">nombre</string>
@@ -15,4 +15,21 @@
     <string name="cursada">cursada</string>
     <string name="disponible">disponible</string>
     <string name="porCursar">porcursar</string>
+
+    <string name="title_activity_tab">Visor Calculador Masiso Buena Onda</string>
+    <string name="mensaje_calculador">Seleccioná las clases que
+        cursaste el periodo anterior</string>
+
+
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main2">Derecho UNAH-VS</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="icono_de_la_aplicacion">Icono de la aplicacion</string>
+    <string name="title_activity_cunche">CuncheActivity</string>
+    <string name="welcome">¡Bienvenido!</string>
+    <string name="welcome_description">En esta aplicacion podrás llevar un control de tus clases aprovadas, así como planear las clases que podrías llevar en los periodos próximos.\\nPara continuar, haz cl</string>
+
 </resources>
