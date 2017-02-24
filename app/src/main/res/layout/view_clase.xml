@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="true"
     android:contentDescription="Porcentaje"
-    tools:context="com.example.efaa.iee.ClassFragment">
+    tools:context="com.example.efaa.iee.sinUsar.ClassFragment">
 
 
     <LinearLayout

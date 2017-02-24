@@ -4,7 +4,7 @@ package com.example.efaa.iee;
  * Created by Neri Ortez on 09/05/2016.
  */
 
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,9 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.example.efaa.iee.Materias.Clase;
+import com.example.efaa.iee.adaptadores.ClaseRecyclerAdaptador;
+import com.example.efaa.iee.ux.SwipeHellper;
+
 import java.io.File;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 
 /**
@@ -34,20 +39,17 @@ public class PlaceHolderFragment extends Fragment
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-//    public ClaseRecyclerAdaptador.EscuchadorDeInteraccion meEscucha;
 
-    //    AdaptadorArrayClase adaptador;
-//    ListView lista;
-    RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     RecyclerView.LayoutManager lManager;
-    Bundle ARGS;
+    public Bundle ARGS;
     ClaseRecyclerAdaptador cAdaptador;
     public Boolean flag = false;
     private static final String FLAG = "flag";
 
     SQLiteDatabase dob;
 
-    String COLUMNA;
+    public String COLUMNA;
     getPermisos permisos;
 
 
@@ -211,7 +213,10 @@ public class PlaceHolderFragment extends Fragment
             public ArrayList<Clase> loadInBackground() {
 
 
-                while (!permisos.getPermisos()) {
+                Context context = getContext();
+                while (context.getSharedPreferences(
+                            getString(R.string.preferences), MODE_PRIVATE)
+                            .getBoolean(context.getString(R.string.permiso), false)) {
                     Log.i("TAG", "ESPERando por permisos");
                 }
                 ArrayList array;
@@ -219,7 +224,7 @@ public class PlaceHolderFragment extends Fragment
                 if (!f.exists()) {
                 }
                 dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-                array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", getContext());
+                array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", context);
                 dob.releaseReference();
                 return array;
             }

@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -32,15 +33,23 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.efaa.iee.Materias.Clase;
+import com.example.efaa.iee.adaptadores.ClaseRecyclerAdaptador;
+import com.example.efaa.iee.sinUsar.SectionsPagerAdapter;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
+import com.stephentuso.welcome.WelcomeHelper;
+import com.vansuita.materialabout.builder.AboutBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,9 +107,10 @@ public class Main2Activity extends AppCompatActivity
     RecyclerView mRecycler;
     RecyclerView.LayoutManager mLManager;
     ClaseRecyclerAdaptador mAdapter;
-    PlaceHolderFragment placeHolderFragment;
+    public PlaceHolderFragment placeHolderFragment;
     FragmentTransaction fragmentTransaction;
     FloatingActionButton fab;
+    private WelcomeHelper welcomeScreen;
 
 
     @Override
@@ -108,14 +118,18 @@ public class Main2Activity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        pref = getPreferences(MODE_PRIVATE);
+        pref = getSharedPreferences(getString(R.string.preferences), MODE_PRIVATE);
         File fileDataBase = new File(dbPath);
 
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) || !fileDataBase.exists()) {
             this.Permisos = false;
+            pref.edit().putBoolean(getString(R.string.permiso), this.Permisos).apply();
             copiarBD();
-        } else this.Permisos = true;
+        } else{
+            this.Permisos = true;
+            pref.edit().putBoolean(getString(R.string.permiso), this.Permisos).apply();
+        }
 
 
 //        this.Permisos =  (fileDataBase.exists());
@@ -197,6 +211,7 @@ public class Main2Activity extends AppCompatActivity
          * que la masa de baleadas
          */
 
+        //<editor-fold desc="OLD CODE">
         /*
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -252,6 +267,7 @@ public class Main2Activity extends AppCompatActivity
         //
         // Aqui se detiene la masividad masiva recursiva de recursos
         */
+        //</editor-fold>
 
 
         //Empieza la customizacion del FAB */
@@ -290,7 +306,7 @@ public class Main2Activity extends AppCompatActivity
                                 new DialogInterface.OnMultiChoiceClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                        Clase clase = new Clase();
+                                        Clase clase;
                                         if (cursor.moveToPosition(which)) {
                                             clase = new Clase(cursor.getString(cursor.getColumnIndex(dataSource.Columnas.NOMBRE)),
                                                     cursor.getString(cursor.getColumnIndex(dataSource.Columnas.CODIGO)),
@@ -387,7 +403,7 @@ public class Main2Activity extends AppCompatActivity
                 }
 
                 dialog1 = builder.create();
-                dialog1.setIcon(R.mipmap.r04);
+                dialog1.setIcon(R.mipmap.ic_launcher);
                 dob.releaseReference();
 
                 DialogInterface.OnClickListener op = new DialogInterface.OnClickListener() {
@@ -406,7 +422,7 @@ public class Main2Activity extends AppCompatActivity
 
             }
         });
-        fab.setVisibility(View.GONE);
+        fab.setVisibility(View.INVISIBLE);
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -417,18 +433,66 @@ public class Main2Activity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        runTutorial();
+
+        welcomeScreen = new WelcomeHelper(this, Tutorial.class);
+//        welcomeScreen.show(savedInstanceState);
+        welcomeScreen.forceShow();
+
+        runTutorial(0);
     }
 
-    private void runTutorial() {
+
+
+    private void runTutorial(final int index) {
+        CharSequence bottombar = "En esta pestaña podrás ver las clases que estan disponibles según tu" +
+                " historial. Aqui podrás marcas las clases que has cursado anteriormente";
+        CharSequence placeHolderFragmentText = "En esta ventana podras ver las clases que estan disponibles.\n" +
+                "En la lista hay pequeños detalles que serán útiles.";
+        CharSequence rectTargetText = "En esta parte podrás hacer un relajo que ni yo me entiendo.\n" +
+                "Pero es COOL...! Te lo explico luego....";
+
+        ViewTarget bottomBarTarget = new ViewTarget(mBottomBar.getBar());
+        ViewTarget placeHolderTarget = new ViewTarget(placeHolderFragment.recyclerView);
+        ViewTarget rectTarget = new ViewTarget(fab);
+
+        final ViewTarget[] targets = {bottomBarTarget, placeHolderTarget, rectTarget};
+        CharSequence[] texts = {bottombar, placeHolderFragmentText, rectTargetText};
+        int[] stilosShowcase = {R.style.ShowcaseUNAH, R.style.ShowcaseLista, R.style.ShowcaseUNAH};
+
+        Button button = new Button(getApplicationContext());
+        button.setVisibility(View.GONE);
         new ShowcaseView.Builder(this)
-                .setTarget(
-                        new ViewTarget(mBottomBar.getBar()))
-                .setContentTitle("¡Bienvenido!")
-                .setContentText("En esta pestaña podrás ver las clases que estan disponibles segun tu" +
-                        " historial. Aqui podrás marcas las clases que has cursado anteriormente")
+                .setTarget(targets[index])
+                .setContentTitle("¡Bienvenid@!")
+                .setContentText(texts[index])
                 .hideOnTouchOutside()
-                .setStyle(R.style.ShowcaseUNAH)
+                .replaceEndButton(button)
+                .setStyle(stilosShowcase[index])
+                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                        try {
+                            runTutorial(index + 1);
+                        } catch (Exception ignored) {
+                        }
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+
+                    }
+                })
                 .build();
     }
 
@@ -483,7 +547,7 @@ public class Main2Activity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -517,7 +581,7 @@ public class Main2Activity extends AppCompatActivity
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
             goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                    Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
                     Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             try {
                 startActivity(goToMarket);
@@ -525,6 +589,33 @@ public class Main2Activity extends AppCompatActivity
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
+        } else if(id == R.id.about){
+            View view = AboutBuilder.with(this)
+                    .setPhoto(R.mipmap.profile_picture)
+                    .setCover(R.mipmap.profile_cover)
+                    .setName("Abinadí Ortez")
+                    .setSubTitle("Desarrollador")
+                    .setBrief("Estudiante de Ingeniería Electrónica y autodidacta en ciencas de la computación.")
+
+                    .setAppIcon(R.mipmap.ic_launcher)
+                    .setAppName(R.string.app_name)
+                    .addFiveStarsAction()
+                    .setVersionAsAppTitle()
+                    .addShareAction(R.string.app_name)
+
+                    .addGooglePlayStoreLink("8002078663318221363")
+                    .addGitHubLink("RatHN")
+                    .addFacebookLink("abinadiortez")
+                    .addEmailLink("neryortez@gmail.com", "UNAH APLICACIONES", "Me gusta esta aplicacion porque.....")
+
+
+
+//                    .setWrapScrollView(true)
+                    .setLinksAnimated(true)
+                    .setShowDivider(false)
+                    .build();
+
+            new AlertDialog.Builder(this).setView(view).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -539,14 +630,13 @@ public class Main2Activity extends AppCompatActivity
 
     public void Escuchador(boolean actualizarCursada, int pos) {
 //        mSectionsPagerAdapter.update(actualizarCursada, pos);
-        Clase clase1 = null;
+        Clase clase1;
 
         clase1 = ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter()).LISTA.get(pos);
         clase1.CURSADA = true;
         ((ClaseRecyclerAdaptador) placeHolderFragment.recyclerView.getAdapter()).LISTA.remove(pos);
         placeHolderFragment.recyclerView.getAdapter().notifyItemRemoved(pos);
 
-        boolean cursada = actualizarCursada;
         if (!actualizarCursada) {
             if (placeHolderFragment.toString().compareTo(dataSource.Columnas.DISPONIBLE) == 0) {
                 unread += 1;
@@ -592,7 +682,7 @@ public class Main2Activity extends AppCompatActivity
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                     123);
         } else {
-            pref.edit().putBoolean(PERMISO, true).apply();
+            pref.edit().putBoolean(getString(R.string.permiso), true).apply();
             File fileDataBase = new File(dbPath);
             if (!fileDataBase.exists()) {
                 int ID = R.raw.data;
@@ -694,14 +784,14 @@ public class Main2Activity extends AppCompatActivity
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 123:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pref.edit().putBoolean(PERMISO, true).apply();
-                    startActivity(new Intent(getApplicationContext(), Main2Activity.class));
-                    finish();
-                    /*copiarBD();*/
+//                    pref.edit().putBoolean(getString(R.string.permiso), true).apply();
+//                    startActivity(new Intent(getApplicationContext(), Main2Activity.class));
+//                    finish();
+                    copiarBD();
                 } else {
                     // 1. Instantiate an AlertDialog.Builder with its constructor
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -742,6 +832,9 @@ public class Main2Activity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        //Necessary to the Tutorial activity
+        welcomeScreen.onSaveInstanceState(outState);
 
         // Necessary to restore the BottomBar's state, otherwise we would
         // lose the current tab on orientation change.

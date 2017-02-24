@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.efaa.iee.Materias.Clas;
+import com.example.efaa.iee.Materias.Clase;
+
 import java.util.ArrayList;
 
 /**

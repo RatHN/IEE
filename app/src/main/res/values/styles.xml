@@ -20,7 +20,24 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ShowcaseUNAH" parent="ShowcaseView">
+        <item name="sv_buttonText">"Siguiente"</item>
         <item name="sv_backgroundColor">#da283593</item>
+    </style>
+
+    <style name="ShowcaseLista" parent="ShowcaseUNAH">
+        <item name="sv_backgroundColor">#c6ffc400</item>
+        <item name="sv_buttonText">"Siguiente"</item>
+    </style>
+
+    <style name="ShowcaseButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_gravity">top|end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#ccc</item>
+        <item name="android:visible">false</item>
+        <item name="android:background">@drawable/button</item>
     </style>
 
 </resources>

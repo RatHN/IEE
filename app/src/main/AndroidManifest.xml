@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.efaa.iee">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -10,23 +11,24 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        tools:replace="android:supportsRtl">
+        <activity android:name=".sinUsar.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
-        <activity android:name=".ActividadCalculador" />
+        <activity android:name=".sinUsar.ActividadCalculador" />
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".sinUsar.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.efaa.iee.MainActivity" />
+                android:value="com.example.efaa.iee.sinUsar.MainActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,6 +44,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.efaa.iee.Main2Activity" />
+        </activity>
+        <activity
+            android:name=".Tutorial"
+            android:theme="@style/WelcomeScreenTheme" />
+        <activity android:name=".FirstRunActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

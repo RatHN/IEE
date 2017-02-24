@@ -31,5 +31,7 @@
     <string name="title_activity_cunche">CuncheActivity</string>
     <string name="welcome">¡Bienvenido!</string>
     <string name="welcome_description">En esta aplicacion podrás llevar un control de tus clases aprovadas, así como planear las clases que podrías llevar en los periodos próximos.\\nPara continuar, haz cl</string>
+    <string name="preferences">preferences</string>
+    <string name="permiso">permiso</string>
 
 </resources>

@@ -28,7 +28,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:src="@mipmap/r04"
+            android:src="@mipmap/ic_launcher"
             android:contentDescription="@string/icono_de_la_aplicacion"
             android:elevation="10dp" />
         />

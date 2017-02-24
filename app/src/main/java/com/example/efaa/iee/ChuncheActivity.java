@@ -17,8 +17,11 @@ import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.efaa.iee.Materias.Clase;
+import com.example.efaa.iee.adaptadores.AdaptadorDeDisponibles;
+import com.example.efaa.iee.adaptadores.AdaptadorDeInfo;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ChuncheActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Clase>>,
         AdaptadorDeDisponibles.Comm, AdaptadorDeInfo.CommInfo {
