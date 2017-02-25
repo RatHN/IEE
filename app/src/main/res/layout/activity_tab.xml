@@ -41,11 +41,13 @@
         android:id="@+id/reCycler"></android.support.v7.widget.RecyclerView>-->
 
 
-    <FrameLayout
-        android:id="@+id/f"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recicler"
+        android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:listitem="@layout/card_clase" />
 
 
     <android.support.design.widget.FloatingActionButton

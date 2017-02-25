@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,28 +13,80 @@ import android.widget.Toast;
 import com.example.efaa.iee.Materias.Clas;
 import com.example.efaa.iee.Materias.Clase;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
  * Created by EFAA on 26/04/2016.
  */
-public class dataSource {
+public class dataSource extends SQLiteOpenHelper{
 
     //Metainformación de la base de datos
     public static final String TABLE = "clases";
     public static final String STRING_TYPE = "text";
     public static final String INT_TYPE = "integer";
+    private static final String LOCAL_DATABASE_NAME = "data.sqlite";
+    private static final int DATABASE_VERSION = 1;
+    private static final CharSequence UPGRADE_DATABASE = "";
+    private static final int BUFFER_SIZE = 1024;
+    private final Context mContext;
+    private SQLiteDatabase db;
+
+    public dataSource(Context context) throws IOException {
+        super(context, LOCAL_DATABASE_NAME, null, DATABASE_VERSION);
+        mContext = context;
+        if (!isDatabaseFileStored(context)) {
+            copyDatabaseFromAssets(context);
+        }
+    }
+
+    public void open(){
+        this.db = this.getWritableDatabase();
+
+    }
+
+
+    public String getDatabaseFilePath(Context context, String databaseName) {
+        return context.getDatabasePath(LOCAL_DATABASE_NAME).getPath();
+    }
+
+    private boolean isDatabaseFileStored(Context context) {
+        return new File(getDatabaseFilePath(context, LOCAL_DATABASE_NAME)).exists();
+    }
+
+    private void copyDatabaseFromAssets(Context context) throws IOException {
+        InputStream inputStream = context.getResources().openRawResource(R.raw.data);
+        String localDatabasePath = getDatabaseFilePath(context, LOCAL_DATABASE_NAME);
+        new File(localDatabasePath.replace("/"+LOCAL_DATABASE_NAME, UPGRADE_DATABASE)).mkdirs();
+        OutputStream outputStream = new FileOutputStream(localDatabasePath);
+        byte[] buffer = new byte[BUFFER_SIZE];
+        while (true) {
+            int length = inputStream.read(buffer);
+            if (length > 0) {
+                outputStream.write(buffer, 0, length);
+            } else {
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
+                return;
+            }
+        }
+    }
+
 
 
     /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
      *
-     * @param db              Base de Datos a usar.
      * @param dependenciaCode Codigo de la dependencia a usar para realizar la busqueda.
      * @param context         Contexto de la aplicacion o de la actividad
      * @return Una lista de Clas con las clases requsito para dependenciaCode
      */
-    public static Clas queryDependencias(SQLiteDatabase db, String dependenciaCode, Context context) {
+    public Clas queryDependencias(String dependenciaCode, Context context) {
         String codeName = dependenciaCode;
         String columns[] = new String[]{Columnas.CODIGO};
         String selection = Columnas.PORcURSAR + " LIKE '%" + codeName + "%' ";
@@ -41,27 +94,26 @@ public class dataSource {
         return new Clas(dependenciaCode, db, context);
     }
 
-    public static ArrayList<Clas> crearListaDependenciasAndParse(String porcursar, SQLiteDatabase db, Context context) {
+    public ArrayList<Clas> crearListaDependenciasAndParse(String porcursar, Context context) {
         String array[] = porcursar.split(", ");
 
         ArrayList<Clas> lista = new ArrayList<>();
 
         for (String i :
                 array) {
-            lista.add(queryDependencias(db, i, context));
+            lista.add(queryDependencias(i, context));
         }
         return lista;
     }
 
     /**
-     * @param db       Base de Datos a usar
+     *
      * @param columna  Columna a evaluar
      * @param ceroOuno Dato a evaluar
      * @param context  Contexto de la aplicacion o actividad que llama esta funcion
      * @return Una lista con las Clases que resultan del resultan del query
      */
-    public static ArrayList<Clase> queryPasadasODisponibles(SQLiteDatabase db, String columna,
-                                                            String ceroOuno, Context context) {
+    public ArrayList<Clase> queryPasadasODisponibles(String columna, String ceroOuno, Context context) {
         String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
                 Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
 
@@ -81,11 +133,10 @@ public class dataSource {
                         null,
                         null,
                         null
-                ), db,
-                context, cursada);
+                ), context, cursada);
     }
 
-    private static ArrayList<Clase> CrearListaClases(Cursor c, SQLiteDatabase db, Context context, boolean aprovada) {
+    private  ArrayList<Clase> CrearListaClases(Cursor c, Context context, boolean aprovada) {
         ArrayList<Clase> listaClases = new ArrayList<>();
         String porCursar = null;
         String clase = null;
@@ -116,7 +167,7 @@ public class dataSource {
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
-            ArrayList<Clas> porcursar = crearListaDependenciasAndParse(porCursar, db, context);
+            ArrayList<Clas> porcursar = crearListaDependenciasAndParse(porCursar, context);
 //            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
 
 
@@ -131,12 +182,11 @@ public class dataSource {
     /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
      *
-     * @param db                    Base de Datos a usar.
      * @param NombreDeLaDependencia Codigo de la dependencia a usar para realizar la busqueda.
      * @param context               Contexto de la aplicacion o de la actividad
      * @return Una lista de Clas con las clases requsito para NombreDeLaDependencia
      */
-    public ArrayList<Clas> queryRequisitos(SQLiteDatabase db, String NombreDeLaDependencia, Context context) {
+    public ArrayList<Clas> queryRequisitos(String NombreDeLaDependencia, Context context) {
         String codeName = NombreDeLaDependencia;
         String columns[] = new String[]{Columnas.CODIGO};
         String selection = Columnas.PORcURSAR + " LIKE '%" + codeName + "%' ";
@@ -157,12 +207,11 @@ public class dataSource {
     /**
      * Crear Clase evaluando una columna (nombre o codigo) con una DATO
      *
-     * @param db      Base de Datos a usar
      * @param codigo  Dato a evaluar
      * @param context Contexto de la aplicacion o actividad
      * @return Clase que resulta del resulta del query
      */
-    public Clase queryCrearClase(SQLiteDatabase db, String codigo, Context context) {
+    public Clase queryCrearClase(String codigo, Context context) {
         String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
                 Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.INDICE, Columnas.UV};
         String selection = Columnas.CODIGO + " = \"" + codigo + "\" ";//WHERE author = ?
@@ -178,11 +227,10 @@ public class dataSource {
                         null,
                         null,
                         null
-                ), db,
-                context);
+                ), context);
     }
 
-    private Clase CrearClase(Cursor c, SQLiteDatabase db, Context context) {
+    private Clase CrearClase(Cursor c, Context context) {
 
         ArrayList<Clas> porcursar = new ArrayList<>();
         String porCursar = null;
@@ -213,7 +261,7 @@ public class dataSource {
                 Toast.makeText(context, " COMUNICARSE CON DESARROLADOR \n " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
-            porcursar = crearListaDependenciasAndParse(porCursar, db, context);
+            porcursar = crearListaDependenciasAndParse(porCursar, context);
 //            ArrayList<Clas> DEPENDENCIAS = new ArrayList<>();
             break;
 
@@ -242,7 +290,7 @@ public class dataSource {
         return lista;
     }
 
-    public Cursor queryPorCursar(SQLiteDatabase db, @Nullable String OneOrZero) {
+    public Cursor queryPorCursar(@Nullable String OneOrZero) {
         if (OneOrZero == null) {
             OneOrZero = "1";
         }
@@ -265,7 +313,6 @@ public class dataSource {
      * Inserta un uno o un cero para marcar como pasada o disponible. Hace las revisiones pertinentes
      * para evitar errores.
      *
-     * @param db      Base de datos sobre la que se actuara
      * @param codigo  Codigo de la clase
      * @param columna Que columna será modificada
      * @param dato    El cero o uno que se ingresará
@@ -273,7 +320,7 @@ public class dataSource {
      * @param context El contexto necesario para hacer mensajes de error.
      * @return Codigo de la clase que será eliminada de la lista, o algun codigo de error.
      */
-    public String insertarUnoOCero(SQLiteDatabase db, String codigo, String columna, String dato, Clase clase, Context context) {
+    public String insertarUnoOCero(String codigo, String columna, String dato, Clase clase, Context context) {
         String columna2 = null;
         String result = "";
 
@@ -309,7 +356,7 @@ public class dataSource {
 
 
         // Preparando datos a actualizar
-        if (columna == Columnas.CURSADA) {
+        if (columna.equals(Columnas.CURSADA)) {
             columna2 = Columnas.DISPONIBLE;
         }
         ContentValues values = new ContentValues();
@@ -317,7 +364,7 @@ public class dataSource {
         //Seteando body y author
         values.put(columna, dato);
         String NoDato;
-        if (dato == "1") {
+        if (dato.equals( "1" )){
             values.put(columna2, "0");
             values.put(columna, "1");
             NoDato = "0";
@@ -338,7 +385,7 @@ public class dataSource {
 
             if (dato.compareTo("1") == 0) {                 // Si se esta marcando como pasada, revisar status de cada clase
                 if (clas.ARRAY_REQUISITOS.size() == 1) {    // Para marcar como disponible
-                    insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+                    insertarUnoOCeroEnClas(clas.CODIGO, Columnas.DISPONIBLE, "1", context);
                 } else if (clas.ARRAY_REQUISITOS.size() > 1) {
                     Cursor cursor = clas.marccarDisponible(db, context);
                     if (cursor.getCount() == clas.ARRAY_REQUISITOS.size()) {
@@ -346,12 +393,12 @@ public class dataSource {
                         for (int i = 0; i < clas.ARRAY_REQUISITOS.size(); i++) {
                             codigos[i] = clas.ARRAY_REQUISITOS.get(i).toString();
                         }
-                        insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "1", context);
+                        insertarUnoOCeroEnClas(clas.CODIGO, Columnas.DISPONIBLE, "1", context);
                         result = "0";
                     }
                 }
             } else { // Si es una desmarcion, marcar sus dependientes como NO disponibles
-                insertarUnoOCeroEnClas(db, clas.CODIGO, Columnas.DISPONIBLE, "0", context);
+                insertarUnoOCeroEnClas(clas.CODIGO, Columnas.DISPONIBLE, "0", context);
                 result = clase.CODIGO;
             }
 
@@ -360,7 +407,7 @@ public class dataSource {
     }
 
 
-    private void insertarUnoOCeroEnClas(SQLiteDatabase db, String codigo, String columna, String dato, Context context) {
+    private void insertarUnoOCeroEnClas(String codigo, String columna, String dato, Context context) {
         String columna2 = null;
         if (columna == Columnas.CURSADA) {
             columna2 = Columnas.DISPONIBLE;
@@ -375,7 +422,7 @@ public class dataSource {
         String uno = "";
         String dos = "";
         Cursor r;
-        if (dato == "1") {
+        if (dato.equals("1")) {
             r = db.rawQuery("UPDATE clases SET " + columna + " = \"1\", " + columna2 + " = \"0\" WHERE codigo = \"" + codigo + "\"", null);
 
 //            values.put(columna2, "0");
@@ -399,13 +446,12 @@ public class dataSource {
 
 
     /**
-     * @param db       Base de Datos a usar
      * @param columna  Columna a evaluar
      * @param ceroOuno Dato a evaluar
      * @param context  Contexto de la aplicacion o actividad
      * @return Una lista con las Clases que resultan del resultan del query
      */
-    public String[] queryClasesString(SQLiteDatabase db, String columna, String ceroOuno, Context context) {
+    public String[] queryClasesString(String columna, String ceroOuno, Context context) {
         String columns[] = new String[]{Columnas.CODIGO};
         String selection = columna + " = " + ceroOuno + " ";//WHERE author = ?
 
@@ -441,6 +487,16 @@ public class dataSource {
         return listaClases;
     }
 
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+    }
+
 
     //Campos de la tabla Quotes
     public static class Columnas {
@@ -452,6 +508,10 @@ public class dataSource {
         public final static String DISPONIBLE = "disponible";
         public final static String UV = "uv";
         public final static String INDICE = "indice";
+        public final static String[] COLUMNAS = {DISPONIBLE, CURSADA};
+        public final static String[] COMLUMNAS_INDEX1 = {null, DISPONIBLE, CURSADA};
+        public static final int DISP_INT = 0;
+        public static final int CURS_INT = 1;
     }
 
     public static class Estados {

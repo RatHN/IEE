@@ -2,7 +2,6 @@ package com.example.efaa.iee.adaptadores;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -45,8 +43,10 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     final int INDICE_MINIMO = 65;
     final int COLOR_PASADO = Color.WHITE;
     final int COLOR_NO_PASADO = Color.LTGRAY;
+    private dataSource db;
 
-    public ClaseRecyclerAdaptador(List<Clase> Lista) {
+    public ClaseRecyclerAdaptador(List<Clase> Lista, dataSource db) {
+        this.db = db;
         LISTA = Lista;
         LISTA_NO_EDITADA= new ArrayList<>(Lista);
         List<Clase> list = new ArrayList<>();
@@ -139,9 +139,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public TextView nombre;
         public TextView codigo;
         public TextView uv;
-        public Button guardar;
-        public CardView mCardView;
-        public OnClickListener checkListener;
         public InterfaceEscuchador escuchador;
         public InterfaceSetearIndice setearIndice;
         public boolean cursada;
@@ -231,17 +228,14 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
         private void remove_at(Context context1, TextView v, int position) {
             Clase clase = LISTA.get(position);
-            dataSource source = new dataSource();
-            SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
             String resultado;
             if (clase.CURSADA) {
-                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "0", clase, context1);
+                resultado = db.insertarUnoOCero(clase.CODIGO, dataSource.Columnas.CURSADA, "0", clase, context1);
             } else {
-                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
+                resultado = db.insertarUnoOCero(clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
             }
 
-            dob.releaseReference();
-            if (resultado == "-1") {
+            if (resultado.equals("-1")) {
 //                ((CheckBox) v).setChecked(true);
                 Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
                                 " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
@@ -261,19 +255,16 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
         public boolean remover(Context context1, View v, int position) {
             Clase clase = LISTA.get(position);
-            dataSource source = new dataSource();
-            SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
             String resultado;
             if (clase.CURSADA) {
-                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "0", clase, context1);
+                resultado = db.insertarUnoOCero(clase.CODIGO, dataSource.Columnas.CURSADA, "0", clase, context1);
             } else {
-                resultado = source.insertarUnoOCero(dob, clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
+                resultado = db.insertarUnoOCero(clase.CODIGO, dataSource.Columnas.CURSADA, "1", clase, context1);
             }
 
-            dob.releaseReference();
             cursada = LISTA.get(position).CURSADA;
 
-            if (resultado == "-1") {
+            if (resultado.equals("-1")) {
 //                ((CheckBox) v.findViewById(R.id.Nombre_de_Clase)).setChecked(true);
                 Snackbar.make(v, "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
                                 " por favor desmarque primero asignaturas dependientes y luego sus requisitos",

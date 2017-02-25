@@ -1,6 +1,11 @@
 package com.example.efaa.iee;
 
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.View;
+
 import com.stephentuso.welcome.BasicPage;
+import com.stephentuso.welcome.FragmentWelcomePage;
 import com.stephentuso.welcome.TitlePage;
 import com.stephentuso.welcome.WelcomeActivity;
 import com.stephentuso.welcome.WelcomeConfiguration;
@@ -25,8 +30,17 @@ public class Tutorial extends WelcomeActivity {
                         "Lorem ipsum",
                         "dolor sit amet.")
                 )
+                .page(new FragmentWelcomePage() {
+                    @Override
+                    protected Fragment fragment() {
+                        return new PermissionTutorialFragment();
+                    }
+                })
                 .swipeToDismiss(true)
-
                 .build();
+    }
+
+    public void onClickAskForPermission(View view){
+        Log.i("Click", "Hubo click en el fragmento");
     }
 }

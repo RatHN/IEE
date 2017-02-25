@@ -102,7 +102,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
 
 
         //Intento de abrir una base de datos//
-        dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+//        dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+        dob = data.getWritableDatabase();
         final String ListaClases[] = data.queryClasesString(dob, ColumnaAUSAR, "1", this);
         final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(dob, ColumnaAUSAR, "1", this);
 

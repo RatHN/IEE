@@ -1,6 +1,5 @@
 package com.example.efaa.iee;
 
-import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,16 +16,17 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +38,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.efaa.iee.Materias.Clase;
+import com.example.efaa.iee.Materias.CustomActivities;
 import com.example.efaa.iee.adaptadores.ClaseRecyclerAdaptador;
 import com.example.efaa.iee.sinUsar.SectionsPagerAdapter;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
@@ -48,7 +48,6 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarBadge;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
-import com.stephentuso.welcome.WelcomeHelper;
 import com.vansuita.materialabout.builder.AboutBuilder;
 
 import java.io.File;
@@ -59,11 +58,43 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
+import static android.view.View.GONE;
 
-public class Main2Activity extends AppCompatActivity
+public class Main2Activity extends CustomActivities
         implements NavigationView.OnNavigationItemSelectedListener,
-        ClaseRecyclerAdaptador.InterfaceEscuchador, ClaseRecyclerAdaptador.InterfaceSetearIndice, PlaceHolderFragment.getPermisos {
+        ClaseRecyclerAdaptador.InterfaceEscuchador, ClaseRecyclerAdaptador.InterfaceSetearIndice,
+        PlaceHolderFragment.getPermisos {
 
+
+    private final String PERMISO = "PERMISO";
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    public ViewPager mViewPager;
+    public boolean Permisos = false;
+
+
+    public dataSource DataSource;
+    public PlaceHolderFragment placeHolderFragment;
+    ArrayList<String> clasesString = new ArrayList<>();
+    ArrayList<Clase> clasesClases = new ArrayList<>();
+    int uv[] = {12, 14, 16, 20, 22, 24};
+
+    SharedPreferences pref;
+    Intent i;
+    Bundle b;
+    /**
+     * RecyclerView que se usará para la lista
+     * Agregado por el BottomBar
+     */
+    BottomBar mBottomBar;
+    RecyclerView mRecycler;
+    RecyclerView.LayoutManager mLManager;
+    ClaseRecyclerAdaptador mAdapter;
+    FragmentTransaction fragmentTransaction;
+    FloatingActionButton fab;
+    int unread = 0;
+    BottomBarBadge unreadClases;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -73,63 +104,38 @@ public class Main2Activity extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    public ViewPager mViewPager;
-    public boolean Permisos = false;
-
-
-    private dataSource DataSource = new dataSource();
-    SQLiteDatabase dob;
-    private String dbPath = "/sdcard/UNAH_IEE/data.sqlite";
     private AlertDialog dialog1;
-    ArrayList<String> clasesString = new ArrayList<>();
-    ArrayList<Clase> clasesClases = new ArrayList<>();
-    int uv[] = {12, 14, 16, 20, 22, 24};
-
-    SharedPreferences pref;
-    private final String PERMISO = "PERMISO";
-
     private int totalUV;
     private int totalIndice;
     private boolean reprobadas_aparecen;
-
-    Intent i;
-    Bundle b;
-
-    /**
-     * RecyclerView que se usará para la lista
-     * Agregado por el BottomBar
-     */
-    BottomBar mBottomBar;
-    RecyclerView mRecycler;
-    RecyclerView.LayoutManager mLManager;
-    ClaseRecyclerAdaptador mAdapter;
-    public PlaceHolderFragment placeHolderFragment;
-    FragmentTransaction fragmentTransaction;
-    FloatingActionButton fab;
-    private WelcomeHelper welcomeScreen;
-
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        pref = getSharedPreferences(getString(R.string.preferences), MODE_PRIVATE);
-        File fileDataBase = new File(dbPath);
-
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) || !fileDataBase.exists()) {
-            this.Permisos = false;
-            pref.edit().putBoolean(getString(R.string.permiso), this.Permisos).apply();
-            copiarBD();
-        } else{
-            this.Permisos = true;
-            pref.edit().putBoolean(getString(R.string.permiso), this.Permisos).apply();
+        try {
+            DataSource = new dataSource(this);
+            DataSource.open();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        mRecycler = ((RecyclerView) findViewById(R.id.recicler));
+        mLManager = new LinearLayoutManager(this);
+        mRecycler.setLayoutManager(mLManager);
+        mRecycler.setAdapter(null);
+
+//        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) || !fileDataBase.exists()) {
+//            this.Permisos = false;
+//            pref.edit().putBoolean(getString(R.string.permiso), this.Permisos).apply();
+////            copiarBD();
+//        } else{
+//            this.Permisos = true;
+//            pref.edit().putBoolean(getString(R.string.permiso), this.Permisos).apply();
+//        }
 
 
 //        this.Permisos =  (fileDataBase.exists());
@@ -143,7 +149,7 @@ public class Main2Activity extends AppCompatActivity
 */
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.main_content),
-                findViewById(R.id.f),
+                findViewById(R.id.recicler),
                 savedInstanceState);
         mBottomBar.setMaxFixedTabs(1);
 
@@ -434,14 +440,12 @@ public class Main2Activity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        welcomeScreen = new WelcomeHelper(this, Tutorial.class);
-//        welcomeScreen.show(savedInstanceState);
-        welcomeScreen.forceShow();
+//        welcomeScreen = new WelcomeHelper(this, Tutorial.class);
+////        welcomeScreen.show(savedInstanceState);         //PASSED TO FirstRunActivity.java
+//        welcomeScreen.forceShow();
 
         runTutorial(0);
     }
-
-
 
     private void runTutorial(final int index) {
         CharSequence bottombar = "En esta pestaña podrás ver las clases que estan disponibles según tu" +
@@ -495,9 +499,6 @@ public class Main2Activity extends AppCompatActivity
                 })
                 .build();
     }
-
-
-    private DrawerLayout drawer;
 
     @Override
     public void onBackPressed() {
@@ -589,7 +590,7 @@ public class Main2Activity extends AppCompatActivity
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
-        } else if(id == R.id.about){
+        } else if (id == R.id.about) {
             View view = AboutBuilder.with(this)
                     .setPhoto(R.mipmap.profile_picture)
                     .setCover(R.mipmap.profile_cover)
@@ -607,7 +608,6 @@ public class Main2Activity extends AppCompatActivity
                     .addGitHubLink("RatHN")
                     .addFacebookLink("abinadiortez")
                     .addEmailLink("neryortez@gmail.com", "UNAH APLICACIONES", "Me gusta esta aplicacion porque.....")
-
 
 
 //                    .setWrapScrollView(true)
@@ -652,9 +652,6 @@ public class Main2Activity extends AppCompatActivity
 //        mSectionsPagerAdapter.notifyDataSetChanged();
     }
 
-    int unread = 0;
-    BottomBarBadge unreadClases;
-
     @Override
     public void EsconderTeclado() {
 
@@ -673,48 +670,48 @@ public class Main2Activity extends AppCompatActivity
 //        Snackbar.make(findViewById(R.id.drawer_layout)/*this.placeHolderFragment.getView()*/, "Guardado exitosamente", Snackbar.LENGTH_SHORT).show();
     }
 
-    private boolean copiarBD() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Permisos = false;
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                    123);
-        } else {
-            pref.edit().putBoolean(getString(R.string.permiso), true).apply();
-            File fileDataBase = new File(dbPath);
-            if (!fileDataBase.exists()) {
-                int ID = R.raw.data;
-                File o = new File("/sdcard/UNAH_IEE/");
-                o.mkdirs();
-                CopyRaw(ID, "data.sqlite");
-                Log.d("DB", "Database created");
-                this.Permisos = true;
-            } else {
-                try {
-                    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
-                    Cursor c = db.rawQuery("SELECT indice FROM clases", null);
-                    if (c.getCount() < 2) {
-                        db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
-                        Log.d("DB", "Database altered");
-                        this.Permisos = true;
-                    }
-                    c.close();
-                    db.close();
-                } catch (SQLiteException e) {
-                    e.printStackTrace();
-                    (SQLiteDatabase.openOrCreateDatabase(dbPath, null))
-                            .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
-                    Log.d("DB", "Database altered");
-                    this.Permisos = true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return true;
-    }
+//    private boolean copiarBD() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            Permisos = false;
+//
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+//                    123);
+//        } else {
+//            pref.edit().putBoolean(getString(R.string.permiso), true).apply();
+//            File fileDataBase = new File(dbPath);
+//            if (!fileDataBase.exists()) {
+//                int ID = R.raw.data;
+//                File o = new File("/sdcard/UNAH_IEE/");
+//                o.mkdirs();
+//                CopyRaw(ID, "data.sqlite");
+//                Log.d("DB", "Database created");
+//                this.Permisos = true;
+//            } else {
+//                try {
+//                    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath, null);
+//                    Cursor c = db.rawQuery("SELECT indice FROM clases", null);
+//                    if (c.getCount() < 2) {
+//                        db.execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+//                        Log.d("DB", "Database altered");
+//                        this.Permisos = true;
+//                    }
+//                    c.close();
+//                    db.close();
+//                } catch (SQLiteException e) {
+//                    e.printStackTrace();
+//                    (SQLiteDatabase.openOrCreateDatabase(dbPath, null))
+//                            .execSQL("ALTER TABLE clases ADD COLUMN \"indice\" INTEGER NOT NULL DEFAULT 0");
+//                    Log.d("DB", "Database altered");
+//                    this.Permisos = true;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     public void PDFOpen(int id) {
         int ID = 0;
@@ -761,7 +758,7 @@ public class Main2Activity extends AppCompatActivity
         }
         OutputStream out = null;
         try {
-            out = new FileOutputStream("/sdcard/UNAH_IEE/" + filename);
+            out = new FileOutputStream(new File(getExternalFilesDir(null), filename));
             copyFile(in, out);
             in.close();
             in = null;
@@ -791,7 +788,7 @@ public class Main2Activity extends AppCompatActivity
 //                    pref.edit().putBoolean(getString(R.string.permiso), true).apply();
 //                    startActivity(new Intent(getApplicationContext(), Main2Activity.class));
 //                    finish();
-                    copiarBD();
+//                    copiarBD();
                 } else {
                     // 1. Instantiate an AlertDialog.Builder with its constructor
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -803,7 +800,7 @@ public class Main2Activity extends AppCompatActivity
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    copiarBD();
+//                                    copiarBD();
                                 }
                             })
                             .setTitle("ERROR")
@@ -830,14 +827,53 @@ public class Main2Activity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Bundle args = new Bundle();
+        args.putInt(COLUMN_ARG, dataSource.Columnas.DISP_INT);
+        getSupportLoaderManager().initLoader(GET_CLASSES_LOADER_CODE, args, this);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         //Necessary to the Tutorial activity
-        welcomeScreen.onSaveInstanceState(outState);
 
         // Necessary to restore the BottomBar's state, otherwise we would
         // lose the current tab on orientation change.
         mBottomBar.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public Loader<ArrayList<Clase>> onCreateLoader(int id, final Bundle args) {
+        switch (id) {
+            case GET_CLASSES_LOADER_CODE:
+                return new AsyncTaskLoader<ArrayList<Clase>>(this) {
+                    @Override
+                    public ArrayList<Clase> loadInBackground() {
+                        ArrayList<Clase> array;
+                        array = DataSource
+                                .queryPasadasODisponibles(dataSource.Columnas.COLUMNAS[args.getInt(COLUMN_ARG)], "1", Main2Activity.this);
+                        return array;
+                    }
+                };
+            case 123:
+                break;
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Clase>> loader, ArrayList<Clase> data) {
+        mRecycler.swapAdapter(new ClaseRecyclerAdaptador(data, this.DataSource), false);
+        mRecycler.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Clase>> loader) {
+        mRecycler.swapAdapter(null, false);
     }
 }

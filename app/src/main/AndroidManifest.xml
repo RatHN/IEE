@@ -13,6 +13,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:replace="android:supportsRtl">
+
         <activity android:name=".sinUsar.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".sinUsar.ActividadCalculador" />
+
+
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
@@ -33,7 +36,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>
         <activity

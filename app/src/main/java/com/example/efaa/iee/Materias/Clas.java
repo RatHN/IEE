@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.efaa.iee.sinUsar.ClassFragment;
 import com.example.efaa.iee.dataSource;
+import com.example.efaa.iee.sinUsar.ClassFragment;
 
 import java.util.ArrayList;
 
@@ -31,13 +31,12 @@ public class Clas{
 
     /**
      * Crea Dependencias
-     * @param nombre Nombre de la dependencia
      * @param codigo Codigo de la dependencia
      */
-    public Clas(String codigo, SQLiteDatabase db, Context context){
+    public Clas(String codigo, Context context){
 //        NOMBRE = nombre;
         CODIGO = codigo;
-        ARRAY_REQUISITOS = new dataSource().queryRequisitos(db, codigo, context);
+        ARRAY_REQUISITOS = (((CustomActivities) context)).DataSource.queryRequisitos(codigo, context);
     }
 
     /**
