@@ -74,11 +74,18 @@
                 android:id="@+id/tu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
                 android:elevation="10dp"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/imageView2"
+                android:elevation="10dp"
+                tools:listitem="@layout/new_info_layout" />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -124,23 +131,17 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerInfo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignStart="@id/t"
-                    android:paddingStart="1dp"
-                    android:clipToPadding="false" />
+
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerDisponibles"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@id/recyclerInfo"
+                    android:layout_alignParentEnd="true"
                     android:paddingEnd="1dp"
-                    android:clipToPadding="false" />
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/info_layout" />
 
 
             </RelativeLayout>

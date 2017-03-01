@@ -6,11 +6,11 @@ package com.example.efaa.iee.adaptadores;
 
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.efaa.iee.Materias.Clase;
@@ -36,7 +36,7 @@ public class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoVi
     @Override
     public InfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.info_layout, parent, false);
+                .inflate(R.layout.new_info_layout, parent, false);
         int[] array = new int[]
                 {Color.parseColor("lime"),
                         /*Color.parseColor("aqua"),
@@ -50,7 +50,7 @@ public class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoVi
 
         int rnd = new Random().nextInt(array.length);
 
-        ((CardView) v).setCardBackgroundColor(array[rnd]);
+//        ((CardView) v).setCardBackgroundColor(array[rnd]);
         return new InfoViewHolder(v);
     }
 
@@ -58,11 +58,11 @@ public class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoVi
     public void onBindViewHolder(InfoViewHolder holder, int position) {
         Clase clase = LISTA.get(position);
         holder.CLASE = clase;
-        holder.nombre.setText(clase.NOMBRE);
-        holder.uv.setText("Unidades Valorativas: " + String.valueOf(clase.UV));
+//        holder.nombre.setText(clase.NOMBRE);
+//        holder.uv.setText("Unidades Valorativas: " + String.valueOf(clase.UV));
         if (holder.codigo != null) {
-//            holder.codigo.setText(clase.CODIGO);
-            holder.codigo.setText(null);
+            holder.codigo.setText(clase.CODIGO);
+//            holder.codigo.setText(null);
 //            holder.uv.setText(String.valueOf(clase.UV));
 //            holder.uv.setText(null);
         }
@@ -81,22 +81,24 @@ public class AdaptadorDeInfo extends RecyclerView.Adapter<AdaptadorDeInfo.InfoVi
     }
 
     class InfoViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre;
+//        TextView nombre;
         TextView codigo;
-        TextView uv;
+//        TextView uv;
         CommInfo iPadre;
         Clase CLASE;
+        ImageView erase;
 
         public InfoViewHolder(View view) {
             super(view);
             iPadre = ((CommInfo) view.getContext());
-            nombre = ((TextView) view.findViewById(R.id.Nombre_de_Clase));
+//            nombre = ((TextView) view.findViewById(R.id.Nombre_de_Clase));
             codigo = ((TextView) view.findViewById(R.id.Codigo));
 //            codigo = null;
-            uv = (TextView) view.findViewById(R.id.UV);
+//            uv = (TextView) view.findViewById(R.id.UV);
 //            uv = null;
+            erase = (ImageView)view.findViewById(R.id.erase);
 
-            view.setOnClickListener(new View.OnClickListener() {
+            erase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     iPadre.agregarADisponibles(CLASE, LISTA.lastIndexOf(CLASE));

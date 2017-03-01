@@ -23,7 +23,7 @@ import java.util.ArrayList;
 /**
  * Created by EFAA on 26/04/2016.
  */
-public class dataSource extends SQLiteOpenHelper{
+public class dataSource extends SQLiteOpenHelper {
 
     //Metainformación de la base de datos
     public static final String TABLE = "clases";
@@ -35,6 +35,7 @@ public class dataSource extends SQLiteOpenHelper{
     private static final int BUFFER_SIZE = 1024;
     private final Context mContext;
     private SQLiteDatabase db;
+    private boolean open;
 
     public dataSource(Context context) throws IOException {
         super(context, LOCAL_DATABASE_NAME, null, DATABASE_VERSION);
@@ -45,8 +46,10 @@ public class dataSource extends SQLiteOpenHelper{
     }
 
     public void open(){
+        Log.i("DATABSE OPEN:::", "ABIERTO--------------------------");
+        new Throwable().printStackTrace();
         this.db = this.getWritableDatabase();
-
+        this.open = true;
     }
 
 
@@ -78,6 +81,13 @@ public class dataSource extends SQLiteOpenHelper{
     }
 
 
+    @Override
+    public synchronized void close() {
+        Log.d("DATABSE::::: ", "Database CLOSED!-----------------------------------");
+        new Throwable().printStackTrace();
+        super.close();
+        this.open = false;
+    }
 
     /**
      * Hace una lista de las clases que son requisitos para una clase que depende de una o más
@@ -91,7 +101,7 @@ public class dataSource extends SQLiteOpenHelper{
         String columns[] = new String[]{Columnas.CODIGO};
         String selection = Columnas.PORcURSAR + " LIKE '%" + codeName + "%' ";
 
-        return new Clas(dependenciaCode, db, context);
+        return new Clas(dependenciaCode, context);
     }
 
     public ArrayList<Clas> crearListaDependenciasAndParse(String porcursar, Context context) {
@@ -125,7 +135,7 @@ public class dataSource extends SQLiteOpenHelper{
         }
 
         return CrearListaClases(
-                db.query(
+                 db.query(
                         TABLE,
                         columns,
                         selection,
@@ -321,7 +331,7 @@ public class dataSource extends SQLiteOpenHelper{
      * @return Codigo de la clase que será eliminada de la lista, o algun codigo de error.
      */
     public String insertarUnoOCero(String codigo, String columna, String dato, Clase clase, Context context) {
-        String columna2 = null;
+        String columna2 = Columnas.DISPONIBLE;
         String result = "";
 
         // Busqueda de errores antes de seleccionar una clase como no cursada nuevamente....
@@ -333,8 +343,10 @@ public class dataSource extends SQLiteOpenHelper{
 //                    Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
 //                            "Esta asignatura es requisito de una asignatura que ya ha sido cursada," +
 //                            " por favor desmarque primero asignaturas dependientes y luego sus requisitos", Toast.LENGTH_LONG).show();
+                    cursor.close();
                     return "-1";
                 }
+                cursor.close();
 //                cursor = clas.marccarDisponible(db, context);
 //                if (cursor.getCount() > 1) {
 //                        Toast.makeText(context, "EXISTEN CONFLICTOS\n" +
@@ -358,7 +370,7 @@ public class dataSource extends SQLiteOpenHelper{
         // Preparando datos a actualizar
         if (columna.equals(Columnas.CURSADA)) {
             columna2 = Columnas.DISPONIBLE;
-        }
+        } else columna2 = Columnas.CURSADA;
         ContentValues values = new ContentValues();
 
         //Seteando body y author
@@ -409,7 +421,7 @@ public class dataSource extends SQLiteOpenHelper{
 
     private void insertarUnoOCeroEnClas(String codigo, String columna, String dato, Context context) {
         String columna2 = null;
-        if (columna == Columnas.CURSADA) {
+        if (columna.equals(Columnas.CURSADA)) {
             columna2 = Columnas.DISPONIBLE;
         } else {
             columna2 = Columnas.CURSADA;
@@ -495,6 +507,10 @@ public class dataSource extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public boolean isOpen() {
+        return this.db.isOpen();
     }
 
 

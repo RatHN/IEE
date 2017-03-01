@@ -14,11 +14,11 @@
         android:theme="@style/AppTheme"
         tools:replace="android:supportsRtl">
 
+
         <activity android:name=".sinUsar.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity android:name=".sinUsar.ActividadCalculador" />
@@ -36,7 +36,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>
         <activity
@@ -50,14 +49,13 @@
         </activity>
         <activity
             android:name=".Tutorial"
-            android:theme="@style/WelcomeScreenTheme" />
-        <activity android:name=".FirstRunActivity">
+            android:theme="@style/WelcomeScreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+            </activity>
     </application>
 
 </manifest>

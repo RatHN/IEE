@@ -19,6 +19,7 @@ import com.example.efaa.iee.R;
 import com.example.efaa.iee.dataSource;
 import com.example.efaa.iee.dataSource.Columnas;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 //import com.google.android.gms.appindexing.Action;
@@ -53,8 +54,13 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         } else {
             dato = "0";
         }
-        String result = new dataSource().insertarUnoOCero(dob, cod, Columnas.CURSADA, dato,
-                new dataSource().queryCrearClase(dob, cod, this), this);
+        String result = null;
+        try {
+            result = new dataSource(this).insertarUnoOCero(cod, Columnas.CURSADA, dato,
+                    new dataSource(this).queryCrearClase(cod, this), this);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         if (result == "-1") {
             checkBox.setChecked(true);
         }
@@ -78,7 +84,12 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         String CODIGO = getString(R.string.codigo);
         String CURSADA = getString(R.string.cursada);
         String PORcURSAR = getString(R.string.porCursar);
-        dataSource data = new dataSource();
+        dataSource data = null;
+        try {
+            data = new dataSource(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         dataSource.Columnas colum = new dataSource.Columnas();
 
         setContentView(R.layout.activity_actividad_calculador);
@@ -104,8 +115,8 @@ public class ActividadCalculador extends AppCompatActivity implements ClassFragm
         //Intento de abrir una base de datos//
 //        dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
         dob = data.getWritableDatabase();
-        final String ListaClases[] = data.queryClasesString(dob, ColumnaAUSAR, "1", this);
-        final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(dob, ColumnaAUSAR, "1", this);
+        final String ListaClases[] = data.queryClasesString(ColumnaAUSAR, "1", this);
+        final ArrayList<Clase> listaClases = data.queryPasadasODisponibles(ColumnaAUSAR, "1", this);
 
 
         int[] lista;

@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +19,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.efaa.iee.DotView;
 import com.example.efaa.iee.Main2Activity;
 import com.example.efaa.iee.Materias.Clase;
 import com.example.efaa.iee.R;
@@ -41,7 +41,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     public List<Clase> LISTA_EDITADA;
     public List<Clase> LISTA_NO_EDITADA;
     final int INDICE_MINIMO = 65;
-    final int COLOR_PASADO = Color.WHITE;
+    final int COLOR_PASADO = Color.GREEN;
     final int COLOR_NO_PASADO = Color.LTGRAY;
     private dataSource db;
 
@@ -108,11 +108,12 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             holder.codigo.setText(clase.CODIGO);
             holder.indice.setText(String.valueOf(clase.INDICE));
 
-            if (clase.INDICE < INDICE_MINIMO) {
-                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
-            } else {
-                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_PASADO);
-            }
+            setIndicadorAprovacion(holder.v, clase.INDICE);
+//            if (clase.INDICE < INDICE_MINIMO) {
+//                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
+//            } else {
+//                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_PASADO);
+//            }
 
             holder.uv.setText(String.valueOf(clase.UV));
             holder.nombre.setText(clase.NOMBRE);
@@ -130,6 +131,15 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     @Override
     public int getItemCount() {
         return LISTA.size();
+    }
+
+    private void setIndicadorAprovacion(View v1, int ind) {
+        if (ind < INDICE_MINIMO)
+//                    ((CardView) v1.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
+            ((DotView) v1.findViewById(R.id.dot)).setColor(COLOR_NO_PASADO);
+        else
+//                    ((CardView) v1.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_PASADO);
+            ((DotView) v1.findViewById(R.id.dot)).setColor(COLOR_PASADO);
     }
 
 
@@ -162,13 +172,10 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
 
                 view.findViewById(R.id.per100Boton).setOnClickListener(botonClicked());
 
-                ((EditText) view.findViewById(R.id.editText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                ((EditText) view.findViewById(R.id.editText)).setOnEditorActionListener((v1, actionId, event) -> {
 
-                        botonClicked().onClick(v);
-                        return true;
-                    }
+                    botonClicked().onClick(v1);
+                    return true;
                 });
 
 /*
@@ -182,41 +189,36 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         }
 
         OnClickListener botonClicked() {
-            return new View.OnClickListener() {
-                public void onClick(View v) {
-                    int ind = Integer.parseInt(indice.getText().toString());
-                    if (ind < 0 || ind > 100) {
-                        setIndiceError(v);
-                        return;
+            return v1 -> {
+                int ind = Integer.parseInt(indice.getText().toString());
+                if (ind < 0 || ind > 100) {
+                    setIndiceError(v1);
+                    return;
+                }
+                do {
+                    if (v1 instanceof CardView) {
+                        break;
                     }
-                    do {
-                        if (v instanceof CardView) {
-                            break;
-                        }
-                        if (v != null) {
-                            // Else, we will loop and crawl up the view hierarchy and try to find a parent
-                            final ViewParent parent = v.getParent();
-                            v = parent instanceof View ? (View) parent : null;
-                        }
-                    } while (v != null);
+                    if (v1 != null) {
+                        // Else, we will loop and crawl up the view hierarchy and try to find a parent
+                        final ViewParent parent = v1.getParent();
+                        v1 = parent instanceof View ? (View) parent : null;
+                    }
+                } while (v1 != null);
 
-                    assert v != null;
-                    if (ind < INDICE_MINIMO)
-                        ((CardView) v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
-                    else
-                        ((CardView) v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_PASADO);
+                assert v1 != null;
+                setIndicadorAprovacion(v1, ind);
 
-                    Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
-                            + codigo.getText());
-                    ContentValues values = new ContentValues();
-                    values.put(dataSource.Columnas.INDICE,
-                            String.valueOf(indice.getText()));
-                    String selection = dataSource.Columnas.CODIGO + " = ?";
-                    String[] selectionArgs = {String.valueOf(codigo.getText())};
-                    setearIndice.setearIndice(selection, selectionArgs, values, v);
+                Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
+                        + codigo.getText());
+                ContentValues values = new ContentValues();
+                values.put(dataSource.Columnas.INDICE,
+                        String.valueOf(indice.getText()));
+                String selection = dataSource.Columnas.CODIGO + " = ?";
+                String[] selectionArgs = {String.valueOf(codigo.getText())};
+                setearIndice.setearIndice(selection, selectionArgs, values, v1);
 
 //            Log.e("OREJAS OTRA VEZ", String.valueOf());
-                }
             };
         }
 
@@ -270,10 +272,10 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
                                 " por favor desmarque primero asignaturas dependientes y luego sus requisitos",
                         Snackbar.LENGTH_SHORT).show();
                 Bundle b = new Bundle();
-                Main2Activity context11 = (Main2Activity) context1;
-                b.putString("COLUMNA", context11.placeHolderFragment.COLUMNA);
-
-                context11.placeHolderFragment.getLoaderManager().initLoader(0, b, context11.placeHolderFragment);
+                Main2Activity main2Activity = (Main2Activity) context1;
+                main2Activity.runLoader(main2Activity.isInDisponibles());
+//                b.putString("COLUMNA", context11.placeHolderFragment.COLUMNA);
+//                context11.placeHolderFragment.getLoaderManager().initLoader(0, b, context11.placeHolderFragment);
                 return false;
             }
 
@@ -328,6 +330,8 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             return mRemoveableView;
         }
     }
+
+
 
 
     public interface InterfaceEscuchador {

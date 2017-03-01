@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <tab
+        id="@+id/tab_disponibles"
+        icon="@drawable/ic_check_box_outline_blank_black_24dp"
+        title="Disponibles"
+        barColorWhenSelected="@color/cardview_dark_background" />
+    <tab
+        id="@+id/tab_cursadas"
+        icon="@drawable/ic_check_box_black_24dp"
+        title="Cursadas"
+        barColorWhenSelected="#FF5D4037"
+        badgeBackgroundColor="#FF0000"/>
+</tabs>

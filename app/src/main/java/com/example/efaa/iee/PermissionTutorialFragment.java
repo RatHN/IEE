@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.efaa.iee.databinding.FragmentPermissionTutorialBinding;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +58,6 @@ public class PermissionTutorialFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentPermissionTutorialBinding binding = new FragmentPermissionTutorialBinding().infla;
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_permission_tutorial, container, false);
     }

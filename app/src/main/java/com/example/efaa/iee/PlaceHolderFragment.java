@@ -117,7 +117,7 @@ public class PlaceHolderFragment extends Fragment
         //Creamos un adaptador vacio para poder habilitar el bucle y el Loader funcione en otro Thread
         ArrayList<Clase> ar = new ArrayList<>();
         ar.add(new Clase("NADA", "NADA", null, getContext()));
-        cAdaptador = new ClaseRecyclerAdaptador(ar);
+//        cAdaptador = new ClaseRecyclerAdaptador(ar);
 
 
         //Establecemos adaptadoresx
@@ -142,7 +142,7 @@ public class PlaceHolderFragment extends Fragment
 
 
         recyclerView.setLayoutManager(lManager);
-        recyclerView.setAdapter(new ClaseRecyclerAdaptador(new ArrayList<Clase>()));
+//        recyclerView.setAdapter(new ClaseRecyclerAdaptador(new ArrayList<Clase>()));
 
         //Creamos los listener para clicks
         RecyclerView.OnItemTouchListener escucha = new RecyclerView.OnItemTouchListener() {
@@ -224,9 +224,10 @@ public class PlaceHolderFragment extends Fragment
                 if (!f.exists()) {
                 }
                 dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-                array = dataSource.queryPasadasODisponibles(dob, COLUMNA, "1", context);
+//                array = dataSource.queryPasadasODisponibles(COLUMNA, "1", context);
                 dob.releaseReference();
-                return array;
+//                return array;
+                return null;
             }
         };
 
@@ -239,8 +240,8 @@ public class PlaceHolderFragment extends Fragment
 //        if (cAdaptador.getItemCount() != adaptador1.getItemCount()){
         int fin = recyclerView.getAdapter().getItemCount();
 //        cAdaptador = new ClaseRecyclerAdaptador(data);
-
-        recyclerView.setAdapter(new ClaseRecyclerAdaptador(data));
+//
+//        recyclerView.setAdapter(new ClaseRecyclerAdaptador(data, ));
         recyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(GONE);
 

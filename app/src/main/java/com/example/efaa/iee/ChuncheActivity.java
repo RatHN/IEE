@@ -1,30 +1,27 @@
 package com.example.efaa.iee;
 
-import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.efaa.iee.Materias.Clase;
+import com.example.efaa.iee.Materias.CustomActivities;
 import com.example.efaa.iee.adaptadores.AdaptadorDeDisponibles;
 import com.example.efaa.iee.adaptadores.AdaptadorDeInfo;
 
 import java.util.ArrayList;
 
-public class ChuncheActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Clase>>,
-        AdaptadorDeDisponibles.Comm, AdaptadorDeInfo.CommInfo {
+public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisponibles.Comm, AdaptadorDeInfo.CommInfo {
     RecyclerView Disponibles;
     AdaptadorDeDisponibles dAdapter;
 
@@ -64,17 +61,12 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
         reprobadas_aparecen = getIntent().getExtras().getBoolean("reprobadas_aparecen");
 
         if(!inicio){
-            String f = " Vos tenés " + "<b> " + (String.valueOf(totalUV)) + "</b>" +
-                    " Unidades Valorativas disponibles para seleccionar clases futuras" +
-                    "<p>Patrocinadas por las clases que seleccionaste:<br>" + array;
+            String f = getString(R.string.chunche_explanation_1) + (String.valueOf(totalUV)) +
+                    getString(R.string.chunche_explanation_2) +
+                    getString(R.string.chunche_explanation_3) + array;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Un pequeño recado de parte del sistema").setMessage(Html.fromHtml(f))
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            Snackbar.make(tu, "Presioná en las clases que querés seleccionar", Snackbar.LENGTH_LONG).show();
-                        }
-                    })
+            builder.setTitle(R.string.chunche_message_title).setMessage(Html.fromHtml(f))
+                    .setOnDismissListener(dialog -> Snackbar.make(tu, R.string.snackBar_message, Snackbar.LENGTH_LONG).show())
                     .create()
                     .show();
         }
@@ -89,13 +81,9 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String f = "En esta pantalla podrás " +
-                    "hacer un calculo rápido de las clases que podés matricular segun el indice" +
-                            " y las normas de tu <i>querida rectora</i>." +
-                            "<p>Este cálculo no es una garantía de que el sistema de la UNAH te permita matricular" +
-                            " dichas clases. Por favor verifica que la informacion sea correcta";
+                    String f = ChuncheActivity.this.getString(R.string.chunche_fab_message);
                     new AlertDialog.Builder(view.getContext()).setMessage(Html.fromHtml(f)).setTitle(
-                            "Información").create().show();
+                            R.string.chunche_informacion).create().show();
                 }
             });
         }
@@ -103,7 +91,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
 
         Info = (RecyclerView) findViewById(R.id.recyclerInfo);
 //        Info.setHasFixedSize(true);
-            Info.setLayoutManager(new LinearLayoutManager(this));
+            Info.setLayoutManager(new StaggeredGridLayoutManager(7,StaggeredGridLayoutManager.VERTICAL));
 
 //        Info.setLayoutManager(new LinearLayoutManager(this));
         iAdapter = new AdaptadorDeInfo(new ArrayList<Clase>());
@@ -152,12 +140,12 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
             @Override
             public ArrayList<Clase> loadInBackground() {
                 ArrayList<Clase> array;
-                SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
-                array = dataSource.queryPasadasODisponibles(dob, dataSource.Columnas.DISPONIBLE, "1", getContext());
+//                SQLiteDatabase dob = SQLiteDatabase.openOrCreateDatabase("/sdcard/UNAH_IEE/data.sqlite", null);
+                array = DataSource.queryPasadasODisponibles(dataSource.Columnas.DISPONIBLE, "1", ChuncheActivity.this);
 
 
                 if (reprobadas_aparecen) {
-                    ArrayList<Clase> reprobadas = dataSource.queryPasadasODisponibles(dob, dataSource.Columnas.DISPONIBLE, "0", getContext());
+                    ArrayList<Clase> reprobadas = DataSource.queryPasadasODisponibles(dataSource.Columnas.DISPONIBLE, "0", ChuncheActivity.this);
 
                     for (Clase clase1 :
                             reprobadas) {
@@ -165,7 +153,7 @@ public class ChuncheActivity extends AppCompatActivity implements LoaderManager.
                     }
                 }
 
-                dob.releaseReference();
+//                dob.releaseReference();
                 return array;
             }
         };

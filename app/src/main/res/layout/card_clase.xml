@@ -34,116 +34,103 @@
             tools:ignore="RtlSymmetry">
 
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/Codigo"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    >
-
-                    <TextView
-                        android:id="@+id/Codigo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:minEms="3"
-                        android:text="@string/historia" />
+                    android:layout_alignParentStart="true"
+                    android:minEms="3"
+                    android:textStyle="bold"
+                    android:text="@string/historia" />
 
 
-                    <!--
-                    android:breakStrategy="simple"-->
-                    <TextView
-                        android:id="@+id/Nombre_de_Clase"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="2dp"
-                        android:layout_toStartOf="@id/textView"
-                        android:layout_toEndOf="@id/Codigo"
-                        android:maxEms="15"
-                        android:maxLines="3"
-                        android:text="NombreMateria"
+                <!--
+                android:breakStrategy="simple"-->
+                <TextView
+                    android:id="@+id/Nombre_de_Clase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/Codigo"
+                    android:layout_toStartOf="@id/textView"
+                    android:maxEms="15"
+                    android:maxLines="3"
+                    android:paddingStart="2dp"
+                    android:text="NombreMateria"
 
-                        android:textStyle="normal|bold" />
+                    android:textStyle="normal" />
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top"
-                        android:layout_toLeftOf="@id/UV"
-
-                        android:text="@string/UV" />
-                    <!--android:focusable="true"-->
-
-                    <Button
-                        android:id="@+id/per100Boton"
-                        style="?android:attr/buttonStyleInset"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@id/Codigo"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/ic_menu_guardar"
-                        android:foreground="?android:attr/selectableItemBackground" />
-
-                    <EditText
-                        android:id="@+id/editText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:allowUndo="true"
-                        android:enabled="true"
-                        android:layout_toStartOf="@id/per100Boton"
-                        android:layout_alignBaseline="@id/per100Boton"
-                        android:hint="%"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:nextFocusDown="@id/per100Boton"
-                        android:nextFocusForward="@id/per100Boton"
-                        android:nextFocusRight="@id/per100Boton"
-                        android:numeric="integer"
-                        android:requiresFadingEdge="horizontal|vertical" />
-
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toStartOf="@id/editText"
-                        android:layout_alignBaseline="@id/editText"
-                        android:text="Indice" />
-
-                    <TextView
-                        android:id="@+id/UV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:text="5"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignEnd="@+id/per100Boton"
-                        android:textStyle="normal|bold" />
-
-
-                </RelativeLayout>
-
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_toStartOf="@id/UV"
+                    android:textStyle="italic"
+                    android:text="@string/UV" />
                 <!--android:focusable="true"-->
 
-            </LinearLayout>
+                <Button
+                    android:id="@+id/per100Boton"
+                    style="?android:attr/buttonStyleInset"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/Codigo"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/ic_menu_guardar"
+                    android:foreground="?android:attr/selectableItemBackground" />
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/per100Boton"
+                    android:layout_toStartOf="@id/per100Boton"
+                    android:enabled="true"
+                    android:hint="%"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/per100Boton"
+                    android:nextFocusForward="@id/per100Boton"
+                    android:nextFocusRight="@id/per100Boton"
+                    android:numeric="integer"
+                    android:requiresFadingEdge="horizontal|vertical"
+                    android:singleLine="true" />
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/indeice_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/editText"
+                    android:layout_toStartOf="@id/editText"
+                    android:text="Indice" />
+
+                <TextView
+                    android:id="@+id/UV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_alignEnd="@+id/per100Boton"
+                    android:layout_alignParentTop="true"
+                    android:text="5"
+                    android:textStyle="normal|bold" />
+                <com.example.efaa.iee.DotView
+                    android:id="@+id/dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/indeice_label"
+                    android:layout_alignTop="@id/indeice_label"
+                    android:layout_alignBottom="@id/indeice_label"/>
 
 
-                <!--android:focusable="true"-->
+            </RelativeLayout>
 
-            </LinearLayout>
+            <!--android:focusable="true"-->
 
 
         </LinearLayout>

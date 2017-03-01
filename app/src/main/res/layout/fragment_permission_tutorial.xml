@@ -12,10 +12,10 @@
 
         <!-- TODO: Update blank fragment layout -->
         <Button
+            android:id="@+id/boton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"
-            android:onClick="com."/>
+            android:text="@string/hello_blank_fragment" />
 
     </FrameLayout>
 </layout>

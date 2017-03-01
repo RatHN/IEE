@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Derecho UNAH-VS</string>
-    <string name="historia">HolasHOla </string>
+    <string name="historia">MM-101 </string>
     <string name="boton2"> Informacion de la Carrera</string>
     <string name="boton"> Informacion de Clases</string>
     <string name="hello_world">TectoTextoTextoTextoTexto</string>
@@ -33,8 +33,39 @@
     <string name="welcome_description">En esta aplicacion podrás llevar un control de tus clases aprovadas, así como planear las clases que podrías llevar en los periodos próximos.\\nPara continuar, haz cl</string>
     <string name="preferences">preferences</string>
     <string name="permiso">permiso</string>
+    <string name="q_show_reprobadas">¿Querés que aparezcan las clases reprobadas en la lista?</string>
+    <string name="introduce_grades_reminder">"Recuerde ingresar el indice por cada clase que haya aprobado/cursado el periodo anterior en la pestaña Cursadas "</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="too_many_classes_selected_warning">Seleccionaste demasiadas clases. Volvé a intentarlo otra vez de vuelta de nuevo</string>
+    <string name="no_classes_selected_warning">No ha seleccionado ninguna clase</string>
+    <string name="cancel_no_grades">¡Vamo pa\'tras!</string>
+    <string name="cancel_no_grades_title">Antes de continuar</string>
+    <string name="no_grades_ignore">" Vos dale"</string>
+    <string name="no_approved_classes_msg">No tiene clases aprobadas</string>
+    <string name="cancel">Cancelar</string>
+    <string name="almost_in_chunche_title">Antes de continuar</string>
+    <string name="no">No</string>
+    <string name="si">Sí</string>
+    <string name="go_ahead">Adelante</string>
+    <string name="welcome_bottomBar">En esta pestaña podrás ver las clases que estan disponibles según tu</string>
+    <string name="welcome_listaDeClases">En esta ventana podras ver las clases que estan disponibles. En la lista hay pequeños detalles que serán útiles.</string>
+    <string name="welcome_calc">En esta parte podrás hacer un relajo que ni yo me entiendo. Pero es COOL…! Te lo explico luego....</string>
+    <string name="welcome_welcome">¡Bienvenid@!</string>
+    <string name="snackBar_message">Presioná en las clases que querés seleccionar</string>
+    <string name="chunche_message_title">Un pequeño recado de parte del sistema</string>
+    <string name="chunche_explanation_1"><![CDATA[" Vos tenés <b> "]]></string>
+    <string name="chunche_explanation_2"><![CDATA["</b> Unidades Valorativas disponibles para seleccionar clases futuras"]]></string>
+    <string name="chunche_explanation_3"><![CDATA[<p>Patrocinadas por las clases que seleccionaste:<br>]]></string>
+    <string name="chunche_fab_message"><![CDATA["En esta pantalla podrás
+hacer un calculo rápido de las clases que podés matricular segun el indice
+ y las normas de tu <i>querida rectora</i>.
+<p>Este cálculo no es una garantía de que el sistema de la UNAH te permita matricular
+ dichas clases. Por favor verifica que la informacion sea correcta"
+    ]]></string>
+    <string name="aboutMe_brief">Estudiante de Ingeniería Electrónica y autodidacta en ciencas de la computación.</string>
+    <string name="aboutMe_name">Abinadí Ortez</string>
+    <string name="aboutMe_title">Desarrollador</string>
+    <string name="chunche_informacion">Información</string>
 </resources>

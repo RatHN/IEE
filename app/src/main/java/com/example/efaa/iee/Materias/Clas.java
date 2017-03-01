@@ -22,7 +22,7 @@ public class Clas{
     Clas(){
     }
 
-    Clas(String nombre, String codigo, String requisitos[]) {
+    public Clas(String nombre, String codigo, String requisitos[]) {
         CODIGO = codigo;
         NOMBRE = nombre;
         REQUISITOS = requisitos;
