@@ -1,0 +1,386 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.efaa.iee.Tutorial"
+    android:background="@color/colorPrimary">
+
+    <RelativeLayout android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical">
+
+
+
+            <LinearLayout
+
+                android:id="@+id/car_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:background="@color/cardview_light_background"
+                tools:ignore="RtlSymmetry"
+                android:layout_centerInParent="true"
+                android:layout_margin="8dp">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/codigo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:minEms="3"
+                        android:textStyle="bold"
+                        android:text="@string/historia"
+                        android:textColor="@android:color/black" />
+
+
+                    <!--
+                    android:breakStrategy="simple"-->
+                    <TextView
+                        android:id="@+id/nombre_de_Clase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/codigo"
+                        android:layout_toStartOf="@id/textView"
+                        android:maxEms="15"
+                        android:maxLines="3"
+                        android:paddingStart="2dp"
+                        android:text="nombreMateria"
+
+                        android:textStyle="normal"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:layout_toStartOf="@+id/welcome_uv"
+                        android:textStyle="italic"
+                        android:text="@string/UV"
+                        android:textColor="@android:color/black" />
+                    <!--android:focusable="true"-->
+
+                    <Button
+                        android:id="@+id/per100Boton"
+                        style="?android:attr/buttonStyleInset"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/codigo"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/ic_menu_guardar"
+                        android:foreground="?android:attr/selectableItemBackground" />
+
+                    <EditText
+                        android:id="@+id/editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/per100Boton"
+                        android:layout_toStartOf="@id/per100Boton"
+                        android:enabled="false"
+                        android:hint="%"
+                        android:inputType="number"
+                        android:nextFocusDown="@id/per100Boton"
+                        android:nextFocusForward="@id/per100Boton"
+                        android:nextFocusRight="@id/per100Boton"
+                        android:numeric="integer"
+                        android:requiresFadingEdge="horizontal|vertical"
+                        android:singleLine="true"
+                        android:textColor="@android:color/black" />
+
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/indeice_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/editText"
+                        android:layout_toStartOf="@id/editText"
+                        android:text="Indice"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/welcome_uv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_alignEnd="@+id/per100Boton"
+                        android:layout_alignParentTop="true"
+                        android:text="5"
+                        android:textStyle="normal|bold"
+                        android:textColor="@android:color/black" />
+                    <com.example.efaa.iee.DotView
+                        android:id="@+id/dot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@id/indeice_label"
+                        android:layout_alignTop="@id/indeice_label"
+                        android:layout_alignBottom="@id/indeice_label"/>
+
+
+                </RelativeLayout>
+
+                <!--android:focusable="true"-->
+
+
+            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/car_view1"
+            android:layout_above="@id/car_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:background="@color/cardview_light_background"
+            tools:ignore="RtlSymmetry"
+            android:layout_centerInParent="true"
+            android:layout_margin="8dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/codigo1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:minEms="3"
+                    android:textStyle="bold"
+                    android:text="SC-101"
+                    android:textColor="@android:color/black" />
+
+
+                <!--
+                android:breakStrategy="simple"-->
+                <TextView
+                    android:id="@+id/nombre_de_Clase1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/codigo1"
+                    android:layout_toStartOf="@+id/textView1"
+                    android:maxEms="15"
+                    android:maxLines="3"
+                    android:paddingStart="2dp"
+                    android:text="Sociología"
+
+                    android:textStyle="normal"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_toStartOf="@+id/welcome_uv1"
+                    android:textStyle="italic"
+                    android:text="@string/UV"
+                    android:textColor="@android:color/black" />
+                <!--android:focusable="true"-->
+
+                <Button
+                    android:id="@+id/per100Boton1"
+                    style="?android:attr/buttonStyleInset"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/codigo1"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/ic_menu_guardar"
+                    android:foreground="?android:attr/selectableItemBackground" />
+
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/per100Boton1"
+                    android:layout_toStartOf="@id/per100Boton1"
+                    android:enabled="false"
+                    android:hint="%"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/per100Boton"
+                    android:nextFocusForward="@id/per100Boton"
+                    android:nextFocusRight="@id/per100Boton"
+                    android:numeric="integer"
+                    android:requiresFadingEdge="horizontal|vertical"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black" />
+
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/indeice_label1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/editText1"
+                    android:layout_toStartOf="@id/editText1"
+                    android:text="Indice"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/welcome_uv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_alignEnd="@+id/per100Boton1"
+                    android:layout_alignParentTop="true"
+                    android:text="4"
+                    android:textStyle="normal|bold"
+                    android:textColor="@android:color/black" />
+                <com.example.efaa.iee.DotView
+                    android:id="@+id/dot1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/indeice_label1"
+                    android:layout_alignTop="@id/indeice_label1"
+                    android:layout_alignBottom="@id/indeice_label1"/>
+
+
+            </RelativeLayout>
+
+            <!--android:focusable="true"-->
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/car_view2"
+            android:layout_below="@id/car_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:background="@color/cardview_light_background"
+            tools:ignore="RtlSymmetry"
+            android:layout_centerInParent="true"
+            android:layout_margin="8dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/codigo2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:minEms="3"
+                    android:textStyle="bold"
+                    android:text="CN-020"
+                    android:textColor="@android:color/black" />
+
+
+                <!--
+                android:breakStrategy="simple"-->
+                <TextView
+                    android:id="@+id/nombre_de_Clase2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/codigo2"
+                    android:layout_toStartOf="@id/textView2"
+                    android:maxEms="15"
+                    android:maxLines="3"
+                    android:paddingStart="2dp"
+                    android:text="Entendiendo a la Mujer I"
+
+                    android:textStyle="normal"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_toStartOf="@+id/welcome_uv2"
+                    android:textStyle="italic"
+                    android:text="@string/UV"
+                    android:textColor="@android:color/black" />
+                <!--android:focusable="true"-->
+
+                <Button
+                    android:id="@+id/per100Boton2"
+                    style="?android:attr/buttonStyleInset"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/codigo2"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/ic_menu_guardar"
+                    android:foreground="?android:attr/selectableItemBackground" />
+
+                <EditText
+                    android:id="@+id/editText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/per100Boton2"
+                    android:layout_toStartOf="@id/per100Boton2"
+                    android:enabled="false"
+                    android:hint="%"
+                    android:inputType="number"
+                    android:nextFocusDown="@id/per100Boton"
+                    android:nextFocusForward="@id/per100Boton"
+                    android:nextFocusRight="@id/per100Boton"
+                    android:numeric="integer"
+                    android:requiresFadingEdge="horizontal|vertical"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black" />
+
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/indeice_label2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/editText2"
+                    android:layout_toStartOf="@id/editText2"
+                    android:text="Indice"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/welcome_uv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_alignEnd="@+id/per100Boton2"
+                    android:layout_alignParentTop="true"
+                    android:text="100"
+                    android:textStyle="normal|bold"
+                    android:textColor="@android:color/black" />
+                <com.example.efaa.iee.DotView
+                    android:id="@+id/dot2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toStartOf="@id/indeice_label2"
+                    android:layout_alignTop="@id/indeice_label2"
+                    android:layout_alignBottom="@id/indeice_label2"/>
+
+
+            </RelativeLayout>
+
+            <!--android:focusable="true"-->
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_blank_fragment"
+            android:layout_alignParentBottom="true"
+            android:padding="8dp"
+            android:textColor="@android:color/white"
+            style="@style/WelcomeScreenText.Centered"
+            android:textAlignment="center" />
+    </RelativeLayout>
+
+
+</FrameLayout>

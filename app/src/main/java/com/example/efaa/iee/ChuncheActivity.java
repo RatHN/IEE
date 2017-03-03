@@ -1,5 +1,6 @@
 package com.example.efaa.iee;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -48,7 +50,6 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
         outState.putStringArray("Array", dAdapter.LISTA.toArray(array));*/
     }
 
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +61,18 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
         totalUV = getIntent().getExtras().getInt("totalUV");
         reprobadas_aparecen = getIntent().getExtras().getBoolean("reprobadas_aparecen");
 
-        if(!inicio){
+        if (!inicio) {
             String f = getString(R.string.chunche_explanation_1) + (String.valueOf(totalUV)) +
                     getString(R.string.chunche_explanation_2) +
                     getString(R.string.chunche_explanation_3) + array;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.chunche_message_title).setMessage(Html.fromHtml(f))
-                    .setOnDismissListener(dialog -> Snackbar.make(tu, R.string.snackBar_message, Snackbar.LENGTH_LONG).show())
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            Snackbar.make(tu, R.string.snackBar_message, Snackbar.LENGTH_LONG).show();
+                        }
+                    })
                     .create()
                     .show();
         }
@@ -91,7 +97,9 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
 
         Info = (RecyclerView) findViewById(R.id.recyclerInfo);
 //        Info.setHasFixedSize(true);
-            Info.setLayoutManager(new StaggeredGridLayoutManager(7,StaggeredGridLayoutManager.VERTICAL));
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
+        Info.setHasFixedSize(false);
+        Info.setLayoutManager(layoutManager);
 
 //        Info.setLayoutManager(new LinearLayoutManager(this));
         iAdapter = new AdaptadorDeInfo(new ArrayList<Clase>());
@@ -100,7 +108,7 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
 //        Disponibles.setHasFixedSize(true);
 
 //        lManager = new LinearLayoutManager(this);
-            Disponibles.setLayoutManager(new LinearLayoutManager(this));
+        Disponibles.setLayoutManager(new LinearLayoutManager(this));
 //        Disponibles.setLayoutManager(lManager);
 
         dAdapter = new AdaptadorDeDisponibles(new ArrayList<Clase>());
@@ -145,12 +153,12 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
 
 
                 if (reprobadas_aparecen) {
-                    ArrayList<Clase> reprobadas = DataSource.queryPasadasODisponibles(dataSource.Columnas.DISPONIBLE, "0", ChuncheActivity.this);
-
-                    for (Clase clase1 :
-                            reprobadas) {
-                        array.add(clase1);
+                    ArrayList<Clase> noDisponibles = DataSource.queryDisponiblesConReprobadas(ChuncheActivity.this);
+                    for (Clase c :
+                            noDisponibles) {
+                        Log.i("ChuncheActivity", "loadInBackground: Reprobada: " + c.toString());
                     }
+                    return noDisponibles;
                 }
 
 //                dob.releaseReference();
@@ -187,7 +195,7 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
 
             for (Clase clase1 :
                     adapter.LISTA) {
-    //            if (clase1.UV > totalUV) clase1.CURSADA = true;
+                //            if (clase1.UV > totalUV) clase1.CURSADA = true;
             }
 
             if (Info.getAdapter() != null) {
@@ -214,7 +222,7 @@ public class ChuncheActivity extends CustomActivities implements AdaptadorDeDisp
 
             for (Clase clase1 :
                     ((AdaptadorDeInfo) Info.getAdapter()).LISTA) {
-    //            if (clase1.UV > totalUV) clase1.CURSADA = true;
+                //            if (clase1.UV > totalUV) clase1.CURSADA = true;
             }
 
             if (Disponibles.getAdapter() != null) {

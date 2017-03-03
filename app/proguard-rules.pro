@@ -16,3 +16,4 @@
 #   public *;
 #}
 -dontwarn com.google.android.gms.internal.**
+-dontwarn com.roughike.**

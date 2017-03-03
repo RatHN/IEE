@@ -2,6 +2,7 @@ package com.example.efaa.iee.adaptadores;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +21,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.efaa.iee.CONSTANTS;
 import com.example.efaa.iee.DotView;
 import com.example.efaa.iee.Main2Activity;
 import com.example.efaa.iee.Materias.Clase;
@@ -36,21 +39,21 @@ import java.util.List;
  */
 public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAdaptador.ClaseViewHolder> {
 
-    private Context context;
-    public List<Clase> LISTA;
-    public List<Clase> LISTA_EDITADA;
-    public List<Clase> LISTA_NO_EDITADA;
     final int INDICE_MINIMO = 65;
     final int COLOR_PASADO = Color.GREEN;
     final int COLOR_NO_PASADO = Color.LTGRAY;
+    public List<Clase> LISTA;
+    public List<Clase> LISTA_EDITADA;
+    public List<Clase> LISTA_NO_EDITADA;
+    private Context context;
     private dataSource db;
 
     public ClaseRecyclerAdaptador(List<Clase> Lista, dataSource db) {
         this.db = db;
         LISTA = Lista;
-        LISTA_NO_EDITADA= new ArrayList<>(Lista);
+        LISTA_NO_EDITADA = new ArrayList<>(Lista);
         List<Clase> list = new ArrayList<>();
-        for (Iterator<Clase> it = LISTA.iterator(); it.hasNext();) {
+        for (Iterator<Clase> it = LISTA.iterator(); it.hasNext(); ) {
             Clase clase = it.next();
             if (clase.INDICE > 65) {
                 list.add(clase);
@@ -104,11 +107,13 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         } else {
             //La clase que se va a usar, sacado de la posicion
             Clase clase = LISTA.get(position);
+            holder.clase = clase;
             //Seteando datos, tomando el holder.
             holder.codigo.setText(clase.CODIGO);
             holder.indice.setText(String.valueOf(clase.INDICE));
 
-            setIndicadorAprovacion(holder.v, clase.INDICE);
+
+            setIndicadorAprovacion(holder.mRemoveableView, clase.INDICE);
 //            if (clase.INDICE < INDICE_MINIMO) {
 //                ((CardView) holder.v.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
 //            } else {
@@ -134,7 +139,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     }
 
     private void setIndicadorAprovacion(View v1, int ind) {
-        if (ind < INDICE_MINIMO)
+        if (ind < CONSTANTS.INDICE_MINIMO_PARA_APROVAR)
 //                    ((CardView) v1.findViewById(R.id.car_view)).setCardBackgroundColor(COLOR_NO_PASADO);
             ((DotView) v1.findViewById(R.id.dot)).setColor(COLOR_NO_PASADO);
         else
@@ -143,7 +148,20 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
     }
 
 
-    public class ClaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public interface InterfaceEscuchador {
+        void Escuchador(boolean actualizarCursada);
+
+        void Escuchador(boolean actualizarCursada, int pos);
+
+        void EsconderTeclado();
+    }
+
+
+    public interface InterfaceSetearIndice {
+        void setearIndice(String selection, String[] selectionArgs, ContentValues values, View v);
+    }
+
+    public class ClaseViewHolder extends RecyclerView.ViewHolder {
         // Campos de la clase
         public EditText indice;
         public TextView nombre;
@@ -153,78 +171,92 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public InterfaceSetearIndice setearIndice;
         public boolean cursada;
         public int position;
-        private View v;
+        public Clase clase;
         private View mRemoveableView;
 
 
         public ClaseViewHolder(View view) {
             super(view);
-            this.v = view;
             escuchador = (InterfaceEscuchador) view.getContext();
             setearIndice = (InterfaceSetearIndice) view.getContext();
-            if (LISTA.get(0).CODIGO.compareTo("NADA") == 0) {
-                return;
-            } else {
-                indice = (EditText) view.findViewById(R.id.editText);
-                nombre = (TextView) view.findViewById(R.id.Nombre_de_Clase);
-                codigo = (TextView) view.findViewById(R.id.Codigo);
-                uv = (TextView) view.findViewById(R.id.UV);
 
-                view.findViewById(R.id.per100Boton).setOnClickListener(botonClicked());
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    String queOnda = clase.CURSADA ? "Marcar como cursada" : "Marcar como no cursada";
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle(R.string.clase_dialog_title)
+                            .setItems(new String[]{queOnda}, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    botonClicked().onClick(view);
+                                }
+                            })
+                            .show();
 
-                ((EditText) view.findViewById(R.id.editText)).setOnEditorActionListener((v1, actionId, event) -> {
+                }
+            });
 
+            indice = (EditText) view.findViewById(R.id.editText);
+            nombre = (TextView) view.findViewById(R.id.Nombre_de_Clase);
+            codigo = (TextView) view.findViewById(R.id.Codigo);
+            uv = (TextView) view.findViewById(R.id.UV);
+
+            view.findViewById(R.id.per100Boton).setOnClickListener(botonClicked());
+
+
+            ((EditText) view.findViewById(R.id.editText)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v1, int i, KeyEvent keyEvent) {
                     botonClicked().onClick(v1);
                     return true;
-                });
+                }
+            });
 
 /*
                 //Cambiamos la escucha y seteamos el escucha de click
                 checkListener = this;
                 nombre.setOnClickListener(checkListener);
 */
-
-            }
             mRemoveableView = view;
         }
 
         OnClickListener botonClicked() {
-            return v1 -> {
-                int ind = Integer.parseInt(indice.getText().toString());
-                if (ind < 0 || ind > 100) {
-                    setIndiceError(v1);
-                    return;
-                }
-                do {
-                    if (v1 instanceof CardView) {
-                        break;
+            return new OnClickListener() {
+                @Override
+                public void onClick(View v1) {
+                    int ind = Integer.parseInt(indice.getText().toString());
+                    if (ind < 0 || ind > 100) {
+                        setIndiceError(v1);
+                        return;
                     }
-                    if (v1 != null) {
-                        // Else, we will loop and crawl up the view hierarchy and try to find a parent
-                        final ViewParent parent = v1.getParent();
-                        v1 = parent instanceof View ? (View) parent : null;
-                    }
-                } while (v1 != null);
+                    do {
+                        if (v1 instanceof CardView) {
+                            break;
+                        }
+                        if (v1 != null) {
+                            // Else, we will loop and crawl up the view hierarchy and try to find a parent
+                            final ViewParent parent = v1.getParent();
+                            v1 = parent instanceof View ? (View) parent : null;
+                        }
+                    } while (v1 != null);
 
-                assert v1 != null;
-                setIndicadorAprovacion(v1, ind);
+                    assert v1 != null;
+                    setIndicadorAprovacion(v1, ind);
 
-                Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
-                        + codigo.getText());
-                ContentValues values = new ContentValues();
-                values.put(dataSource.Columnas.INDICE,
-                        String.valueOf(indice.getText()));
-                String selection = dataSource.Columnas.CODIGO + " = ?";
-                String[] selectionArgs = {String.valueOf(codigo.getText())};
-                setearIndice.setearIndice(selection, selectionArgs, values, v1);
+                    Log.i("OREJAS", "TENEMOS OREJAS...! QUE ALEGRIA: " + indice.getText() + "     "
+                            + codigo.getText());
+                    ContentValues values = new ContentValues();
+                    values.put(dataSource.Columnas.INDICE,
+                            String.valueOf(indice.getText()));
+                    String selection = dataSource.Columnas.CODIGO + " = ?";
+                    String[] selectionArgs = {String.valueOf(codigo.getText())};
+                    setearIndice.setearIndice(selection, selectionArgs, values, v1);
 
 //            Log.e("OREJAS OTRA VEZ", String.valueOf());
-            };
-        }
 
-        @Override
-        public void onClick(View v) {
-            remove_at(v.getContext(), (TextView) v, getAdapterPosition());
+                }
+            };
         }
 
 
@@ -294,7 +326,7 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
             TranslateAnimation trans = new TranslateAnimation(
                     0,
 //                    300 * (int)getResources().getDisplayMetrics().density,
-                    300 * this.v.getContext().getResources().getDisplayMetrics().density,
+                    300 * this.mRemoveableView.getContext().getResources().getDisplayMetrics().density,
                     0,
                     0);
             trans.setDuration(500);
@@ -329,21 +361,6 @@ public class ClaseRecyclerAdaptador extends RecyclerView.Adapter<ClaseRecyclerAd
         public View getSwipableView() {
             return mRemoveableView;
         }
-    }
-
-
-
-
-    public interface InterfaceEscuchador {
-        void Escuchador(boolean actualizarCursada);
-
-        void Escuchador(boolean actualizarCursada, int pos);
-
-        void EsconderTeclado();
-    }
-
-    public interface InterfaceSetearIndice {
-        void setearIndice(String selection, String[] selectionArgs, ContentValues values, View v);
     }
 
 }

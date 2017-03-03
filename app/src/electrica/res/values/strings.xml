@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_main2" translatable="false">I.E.I. UNAH-VS</string>
+    <string name="app_name" translatable="false">I.E.I. UNAH-VS</string>
+    <string name="credito_icono" translatable="false">Icono de aplicación editado por: Juan Carlos Rivera</string>
+    <string name="facebook_facultad" formatted="false" translatable="false">https://www.facebook.com/groups/123808777743723/?__mref=message_bubble</string>
+</resources>

@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -28,11 +29,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.efaa.iee.Materias.Clase;
@@ -44,11 +49,10 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 import com.stephentuso.welcome.WelcomeHelper;
 import com.vansuita.materialabout.builder.AboutBuilder;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -64,29 +68,25 @@ public class Main2Activity extends CustomActivities
 
     private final String PERMISO = "PERMISO";
     public Loader<ArrayList<Clase>> loaderDisponibles;
-    Loader<ArrayList<Clase>> loaderCursadas;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     public ViewPager mViewPager;
     public boolean Permisos = false;
-
-
-//    public dataSource DataSource;
+    //    public dataSource DataSource;
     public PlaceHolderFragment placeHolderFragment;
-    ArrayList<String> clasesString = new ArrayList<>();
-    ArrayList<Clase> clasesClases = new ArrayList<>();
-    int uv[] = {12, 14, 16, 20, 22, 24};
-
-    SharedPreferences pref;
-    Intent i;
-    Bundle b;
     /**
      * RecyclerView que se usará para la lista
      * Agregado por el BottomBar
      */
     public BottomBar mBottomBar;
+    Loader<ArrayList<Clase>> loaderCursadas;
+    ArrayList<String> clasesString = new ArrayList<>();
+    ArrayList<Clase> clasesClases = new ArrayList<>();
+    int uv[] = {12, 14, 16, 20, 22, 24};
+    SharedPreferences pref;
+    Intent i;
+    Bundle b;
     RecyclerView mRecycler;
     RecyclerView.LayoutManager mLManager;
     FloatingActionButton fab;
@@ -177,7 +177,9 @@ public class Main2Activity extends CustomActivities
         loaderDisponibles = getSupportLoaderManager().initLoader(LOADER_DISPONIBLES, bundle, Main2Activity.this);
         loaderCursadas = getSupportLoaderManager().initLoader(LOADER_CURSADAS, null, Main2Activity.this);
 
-        mBottomBar.setOnTabSelectListener(tabId -> {
+        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
                 switch (tabId) {
                     case R.id.tab_disponibles:
                         loaderDisponibles.forceLoad();
@@ -197,6 +199,7 @@ public class Main2Activity extends CustomActivities
                         fab.callOnClick();
                         break;*/
                 }
+            }
         });
 
         /**
@@ -293,89 +296,102 @@ public class Main2Activity extends CustomActivities
                 totalIndice = totalUV = 0;
                 // 1. Instantiate an AlertDialog.Builder with its constructor
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder
-                        .setMultiChoiceItems(cursor, dataSource.Columnas.DISPONIBLE,
-                                dataSource.Columnas.NOMBRE,
-                                (dialog, which, isChecked) -> {
-                                    Clase clase;
-                                    if (cursor.moveToPosition(which)) {
-                                        clase = new Clase(cursor.getString(cursor.getColumnIndex(dataSource.Columnas.NOMBRE)),
-                                                cursor.getString(cursor.getColumnIndex(dataSource.Columnas.CODIGO)),
-                                                null,
-                                                cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.UV)),
-                                                cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
-                                                true);
-                                        if (isChecked) {
-                                            if (!clasesString.contains(clase.CODIGO)) {
+                builder.setMultiChoiceItems(cursor, dataSource.Columnas.DISPONIBLE,
+                        dataSource.Columnas.NOMBRE,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which, boolean isChecked) {
+                                Clase clase;
+                                if (cursor.moveToPosition(which)) {
+                                    clase = new Clase(cursor.getString(cursor.getColumnIndex(dataSource.Columnas.NOMBRE)),
+                                            cursor.getString(cursor.getColumnIndex(dataSource.Columnas.CODIGO)),
+                                            null,
+                                            cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.UV)),
+                                            cursor.getInt(cursor.getColumnIndex(dataSource.Columnas.INDICE)),
+                                            true);
+                                    if (isChecked) {
+                                        if (!clasesString.contains(clase.CODIGO)) {
 
-                                                clasesString.add(clase.CODIGO);
-                                                clasesClases.add(clase);
+                                            clasesString.add(clase.CODIGO);
+                                            clasesClases.add(clase);
 
-                                                totalIndice += clase.INDICE;
-                                                totalUV += clase.UV;
+                                            totalIndice += clase.INDICE;
+                                            totalUV += clase.UV;
 
-                                            }
+                                        }
 //                                                clase.position = clasesString.lastIndexOf(clase);
-                                            return;
-                                        } else {
-                                            for (String clase1 : clasesString) {
-                                                if (clase1.compareTo(clase.CODIGO) == 0) {
-                                                    int index = clasesString.lastIndexOf(clase1);
-                                                    clasesString.remove(index);
-                                                    clasesClases.remove(clase);
-                                                    totalUV -= clase.UV;
-                                                    totalIndice -= clase.INDICE;
-                                                    break;
-                                                }
+                                        return;
+                                    } else {
+                                        for (String clase1 : clasesString) {
+                                            if (clase1.compareTo(clase.CODIGO) == 0) {
+                                                int index = clasesString.lastIndexOf(clase1);
+                                                clasesString.remove(index);
+                                                clasesClases.remove(clase);
+                                                totalUV -= clase.UV;
+                                                totalIndice -= clase.INDICE;
+                                                break;
                                             }
                                         }
                                     }
-                                })
+                                }
+                            }
+                        })
                         .setPositiveButton(R.string.go_ahead,
-                                (dialog, which) -> {
-                                    if (clasesString.size() == 0) {
-                                        eSO(getString(R.string.no_classes_selected_warning));
-                                        return;
-                                    } else if (totalUV > 24) {
-                                        eSO(getString(R.string.too_many_classes_selected_warning));
-                                        return;
-                                    }
-                                    Toast.makeText(getApplicationContext(), clasesString.toString(),
-                                            Toast.LENGTH_SHORT).show();
-                                    totalIndice = totalIndice / clasesString.size();
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int which) {
+                                        if (clasesString.size() == 0) {
+                                            eSO(getString(R.string.no_classes_selected_warning));
+                                            return;
+                                        } else if (totalUV > 24) {
+                                            eSO(getString(R.string.too_many_classes_selected_warning));
+                                            return;
+                                        }
+                                        Toast.makeText(getApplicationContext(), clasesString.toString(),
+                                                Toast.LENGTH_SHORT).show();
+                                        totalIndice = totalIndice / clasesString.size();
 
-                                    if (totalIndice < 40) totalUV = uv[0];      //12
-                                    else if (totalIndice < 60) totalUV = uv[1]; //14
-                                    else if (totalIndice < 70) totalUV = uv[2]; //16
-                                    else if (totalIndice < 80) totalUV = uv[4]; //22
-                                    else totalUV = uv[5];                       //24
+                                        if (totalIndice < 40) totalUV = uv[0];      //12
+                                        else if (totalIndice < 60) totalUV = uv[1]; //14
+                                        else if (totalIndice < 70) totalUV = uv[2]; //16
+                                        else if (totalIndice < 80) totalUV = uv[4]; //22
+                                        else totalUV = uv[5];                       //24
 
-                                    b = new Bundle();
-                                    b.putStringArrayList("Array", clasesString);
-                                    b.putInt("totalUV", totalUV);
-                                    b.putInt("totalIndice", totalIndice);
+                                        b = new Bundle();
+                                        b.putStringArrayList("Array", clasesString);
+                                        b.putInt("totalUV", totalUV);
+                                        b.putInt("totalIndice", totalIndice);
 
-                                    reprobadas_aparecen = false;
-                                    i = new Intent(getApplicationContext(), ChuncheActivity.class);
+                                        reprobadas_aparecen = false;
+                                        i = new Intent(getApplicationContext(), ChuncheActivity.class);
 
-                                    DialogInterface.OnClickListener op = (dialog2, which1) -> {
-                                        b.putBoolean("reprobadas_aparecen", which1 == BUTTON_POSITIVE);
-                                        i.putExtras(b);
+                                        DialogInterface.OnClickListener op = new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int which1) {
+                                                b.putBoolean("reprobadas_aparecen", which1 == BUTTON_POSITIVE);
+                                                i.putExtras(b);
 
-                                        startActivity(i);
-                                    };
-                                    AlertDialog p = new AlertDialog.Builder(dialog1.getContext()).setMessage(getString(R.string.q_show_reprobadas))
-                                            .setTitle(R.string.almost_in_chunche_title)
-                                            .setNegativeButton(R.string.no, op)
-                                            .setPositiveButton(R.string.si, op).create();
+                                                startActivity(i);
+                                            }
+                                        };
+                                        AlertDialog p = new AlertDialog.Builder(dialog1.getContext()).setMessage(getString(R.string.q_show_reprobadas))
+                                                .setTitle(R.string.almost_in_chunche_title)
+                                                .setNegativeButton(R.string.no, op)
+                                                .setPositiveButton(R.string.si, op).create();
 
-                                    p.show();
+                                        p.show();
 
 //                                        b.putBoolean("reprobadas_aparecen", reprobadas_aparecen);
 
+                                    }
                                 })
                         .setTitle(getResources().getString(R.string.mensaje_calculador))
-                        .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
                 if (cursor.getCount() == 0) {
                     builder.setMessage(R.string.no_approved_classes_msg);
                 }
@@ -384,7 +400,12 @@ public class Main2Activity extends CustomActivities
                 dialog1.setIcon(R.mipmap.ic_launcher);
 //                dob.releaseReference();
 
-                DialogInterface.OnClickListener op = (dialog, which) -> dialog1.show();
+                DialogInterface.OnClickListener op = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialog1.show();
+                    }
+                };
                 AlertDialog p1 = new AlertDialog.Builder(view.getContext()).setMessage(getString(R.string.introduce_grades_reminder))
                         .setTitle(R.string.cancel_no_grades_title)
                         .setNegativeButton(R.string.cancel_no_grades, null)
@@ -409,7 +430,7 @@ public class Main2Activity extends CustomActivities
     }
 
     private void runTutorial(final int index) {
-                ViewTarget bottomBarTarget = new ViewTarget(mBottomBar);
+        ViewTarget bottomBarTarget = new ViewTarget(mBottomBar);
         ViewTarget placeHolderTarget = new ViewTarget(mRecycler);
         ViewTarget rectTarget = new ViewTarget(fab);
 
@@ -503,7 +524,7 @@ public class Main2Activity extends CustomActivities
             return true;
         }
 
-        if (id == R.id.calc){
+        if (id == R.id.calc) {
             fab.callOnClick();
         }
 
@@ -516,21 +537,20 @@ public class Main2Activity extends CustomActivities
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.informacion) {
-            PDFOpen(id);
-        } else if (id == R.id.plan) {
-            PDFOpen(id);
+//        if (id == R.id.informacion) {
+//            PDFOpen(id);
+//        } else if (id == R.id.plan) {
+//            PDFOpen(id);
+//        }
+        if (EspecificUtils.onNavigationItemSelected(id, this)) {
+            ;
         } else if (id == R.id.face) {
             try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/groups/123808777743723/?__mref=message_bubble")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.facebook_facultad))));
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(this, "Error Desconocido", Toast.LENGTH_SHORT).show();
             }
-        } else if (id == R.id.pdf_otro) {
-//            PDFOpen(id);
-            Snackbar.make(drawer, "Falta implementar... Esperando el PDF de Emilson",
-                    Snackbar.LENGTH_SHORT).show();
-        } else if (id == R.id.bug_report) {
+        } /*else if (id == R.id.bug_report) {
             try {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "neryortez@gmail.com", null));
@@ -540,7 +560,8 @@ public class Main2Activity extends CustomActivities
             } catch (ActivityNotFoundException e) {
                 Toast.makeText(this, "Error Desconocido", Toast.LENGTH_SHORT).show();
             }
-        } else if (id == R.id.rate) {
+        }*/
+        /*else if (id == R.id.rate) {
             Uri uri = Uri.parse("market://details?id=" + getApplicationContext().getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
@@ -554,8 +575,9 @@ public class Main2Activity extends CustomActivities
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://play.google.com/store/apps/details?id=" + getApplicationContext().getPackageName())));
             }
-        } else if (id == R.id.about) {
+        }*/ else if (id == R.id.about) {
             View view = AboutBuilder.with(this)
+                    .setLinksColumnsCount(4)
                     .setPhoto(R.mipmap.profile_picture)
                     .setCover(R.mipmap.profile_cover)
                     .setName(getString(R.string.aboutMe_name))
@@ -574,12 +596,27 @@ public class Main2Activity extends CustomActivities
                     .addEmailLink("neryortez@gmail.com", "UNAH APLICACIONES", "Me gusta esta aplicacion porque.....")
 
 
+
 //                    .setWrapScrollView(true)
                     .setLinksAnimated(true)
                     .setShowDivider(false)
                     .build();
 
-            new AlertDialog.Builder(this).setView(view).show();
+            TextView credito = new TextView(this);
+            credito.setText(R.string.credito_icono);
+            credito.setGravity(Gravity.CENTER_HORIZONTAL);
+            credito.setPadding(0,0,0, 8);
+
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+            linearLayout.addView(view);
+            linearLayout.addView(credito);
+
+            ScrollView scrollView = new ScrollView(this);
+            scrollView.addView(linearLayout);
+
+            new AlertDialog.Builder(this).setView(scrollView).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -680,66 +717,6 @@ public class Main2Activity extends CustomActivities
 //        return true;
 //    }
 
-    public void PDFOpen(int id) {
-        int ID = 0;
-        File fileBrochure = null;
-        String filename = null;
-
-        if (id == R.id.informacion) {
-            fileBrochure = new File("/sdcard/UNAH_IEE/electrica.pdf");
-            filename = "electrica.pdf";
-            fileBrochure = new File(getExternalFilesDir(null), filename);
-            ID = R.raw.electrica;
-        } else if (id == R.id.plan) {
-            filename = "plan.pdf";
-            fileBrochure = new File("/sdcard/UNAH_IEE/plan.pdf");
-            fileBrochure = new File(getExternalFilesDir(null), filename);
-            ID = R.raw.plan;
-        }
-
-        if (!fileBrochure.exists()) {
-            CopyRaw(ID, filename);
-        }
-
-        /* PDF reader code */
-//        File file = new File("/sdcard/UNAH_IEE/" + filename);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(fileBrochure.getAbsoluteFile()), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try {
-            getApplicationContext().startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "No hay aplicacion para archivos PDF", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Metdo para copiar archivos RAW
-     **/
-    private void CopyRaw(int idRaw, String filename) {
-        InputStream in = null;
-        try {
-            in = getResources().openRawResource(idRaw);
-        } catch (Exception e) {
-            Toast.makeText(this, "Error IO", Toast.LENGTH_SHORT).show();
-        }
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(new File(getExternalFilesDir(null), filename));
-            copyFile(in, out);
-            in.close();
-            in = null;
-            out.flush();
-            out.close();
-            out = null;
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];

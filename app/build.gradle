@@ -23,20 +23,35 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        jackOptions{
-            enabled true
-        }
+
     }
-    compileOptions{
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-        encoding 'ISO-8859-1'
-    }
+//
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//        encoding 'ISO-8859-1'
+//    }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+    }
+    productFlavors {
+        electrica {
+            minSdkVersion 17
+            applicationId 'com.example.efaa.iee.electrica'
+            targetSdkVersion 23
+            versionCode 1
+            versionName '1.0'
+        }
+        derecho {
+            minSdkVersion 17
+            applicationId 'com.example.efaa.iee.derecho'
+            targetSdkVersion 23
+            versionCode 1
+            versionName '1.0'
         }
     }
 }

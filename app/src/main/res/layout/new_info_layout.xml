@@ -22,7 +22,8 @@
             android:text="CODIGO"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-           android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+           android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+           android:textColor="@android:color/background_light" />
         <ImageView
             android:id="@+id/erase"
             android:src="@android:drawable/btn_dialog"

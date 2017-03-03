@@ -47,7 +47,6 @@ public class dataSource extends SQLiteOpenHelper {
 
     public void open(){
         Log.i("DATABSE OPEN:::", "ABIERTO--------------------------");
-        new Throwable().printStackTrace();
         this.db = this.getWritableDatabase();
         this.open = true;
     }
@@ -84,7 +83,6 @@ public class dataSource extends SQLiteOpenHelper {
     @Override
     public synchronized void close() {
         Log.d("DATABSE::::: ", "Database CLOSED!-----------------------------------");
-        new Throwable().printStackTrace();
         super.close();
         this.open = false;
     }
@@ -116,13 +114,15 @@ public class dataSource extends SQLiteOpenHelper {
         return lista;
     }
 
+
     /**
-     *
+     * Deprecated as its confusing....
      * @param columna  Columna a evaluar
      * @param ceroOuno Dato a evaluar
      * @param context  Contexto de la aplicacion o actividad que llama esta funcion
      * @return Una lista con las Clases que resultan del resultan del query
      */
+    @Deprecated
     public ArrayList<Clase> queryPasadasODisponibles(String columna, String ceroOuno, Context context) {
         String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
                 Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
@@ -511,6 +511,45 @@ public class dataSource extends SQLiteOpenHelper {
 
     public boolean isOpen() {
         return this.db.isOpen();
+    }
+
+    ArrayList<Clase> queryReprobadas(Context context) {
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
+                Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
+//noDisponible.INDICE >= CONSTANTS.INDICE_MINIMO_PARA_APROVAR
+        String selection = Columnas.CURSADA + " = " + "1" + " AND "
+                + Columnas.INDICE + " <= " + String.valueOf(CONSTANTS.INDICE_MINIMO_PARA_APROVAR);//WHERE author = ?
+
+        return CrearListaClases(
+                db.query(
+                        TABLE,
+                        columns,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        null
+                ), context, true);
+    }
+
+    public ArrayList<Clase> queryDisponiblesConReprobadas(Context context) {
+        String columns[] = new String[]{Columnas.NOMBRE, Columnas.CODIGO, Columnas.PORcURSAR,
+                Columnas.CURSADA, Columnas.DISPONIBLE, Columnas.UV, Columnas.INDICE};
+//noDisponible.INDICE >= CONSTANTS.INDICE_MINIMO_PARA_APROVAR
+        String selection = "(" + Columnas.CURSADA + " = " + "1" + " AND "
+                + Columnas.INDICE + " <= " + String.valueOf(CONSTANTS.INDICE_MINIMO_PARA_APROVAR + ") OR ("
+                + Columnas.DISPONIBLE + " = 1)");//WHERE author = ?
+
+        return CrearListaClases(
+                db.query(
+                        TABLE,
+                        columns,
+                        selection,
+                        null,
+                        null,
+                        null,
+                        null
+                ), context, false);
     }
 
 

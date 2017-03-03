@@ -18,11 +18,11 @@
         <activity android:name=".sinUsar.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".sinUsar.ActividadCalculador" />
 
+        <activity android:name=".sinUsar.ActividadCalculador" />
 
         <activity
             android:name=".Main2Activity"
@@ -32,12 +32,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.efaa.iee.sinUsar.MainActivity" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ChuncheActivity"
             android:label="@string/title_activity_cunche"
@@ -47,15 +46,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.efaa.iee.Main2Activity" />
         </activity>
+
         <activity
             android:name=".Tutorial"
             android:theme="@style/WelcomeScreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             </activity>
+
     </application>
 
 </manifest>

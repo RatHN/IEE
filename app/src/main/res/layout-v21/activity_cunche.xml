@@ -84,7 +84,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/imageView2"
                 android:elevation="10dp"
-                tools:listitem="@layout/new_info_layout" />
+                />
+
+            <TextView
+                android:elevation="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Seleccionadas"
+                android:textAlignment="center"
+                android:id="@+id/textView2"
+                android:textStyle="normal|bold"
+                android:layout_above="@id/recyclerInfo"
+                android:background="#91fac804"/>
 
         </RelativeLayout>
 
@@ -106,15 +117,6 @@
                     android:layout_weight="1"
                     android:text="Para seleccionar"
                     android:textAlignment="center"
-                    android:textStyle="normal|bold" />
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Seleccionadas"
-                    android:textAlignment="center"
-                    android:id="@+id/textView2"
                     android:textStyle="normal|bold" />
 
             </LinearLayout>

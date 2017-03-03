@@ -60,6 +60,7 @@
         app:bb_activeTabAlpha="1"
         app:bb_activeTabColor="#fff"
         app:bb_inActiveTabColor="#ddd"
+        app:bb_behavior="shy"
         />
 
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_activity_main2" translatable="false">DERECHO UNAH-VS</string>
+    <string name="app_name" translatable="false">Derecho UNAH-VS</string>
+    <string name="credito_icono" translatable="false">Icono de aplicación por: Gerardo Mendez</string>
+    <string name="facebook_facultad" formatted="false" translatable="false">https://www.facebook.com/Asociaci%C3%B3n-Estudiantes-De-Derecho-905091526194928</string>
+</resources>
